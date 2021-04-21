@@ -27,9 +27,56 @@
   }
   */
 
-int min_speed = 100;
-int max_speed = 300;
-int test = 0;
+#include <ros.h>
+#include <geometry_msgs/Twist>
+
+
+
+class Motor_Controller {
+  
+  private:
+  int max_speed = 50;
+  float motion[2];
+  ros::Subsciber geometry_subscriber;
+  
+  public:
+  Stearing(ros::NodeHandle *nh) {
+    
+    geometry_subscriber = nh->subscibe("/cmd_vel", 10, &Stearing::callback_geometry, this);
+  }
+
+// set depending on subscribed msg /cmd_vel values of array motion
+  void callback_geometry(const geometry_msgs/Twist& msg) {
+    motion[0] = msg.linear.x; 
+    motion[1] = msg.angular.z;
+  }
+
+// controller in front gets commands chanel(1 = left, 2 = right)
+  void controller_front (int chanel, int velocity){
+    Serial1.println("!G ");
+    Serial1.println(chanel);
+    Serial1.println(" ");
+    Serial1.println(velocity);
+  }
+
+// controller in back gets commands chanel(1 = left, 2 = right)
+  void controller_back (int chanel, int velocity){
+    Serial2.println("!G ");
+    Serial2.println(chanel);
+    Serial2.println(" ");
+    Serial2.println(velocity);
+  }
+
+  void moveset_normal (){
+    float velocity = motion[0] * max_speed;
+    float turning = motion[1] * max_speed;
+    motor_controller_front(1,velocity + turning);
+    motor_controller_front(2,-velocity + turning);
+    motor_controller_back(1,velocity + turning);
+    motor_controller_back(2,-velocity + turning);
+    delay(100);
+  }
+};
 
 void setup() {
  Serial.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
@@ -45,6 +92,10 @@ void loop() {
  
   int x = 0;  // Counter used for ramping loops
 
+  Motor_Controller test;
+  test.moveset_normal();
+
+/*
   //nur die vorherigen Tests ob die Funktionen machen was sie sollen
   //dreht sich um die eigene Achse
   move_normal(0, 100);
@@ -59,6 +110,8 @@ void loop() {
   move_special(100 , 100);
   move_special(100 , 100);
   move_special(100 , 100);
+*/
+
 }
 
 
