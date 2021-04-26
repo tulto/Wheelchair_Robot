@@ -14,6 +14,7 @@ class Motor_Controller {
   public:
   Motor_Controller();
   void callback_stearing(const geometry_msgs::Twist& msg);
+  void init(ros::NodeHandle& nh);
   void control_front(int chanel, int velocity);
   void control_back(int chanel, int velocity);
   void movement();

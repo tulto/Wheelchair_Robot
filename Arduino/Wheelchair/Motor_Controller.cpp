@@ -22,6 +22,10 @@ void Motor_Controller::callback_stearing(const geometry_msgs::Twist& msg) {
     motion[2] = msg.linear.y;
     motion[3] = msg.linear.z;
   }
+void Motor_Controller::init(ros::NodeHandle& nh)
+{
+  nh.subscribe(subscriber_);
+}
 
 // controller in front gets commands chanel(1 = left, 2 = right)
 void Motor_Controller::control_front (int chanel, int velocity){
@@ -47,8 +51,8 @@ void Motor_Controller::movement(){
   float y = motion[2] * max_speed;
   float z = motion[3] * max_speed;
   Motor_Controller::control_front(1,(x + turning)   );
-  Motor_Controller::control_front(2,(-x + turning) +2*y );
-  Motor_Controller::control_back(1,(x + turning)   -2*y );
+  Motor_Controller::control_front(2,(-x + turning)  );
+  Motor_Controller::control_back(1,(x + turning)    );
   Motor_Controller::control_back(2,(-x + turning)   );
   delay(100);
 }
