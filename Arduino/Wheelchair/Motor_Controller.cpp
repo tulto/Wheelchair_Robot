@@ -17,11 +17,11 @@ Motor_Controller::Motor_Controller()
 
 // set depending on subscribed msg /cmd_vel values of array motion
 void Motor_Controller::callback_stearing(const geometry_msgs::Twist& msg) {
-    motion[0] = msg.linear.x;  
-    motion[1] = msg.angular.z;
-    motion[2] = msg.linear.y;
-    motion[3] = msg.linear.z;
-  }
+  motion[0] = msg.linear.x;  
+  motion[1] = msg.angular.z;
+  motion[2] = msg.linear.y;
+  motion[3] = msg.linear.z;
+}
 void Motor_Controller::init(ros::NodeHandle& nh)
 {
   nh.subscribe(subscriber_);

@@ -38,7 +38,7 @@ void loop() {
   //Motor_Control test;
   //test.moveset_normal();
   Motor_Controller test;
-  
+  test.init(nh);
   test.movement();
 
   //publishing encoder value to /encoder
