@@ -18,7 +18,8 @@ int pos = 0;
 
 
 void setup() {
- Serial.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
+ Serial1.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
+ Serial2.begin(115200); 
 
  pinMode(ENCA,INPUT);
  pinMode(ENCB,INPUT);
@@ -40,6 +41,8 @@ void loop() {
   Motor_Controller test;
   test.init(nh);
   test.movement();
+
+  //move_normal(500, 0);
 
   //publishing encoder value to /encoder
   int_msg.data = pos;
@@ -93,14 +96,16 @@ void move_special (int x, int y){ //depending on x and y the wheelchair should d
 }
 
 void motor_controller_front (int chanel, int velocity){
-  Serial1.print("!G ");
+  Serial1.print("!G");
+  Serial1.print(" ");
   Serial1.print(chanel);
   Serial1.print(" ");
   Serial1.println(velocity);
 }
 
 void motor_controller_back (int chanel, int velocity){
-  Serial2.print("!G ");
+  Serial2.print("!G");
+  Serial2.print(" ");
   Serial2.print(chanel);
   Serial2.print(" ");
   Serial2.println(velocity);

@@ -49,10 +49,10 @@ void Motor_Controller::movement(){
   float x = motion[0] * max_speed;
   float turning = motion[1] * max_speed;
   float y = motion[2] * max_speed;
-  float z = motion[3] * max_speed;
-  Motor_Controller::control_front(1,(x + turning)   );
-  Motor_Controller::control_front(2,(-x + turning)  );
-  Motor_Controller::control_back(1,(x + turning)    );
-  Motor_Controller::control_back(2,(-x + turning)   );
+
+  Motor_Controller::control_front(1,(x - turning) + y);
+  Motor_Controller::control_front(2,(x + turning) - y);
+  Motor_Controller::control_back(1, (x - turning) - y);
+  Motor_Controller::control_back(2, (x + turning) + y);
   delay(100);
 }
