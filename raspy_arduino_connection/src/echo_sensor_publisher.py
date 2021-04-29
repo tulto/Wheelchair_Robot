@@ -60,6 +60,8 @@ if __name__ == '__main__':
     EchoSensor(8,7),  #ef
     EchoSensor(23,24) #eb
     ]
+    #initialising mode, can be done with all EchoSensor objekts but only one time with only one objekt
+    sensor_list[0].setmode()
     #initialising all sensor pins:
     for sensor in sensor_list:
         sensor.init_sensor()

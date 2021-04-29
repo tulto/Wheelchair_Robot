@@ -9,6 +9,9 @@ class EchoSensor:
         self.ECHO=ECHOpin
         self.recorded_distances=[0.0,0.0,0.0]
 
+    def setmode(self):
+        GPIO.setmode(GPIO.BCM)
+
     def init_sensor(self):
         GPIO.setup(self.TRIG, GPIO.OUT)
         GPIO.setup(self.ECHO, GPIO.IN)
