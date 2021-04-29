@@ -4,8 +4,10 @@
 #include <std_msgs/Int64.h>
 
 
-#define ENCA 2 
-#define ENCB 3 
+#define lf 2  //left front  1
+#define lb 3  //left back   2
+#define rf 18 //right front 3
+#define rb 19 //right back  4
 
 
 // for testing purpose publish encoder value to /encoder only one encoder
@@ -14,16 +16,24 @@ ros::Publisher encoder("/encoder", &int_msg);
 
 ros::NodeHandle nh;
 
-int pos = 0;
+int pos_lf = 0;
+int pos_lb = 0;
+int pos_rf = 0;
+int pos_rb = 0;
 
 
 void setup() {
  Serial1.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
- Serial2.begin(115200); 
+ Serial2.begin(115200);      // Roboteq SDC2130 COM (Must be 115200) 
 
- pinMode(ENCA,INPUT);
- pinMode(ENCB,INPUT);
- attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
+ pinMode(lf,INPUT);
+ pinMode(lb,INPUT);
+ pinMode(rf,INPUT);
+ pinMode(rb,INPUT);
+ attachInterrupt(digitalPinToInterrupt(lf),readEncoder_lf,RISING);
+ attachInterrupt(digitalPinToInterrupt(lb),readEncoder_lb,RISING);
+ attachInterrupt(digitalPinToInterrupt(rf),readEncoder_rf,RISING);
+ attachInterrupt(digitalPinToInterrupt(rb),readEncoder_rb,RISING);
  nh.initNode();
  nh.advertise(encoder);
  
@@ -36,29 +46,61 @@ void setup() {
 
 
 void loop() { 
-  //Motor_Control test;
-  //test.moveset_normal();
-  Motor_Controller test;
-  test.init(nh);
-  test.movement();
 
-  //move_normal(500, 0);
+  Motor_Controller drive;
+  //drive.init(nh);
+  drive.movement();
+
 
   //publishing encoder value to /encoder
-  int_msg.data = pos;
+  int_msg.data = pos_lf;
   encoder.publish( &int_msg); 
   nh.spinOnce();
   delay(100);
 }
 
 
-void readEncoder(){
-  int b = digitalRead(ENCB);
+
+
+
+
+
+
+//every encoder inside motor gets function
+void readEncoder_lf(){
+  int b = digitalRead(4);
   if(b > 0){
-    pos++;
+    pos_lf++;
   }
   else{
-    pos--;
+    pos_lf--;
+  }
+}
+void readEncoder_lb(){
+  int b = digitalRead(5);
+  if(b > 0){
+    pos_lb++;
+  }
+  else{
+    pos_lb--;
+  }
+}
+void readEncoder_rf(){
+  int b = digitalRead(17);
+  if(b > 0){
+    pos_rf++;
+  }
+  else{
+    pos_rf--;
+  }
+}
+void readEncoder_rb(){
+  int b = digitalRead(20);
+  if(b > 0){
+    pos_rb++;
+  }
+  else{
+    pos_rb--;
   }
 }
 
