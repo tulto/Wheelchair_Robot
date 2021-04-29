@@ -31,7 +31,7 @@ class EchoSensor:
         while GPIO.input(self.ECHO) == 1:
             pulse_end = time.time()
 
-        pulse_duration = pulse_start - pulse_end
+        pulse_duration = pulse_end - pulse_start
         temperature = 20.0 #(air)temperature in °C
         v_air = (331.5 +(0.6*temperature)) #speed of sound
         distance = round(((v_air/2)*pulse_duration), 4) #divide v_air by 2 because wave travels two time the distance
@@ -39,10 +39,10 @@ class EchoSensor:
         self.recorded_distances.pop(0)
         return distance
 
-    def distance_warning(self):
-        if (sum(self.recorded_distances)) != 0.0 and self.recorded_distances[len(self.recorded_distances)-1] <= 0.25:
+    def distance_warning(self, instant_stop_distance, average_stop_distance):
+        if (sum(self.recorded_distances)) != 0.0 and self.recorded_distances[len(self.recorded_distances)-1] <= instant_stop_distance:
             return True
-        elif (numpy.prod(self.recorded_distances)) != 0.0 and (sum(self.recorded_distances)/len(self.recorded_distances)) <= 0.30: #calculating a the average over the last 3 distances
+        elif (numpy.prod(self.recorded_distances)) != 0.0 and (sum(self.recorded_distances)/len(self.recorded_distances)) <= average_stop_distance: #calculating a the average over the last 3 distances
             return True
         else:
             return False

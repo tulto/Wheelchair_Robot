@@ -2,44 +2,49 @@
 import rospy
 import RPi.GPIO as GPIO
 import time
-#importing selfmase message type
-from services_and_messages.msg import Echosensors 
-from services_and_messages.srv import WarningEchoTest
-from echo_sensor_class import EchoSensor
+from services_and_messages.msg import Echosensors #importing selfmade message type
+from services_and_messages.srv import WarningEchoTest #importing selfmade service type
+from echo_sensor_class import EchoSensor #import EchoSensor class
 
 
 def handle_warning_test(req):
-    if req.sensor == "elf":
-        echo_msg.echolf=True
+    if req.sensor == "el":
+        echo_msg.echo_dir[1]=True
         return True
-    elif req.sensor == "elb":
-        echo_msg.echolb=True
-        return True
-    elif req.sensor == "erf":
-        echo_msg.echorf=True
-        return True
-    elif req.sensor == "erb":
-        echo_msg.echorb=True
+    elif req.sensor == "er":
+        echo_msg.echo_dir[2]=True
         return True
     elif req.sensor == "ef":
-        echo_msg.echof=True
+        echo_msg.echo_dir[0]=True
         return True
     elif req.sensor == "eb":
-        echo_msg.echob=True
+        echo_msg.echo_dir[3]=True
         return True
     else:
-        rospy.loginfo("False Input. Please send: \nelf for Echo-Left-Front\nelb for Echo-Left-Back\nerf for Echo-Right-Front\nerb for Echo-Right-Back\nef for Echo-Front\neb for Echo-Back")
+        rospy.loginfo("False Input. Please send: \nel for Echo-Left\ner for Echo-Right\nef for Echo-Front\neb for Echo-Back")
         return False
 
-
+def echo_warning_direction(echo_warning):
+    warning_list[4]
+    #decide warning for leftside echo sensors
+    if echo_warning[0] or echo_warning[1]:
+        warning_list[1] = True
+    else:
+        warning_list[1] = False
+    #decide warning for rightside echo sensors
+    if echo_warning[2] or echo_warning[3]:
+        warning_list[2] = True
+    else:
+        warning_list[2] = False
+    #front echo warning
+    warning_list[0] = echo_warning[4]
+    #back echo warning
+    warning_list[3] = echo_warning[5]
 
 
 if __name__ == '__main__':
     rospy.init_node("echo_sensor_publisher")
     
-    pub = rospy.Publisher("echo_sensor", echosensor, queue_size=10)
-    publish_frequency = 4
-    rate = rospy.Rate(publish_frequency)
     #the following names are short for:
     # e = echo, l = left, r = right, f = front, b = back
     #so for examle elf meand echo left front 
@@ -56,15 +61,7 @@ if __name__ == '__main__':
     #initialising all sensor pins:
     for sensor in sensor_list:
         sensor.init_sensor()
-    
-    ''' #maybe needed later after test
-    elf.init_sensor()
-    elb.init_sensor()
-    erf.init_sensor()
-    erb.init_sensor()
-    ef.init_sensor()
-    eb.init_sensor()
-    '''
+
     sensor_dict = {
             sensor_list[0] : "Echo-Left-Front",
             sensor_list[1] : "Echo-Left-Back",
@@ -73,60 +70,34 @@ if __name__ == '__main__':
             sensor_list[4] : "Echo-Front",
             sensor_list[5] : "Echo-Back",
         }
+    
+    #implementing the publisher for the echo sensors warning
+    pub = rospy.Publisher("echo_sensor", Echosensors, queue_size=10)
+    publish_frequency = 2
+    rate = rospy.Rate(publish_frequency)
 
-    ''' #while loop dosent work for a pulisher and a server
-    while not rospy.is_shutdown(): #muss mit spin umgesetzt werden!!!
-        echo_msg = Echosensors()
-
-        for sensor in sensor_list:
-            rospy.loginfo("Measured " + str(sensor.get_distance_in_m()) + " from " + sensor_dict(sensor))
-        
-        #looking if one echo sensor senses a distance
-        #that would result in a warning and publishing it
-        #to the arduino mega2560
-        echo_msg.echolf = sensor_list[0].distance_warning()
-        echo_msg.echolb = sensor_list[1].distance_warning()
-        echo_msg.echorf = sensor_list[2].distance_warning()
-        echo_msg.echorb = sensor_list[3].distance_warning()
-        echo_msg.echof = sensor_list[4].distance_warning()
-        echo_msg.echob = sensor_list[5].distance_warning()
-        
-        #test functionality service code under here
-        test_warning_service = rospy.Service("/echo_test_warning", WarningEchoTest, handle_warning_test)
-
-        pub.publish(echo_msg)
-        rate.sleep()
-    '''
-    echo_msg = Echosensors()
+    echo_msg = Echosensors() #creating an instance of the Echosensor() message type
 
     for sensor in sensor_list:
         rospy.loginfo("Measured " + str(sensor.get_distance_in_m()) + " from " + sensor_dict(sensor))
         
     #looking if one echo sensor senses a distance
-    #that would result in a warning and publishing it
-    #to the arduino mega2560
-    echo_msg.echolf = sensor_list[0].distance_warning()
-    echo_msg.echolb = sensor_list[1].distance_warning()
-    echo_msg.echorf = sensor_list[2].distance_warning()
-    echo_msg.echorb = sensor_list[3].distance_warning()
-    echo_msg.echof = sensor_list[4].distance_warning()
-    echo_msg.echob = sensor_list[5].distance_warning()
-        
-    #test functionality service code under here
+    #that would result in a warning and publishing
+    echo_warning_list = [True, True, True, True, True, True] #creating a boolean list that saves the received warnings
+    #for safety purposes initialized with all values on true
+    for sensor in range(sensor_list):
+        echo_warning_list[sensor] = sensor_list[sensor].distance_warning(0.2, 0.25)
+    
+    echo_msg.echo_dir = echo_warning_direction(echo_warning_list)
+
+    #service server initializing, needs to be after the echo_msg.echo_dir=echo_warning_direction(echo_warning_list) command to overwrite the msg values for the test
     test_warning_service = rospy.Service("/echo_test_warning", WarningEchoTest, handle_warning_test)
 
     pub.publish(echo_msg)
     rate.sleep()
     rospy.spin()
 
-    for sensor in sensor_list:
-        sensor.reset_echo_pins()
-
-    ''' #maybe needed later after test
-    elf.reset_echo_pins()
-    elb.reset_echo_pins()
-    erf.reset_echo_pins()
-    erb.reset_echo_pins()
-    ef.reset_echo_pins()
-    eb.reset_echo_pins()
-    '''
+    if rospy.is_shutdown():
+        for sensor in sensor_list:
+            sensor.reset_echo_pins()
+    
