@@ -17,3 +17,26 @@ if __name__ == '__main__':
     sub = rospy.Subscriber("/wheel_positon", Encoder, callback_mecanum_wheel_data)
     rospy.spin()
 
+'''
+from std_msgs.msg import Int32MultiArray
+from geometry_msgs.msg import Twist
+
+#following variables are used in order to look for changes in the
+last_lin_x=0
+last_lin_y=0
+last_lin_z=0
+last_ang_x=0
+last_ang_y=0
+last_ang_z=0
+changed_dir
+
+def callback_check_changes(msg):
+    if
+
+def callback_mecanum_wheel_data(msg):
+    rospy.loginfo("Encoder data received: ")
+    rospy.loginfo("| Encoder count is " + msg.data[0])
+    rospy.loginfo("| Encoder count is " + msg.data[1])
+    rospy.loginfo("| Encoder count is " + msg.data[2])
+    rospy.loginfo("| Encoder count is " + msg.data[3])
+'''

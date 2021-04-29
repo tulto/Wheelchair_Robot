@@ -1,5 +1,6 @@
 import numpy
 import math
+#at the moment not in use (not useable) and also not finished
 
 class RobotPosition:
 

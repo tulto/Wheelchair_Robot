@@ -40,6 +40,8 @@ def echo_warning_direction(echo_warning):
     warning_list[0] = echo_warning[4]
     #back echo warning
     warning_list[3] = echo_warning[5]
+    
+    return warning_list
 
 
 if __name__ == '__main__':
