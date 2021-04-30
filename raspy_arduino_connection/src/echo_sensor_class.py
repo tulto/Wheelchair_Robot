@@ -9,9 +9,6 @@ class EchoSensor:
         self.ECHO=ECHOpin
         self.recorded_distances=[0.0,0.0,0.0]
 
-    def setmode(self):
-        GPIO.setmode(GPIO.BCM)
-
     def init_sensor(self):
         GPIO.setup(self.TRIG, GPIO.OUT)
         GPIO.setup(self.ECHO, GPIO.IN)
@@ -52,6 +49,10 @@ class EchoSensor:
     
     def reset_echo_pins(self):
         GPIO.cleanup()
+    
+    @staticmethod
+    def setmode():
+        GPIO.setmode(GPIO.BCM)
 
 
 

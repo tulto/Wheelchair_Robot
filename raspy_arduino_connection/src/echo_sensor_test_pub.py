@@ -52,6 +52,7 @@ if __name__ == '__main__':
     #so for examle elf meand echo left front 
     #the front echosensor on the left side of the robot
     #(front is seen from seating position)
+    EchoSensor.setmode()
     sensor_list = [
     #EchoSensor(2,3),  #elf  #Pins müssen noch überprüft werden
     #EchoSensor(17,27),#elb
@@ -60,8 +61,6 @@ if __name__ == '__main__':
     EchoSensor(8,7),  #ef
     EchoSensor(23,24) #eb
     ]
-    #initialising mode, can be done with all EchoSensor objekts but only one time with only one objekt
-    sensor_list[0].setmode()
     #initialising all sensor pins:
     for sensor in sensor_list:
         sensor.init_sensor()
@@ -81,7 +80,7 @@ if __name__ == '__main__':
     echo_msg = Echosensors() #creating an instance of the Echosensor() message type
 
     for sensor in sensor_list:
-        rospy.loginfo("Measured " + str(sensor.get_distance_in_m()) + " from " + sensor_dict(sensor))
+        rospy.loginfo("Measured " + str(sensor.get_distance_in_m()) + " from " + str(sensor_dict[sensor]))
         
     #looking if one echo sensor senses a distance
     #that would result in a warning and publishing
