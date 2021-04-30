@@ -5,27 +5,32 @@ import time
 from services_and_messages.msg import Echosensors #importing selfmade message type
 from services_and_messages.srv import WarningEchoTest #importing selfmade service type
 from echo_sensor_class import EchoSensor #import EchoSensor class
-
+from request_warning import WarningRequest
 
 def handle_warning_test(req):
     if req.sensor == "el":
-        echo_msg.echo_dir[1]=True
+        WarningRequest.set_received_warning_request(True)
+        WarningRequest.set_requested_warning([False, True, False, False])
         return True
     elif req.sensor == "er":
-        echo_msg.echo_dir[2]=True
+        WarningRequest.set_received_warning_request(True)
+        WarningRequest.set_requested_warning([False, False, True, False])
         return True
     elif req.sensor == "ef":
-        echo_msg.echo_dir[0]=True
+        WarningRequest.set_received_warning_request(True)
+        WarningRequest.set_requested_warning([True, False, False, False])
         return True
     elif req.sensor == "eb":
-        echo_msg.echo_dir[3]=True
+        WarningRequest.set_received_warning_request(True)
+        WarningRequest.set_requested_warning([False, False, False, True])
         return True
     else:
+        WarningRequest.setback_all_values()
         rospy.loginfo("False Input. Please send: \nel for Echo-Left\ner for Echo-Right\nef for Echo-Front\neb for Echo-Back")
         return False
 
 def echo_warning_direction(echo_warning):
-    warning_list[4]
+    warning_list = [True, True, True, True]
     #decide warning for leftside echo sensors
     if echo_warning[0]:
         warning_list[1] = True
@@ -77,26 +82,30 @@ if __name__ == '__main__':
     publish_frequency = 2
     rate = rospy.Rate(publish_frequency)
 
-    echo_msg = Echosensors() #creating an instance of the Echosensor() message type
-
-    for sensor in sensor_list:
-        rospy.loginfo("Measured " + str(sensor.get_distance_in_m()) + " from " + str(sensor_dict[sensor]))
-        
-    #looking if one echo sensor senses a distance
-    #that would result in a warning and publishing
-    echo_warning_list = [True, True, True, True] #creating a boolean list that saves the received warnings
-    #for safety purposes initialized with all values on true
-    for sensor in range(sensor_list):
-        echo_warning_list[sensor] = sensor_list[sensor].distance_warning(0.2, 0.25)
-    
-    echo_msg.echo_dir = echo_warning_direction(echo_warning_list)
-
     #service server initializing, needs to be after the echo_msg.echo_dir=echo_warning_direction(echo_warning_list) command to overwrite the msg values for the test
     test_warning_service = rospy.Service("/echo_test_warning", WarningEchoTest, handle_warning_test)
 
-    pub.publish(echo_msg)
-    rate.sleep()
-    rospy.spin()
+    while not rospy.is_shutdown():
+        echo_msg = Echosensors() #creating an instance of the Echosensor() message type
+
+        for sensor in sensor_list:
+            rospy.loginfo("Measured " + str(sensor.get_distance_in_m()) + " from " + str(sensor_dict[sensor]))
+        
+        #looking if one echo sensor senses a distance
+        #that would result in a warning and publishing
+        echo_warning_list = [True, True, True, True] #creating a boolean list that saves the received warnings
+        #for safety purposes initialized with all values on true
+        for sensor in range(len(sensor_list)):
+            echo_warning_list[sensor] = sensor_list[sensor].distance_warning(0.2, 0.25)
+    
+        echo_msg.echo_dir = echo_warning_direction(echo_warning_list)
+
+        if WarningRequest.received_warning_request():
+            echo_msg.echo_dir = WarningRequest.requested_warning_msg()
+            WarningRequest.setback_all_values()
+
+        pub.publish(echo_msg)
+        rate.sleep()
 
     if rospy.is_shutdown():
         for sensor in sensor_list:
