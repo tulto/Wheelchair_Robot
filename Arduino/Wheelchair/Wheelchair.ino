@@ -1,41 +1,63 @@
 #include <ros.h>
 #include "Motor_Controller.h"
 #include <geometry_msgs/Twist.h>
-#include <std_msgs/Int64.h>
+#include <services_and_messages/Encoder.h>
 
-
+//encoder
 #define lf 2  //left front  1
 #define lb 3  //left back   2
 #define rf 18 //right front 3
 #define rb 19 //right back  4
 
+//Joystick
+#define v 8
+#define r 9
+#define h 10
+#define l 11
+
 
 // for testing purpose publish encoder value to /encoder only one encoder
-std_msgs::Int64 int_msg;
-ros::Publisher encoder("/encoder", &int_msg); 
+services_and_messages::Encoder encoder_msg;
+ros::Publisher encoder("/encoder", &encoder_msg); 
 
 ros::NodeHandle nh;
 
-int pos_lf = 0;
-int pos_lb = 0;
-int pos_rf = 0;
-int pos_rb = 0;
+int32_t pos[4] = {0};
+
+
+Motor_Controller drive;
 
 
 void setup() {
  Serial1.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
  Serial2.begin(115200);      // Roboteq SDC2130 COM (Must be 115200) 
 
- pinMode(lf,INPUT);
- pinMode(lb,INPUT);
- pinMode(rf,INPUT);
- pinMode(rb,INPUT);
+ //jeder Block ist für einen Motorencoder zuständig
+ pinMode(lf,INPUT); //links vorne
+ pinMode(4,INPUT);
+ 
+ pinMode(lb,INPUT); //links hinten
+ pinMode(5,INPUT);
+ 
+ pinMode(rf,INPUT); //rechts vorne
+ pinMode(17,INPUT);
+ 
+ pinMode(rb,INPUT); //rechts hinten
+ pinMode(20,INPUT);
+ 
  attachInterrupt(digitalPinToInterrupt(lf),readEncoder_lf,RISING);
  attachInterrupt(digitalPinToInterrupt(lb),readEncoder_lb,RISING);
  attachInterrupt(digitalPinToInterrupt(rf),readEncoder_rf,RISING);
  attachInterrupt(digitalPinToInterrupt(rb),readEncoder_rb,RISING);
  nh.initNode();
  nh.advertise(encoder);
+
+ //Joystick
+ pinMode(v,INPUT);//front
+ pinMode(r,INPUT);//right
+ pinMode(h,INPUT);//back
+ pinMode(l,INPUT);//left
+ 
  
  // Give the Roboteq some time to boot-up. 
  delay(1000);
@@ -46,109 +68,67 @@ void setup() {
 
 
 void loop() { 
-
-  Motor_Controller drive;
-  //drive.init(nh);
+  //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
+  if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(h) == 1  || digitalRead(l) == 1 ){
+    float vel = 4;
+    float x = (digitalRead(v)-digitalRead(h))*vel;
+    float t = (digitalRead(l)-digitalRead(r))*vel;
+    drive.set_movement(x, 0, t);
+  }else {
+    drive.set_sent_movement();
+  }
   drive.movement();
-
+  
+  //Bewegung wird zurückgesetzt
+  drive.set_movement(0, 0, 0);
 
   //publishing encoder value to /encoder
-  int_msg.data = pos_lf;
-  encoder.publish( &int_msg); 
-  nh.spinOnce();
+  for (int i = 0; i<4; i++){ //array muss überführt werden
+    encoder_msg.encoder_wheel[i] = pos[i]; //[0] = links forne, [1] = rechst forne, [2] = links hinten, [3] = rechts hinten
+  }
+  encoder.publish( &encoder_msg); 
+  nh.spinOnce();  
   delay(100);
 }
-
-
-
 
 
 
 
 
 //every encoder inside motor gets function
-void readEncoder_lf(){
+void readEncoder_lf(){ //left front pos[0]
   int b = digitalRead(4);
   if(b > 0){
-    pos_lf++;
+    pos[0]++;
   }
   else{
-    pos_lf--;
+    pos[0]--;
   }
 }
-void readEncoder_lb(){
-  int b = digitalRead(5);
-  if(b > 0){
-    pos_lb++;
-  }
-  else{
-    pos_lb--;
-  }
-}
-void readEncoder_rf(){
+void readEncoder_rf(){ //right front pos[1]
   int b = digitalRead(17);
   if(b > 0){
-    pos_rf++;
+    pos[1]++;
   }
   else{
-    pos_rf--;
+    pos[1]--;
   }
 }
-void readEncoder_rb(){
+void readEncoder_lb(){ //left back pos[2]
+  int b = digitalRead(5);
+  if(b > 0){
+    pos[2]++;
+  }
+  else{
+    pos[2]--;
+  }
+}
+void readEncoder_rb(){ //right back[3]
   int b = digitalRead(20);
   if(b > 0){
-    pos_rb++;
+    pos[3]++;
   }
   else{
-    pos_rb--;
+    pos[3]--;
   }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Testing Purpose
-//as a normal driver it ist possible to turn an Drive simultanious
-void move_normal (int velocity, int turning){
-    
-  motor_controller_front(1,velocity + turning);
-  motor_controller_front(2,-velocity + turning);
-  motor_controller_back(1,velocity + turning);
-  motor_controller_back(2,-velocity + turning);
-  delay(100);
-}
-
-void move_special (int x, int y){ //depending on x and y the wheelchair should drive in a drifferent angle
-  motor_controller_front(1, -x);
-  motor_controller_front(2, y);
-  motor_controller_back(1, y);
-  motor_controller_back(2, -x);
-  delay(100);
-}
-
-void motor_controller_front (int chanel, int velocity){
-  Serial1.print("!G");
-  Serial1.print(" ");
-  Serial1.print(chanel);
-  Serial1.print(" ");
-  Serial1.println(velocity);
-}
-
-void motor_controller_back (int chanel, int velocity){
-  Serial2.print("!G");
-  Serial2.print(" ");
-  Serial2.print(chanel);
-  Serial2.print(" ");
-  Serial2.println(velocity);
 }
