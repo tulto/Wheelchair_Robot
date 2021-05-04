@@ -7,27 +7,44 @@ from services_and_messages.srv import WarningEchoTest #importing selfmade servic
 from echo_sensor_class import EchoSensor #import EchoSensor class
 from request_warning import WarningRequest #import WarningRequest class
 
-def handle_warning_test(req):
+def handle_warning_test(req): 
     if req.sensor == "el":
-        WarningRequest.set_received_warning_request(True)
+        WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())
         WarningRequest.set_requested_warning([False, True, False, False])
+
+        if not WarningRequest.received_warning_request():
+            WarningRequest.setback_all_values()
+
         return True
     elif req.sensor == "er":
-        WarningRequest.set_received_warning_request(True)
+        WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())
         WarningRequest.set_requested_warning([False, False, True, False])
+
+        if not WarningRequest.received_warning_request():
+            WarningRequest.setback_all_values()
+
         return True
     elif req.sensor == "ef":
-        WarningRequest.set_received_warning_request(True)
+        WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())
         WarningRequest.set_requested_warning([True, False, False, False])
+
+        if not WarningRequest.received_warning_request():
+            WarningRequest.setback_all_values()
+
         return True
     elif req.sensor == "eb":
-        WarningRequest.set_received_warning_request(True)
+        WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())
         WarningRequest.set_requested_warning([False, False, False, True])
+
+        if not WarningRequest.received_warning_request():
+            WarningRequest.setback_all_values()
+            
         return True
     else:
         WarningRequest.setback_all_values()
         rospy.loginfo("False Input. Please send: \nel for Echo-Left\ner for Echo-Right\nef for Echo-Front\neb for Echo-Back")
         return False
+
 
 def echo_warning_direction(echo_warning):
     warning_list = [True, True, True, True]
@@ -104,7 +121,6 @@ if __name__ == '__main__':
         #overwriting the message file if WarningRequest has been received
         if WarningRequest.received_warning_request():
             echo_msg.echo_dir = WarningRequest.requested_warning_msg()
-            WarningRequest.setback_all_values()
 
         pub.publish(echo_msg)
         rate.sleep()
