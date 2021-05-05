@@ -4,15 +4,17 @@ import numpy
 
 class EchoSensor:
 
+    cls.TRIG = 12
+
     def __init__(self, TRIGERpin, ECHOpin):
-        self.TRIG=TRIGERpin
+        #self.TRIG=TRIGERpin as test
         self.ECHO=ECHOpin
         self.recorded_distances=[0.0,0.0,0.0]
 
     def init_sensor(self):
-        GPIO.setup(self.TRIG, GPIO.OUT)
+        #GPIO.setup(self.TRIG, GPIO.OUT)
         GPIO.setup(self.ECHO, GPIO.IN)
-        GPIO.output(self.TRIG, False)
+        #GPIO.output(self.TRIG, False)
         time.sleep(0.1) 
 
     def get_distance_in_m(self):
@@ -21,9 +23,11 @@ class EchoSensor:
         pulse_end = 0.0
         pulse_duration = 0.0
 
-        GPIO.output(self.TRIG,True)
+        GPIO.output(cls.TRIG,False)
+        time.sleep(0.001)
+        GPIO.output(cls.TRIG,True)
         time.sleep(0.00001)
-        GPIO.output(self.TRIG,False)
+        GPIO.output(cls.TRIG,False)
 
         while GPIO.input(self.ECHO) == 0:
             pulse_start = time.time()
@@ -54,6 +58,12 @@ class EchoSensor:
     def setmode():
         GPIO.setmode(GPIO.BCM)
 
-
+    @classmethod
+    def init_trigger_pin():
+        GPIO.setup(cls.TRIG, GPIO.OUT)
+        GPIO.output(cls.TRIG, False)
+        time.sleep(0.001) 
+        
+        
 
 
