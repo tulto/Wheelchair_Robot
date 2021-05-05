@@ -84,7 +84,7 @@ if __name__ == '__main__':
     EchoSensor(29) #eb
     ]
     #initialising trigger_pin
-    EchoSensor.init_trigger_pin()
+    EchoSensor.init_trigger_pin
     #initialising all sensor pins:
     for sensor in sensor_list:
         sensor.init_sensor()
