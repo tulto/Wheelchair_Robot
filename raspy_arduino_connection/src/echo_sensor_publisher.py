@@ -76,12 +76,12 @@ if __name__ == '__main__':
     #(front is seen from seating position)
     EchoSensor.setmode()
     sensor_list = [
-    EchoSensor(40),  #elf  #Pins müssen noch überprüft werden
-    EchoSensor(31),#elb
-    EchoSensor(22),  #erf
-    EchoSensor(37),#erb
-    EchoSensor(18),  #ef
-    EchoSensor(29) #eb
+    EchoSensor(21),  #elf  #Pins müssen noch überprüft werden
+    EchoSensor(6),#elb
+    EchoSensor(25),  #erf
+    EchoSensor(26),#erb
+    EchoSensor(24),  #ef
+    EchoSensor(5) #eb
     ]
     #initialising trigger_pin
     EchoSensor.init_trigger_pin
