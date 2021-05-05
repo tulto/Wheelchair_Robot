@@ -4,9 +4,9 @@ import numpy
 
 class EchoSensor:
 
-    cls.TRIG = 12
+    TRIG = 12
 
-    def __init__(self, TRIGERpin, ECHOpin):
+    def __init__(self, ECHOpin):
         #self.TRIG=TRIGERpin as test
         self.ECHO=ECHOpin
         self.recorded_distances=[0.0,0.0,0.0]
