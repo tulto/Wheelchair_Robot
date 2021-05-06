@@ -22,7 +22,8 @@ ros::Publisher encoder("/encoder", &encoder_msg);
 
 ros::NodeHandle nh;
 
-int32_t pos[4] = {0};
+//encoder Position als Array
+int32_t pos[4] = {0}; //[0] = links forne, [1] = rechst forne, [2] = links hinten, [3] = rechts hinten
 
 
 Motor_Controller drive;
@@ -71,8 +72,8 @@ void loop() {
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(h) == 1  || digitalRead(l) == 1 ){
     float vel = 4;
-    float x = (digitalRead(v)-digitalRead(h))*vel;
-    float t = (digitalRead(l)-digitalRead(r))*vel;
+    float x = (digitalRead(l)-digitalRead(r))*vel;
+    float t = (digitalRead(v)-digitalRead(h))*vel;
     drive.set_movement(x, 0, t);
   }else {
     drive.set_sent_movement();

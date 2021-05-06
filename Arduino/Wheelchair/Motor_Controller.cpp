@@ -75,13 +75,13 @@ float* Motor_Controller::get_movement(){
 void Motor_Controller::movement(){
 
   //gegebenen motion Werte werden abgefragt um zu sehen ob der Echo Sensor eine Mauer erkennt und x,y oder t auf null gesetzt werden müssen
-  float x = sensor.blocking_path(motion[0], motion[1], motion[2])[0] * max_speed;
-  float y = sensor.blocking_path(motion[0], motion[1], motion[2])[1] * max_speed;
-  float turning = sensor.blocking_path(motion[0], motion[1], motion[2])[2] * max_speed;  
+  float x = motion[0] * max_speed; //sensor.blocking_path(motion[0], motion[1], motion[2])
+  float y = motion[1] * max_speed;
+  float turning = motion[2] * max_speed;  
 
-  Motor_Controller::control_front(1,(x - turning) + y);
-  Motor_Controller::control_front(2,(x + turning) - y);
-  Motor_Controller::control_back(1, (x - turning) - y);
-  Motor_Controller::control_back(2, (x + turning) + y);
+  Motor_Controller::control_front(1,x - turning - y);
+  Motor_Controller::control_front(2,x + turning + y);
+  Motor_Controller::control_back(1, x - turning + y);
+  Motor_Controller::control_back(2, x + turning - y);
   delay(100);
 }
