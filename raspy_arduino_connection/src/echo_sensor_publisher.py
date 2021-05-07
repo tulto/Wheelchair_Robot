@@ -75,7 +75,11 @@ if __name__ == '__main__':
     #so for examle elf meand echo left front 
     #the front echosensor on the left side of the robot
     #(front is seen from seating position)
+
     EchoSensor.setmode()
+    #initialising trigger_pin
+    EchoSensor.init_trigger_pin()
+    
     sensor_list = [
     EchoSensor(21),  #elf  #Pins müssen noch überprüft werden
     EchoSensor(6),#elb
@@ -84,8 +88,6 @@ if __name__ == '__main__':
     EchoSensor(24),  #ef
     EchoSensor(5) #eb
     ]
-    #initialising trigger_pin
-    EchoSensor.init_trigger_pin
     #initialising all sensor pins:
     for sensor in sensor_list:
         sensor.init_sensor()

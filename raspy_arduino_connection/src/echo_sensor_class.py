@@ -24,21 +24,23 @@ class EchoSensor:
         pulse_end = 0.0
         pulse_duration = 0.0
 
-        GPIO.output(cls.TRIG,False)
+        GPIO.output(self.TRIG,False)
         time.sleep(0.001)
-        GPIO.output(cls.TRIG,True)
+        GPIO.output(self.TRIG,True)
         time.sleep(0.00001)
-        GPIO.output(cls.TRIG,False)
+        GPIO.output(self.TRIG,False)
 
         while GPIO.input(self.ECHO) == 0:
             pulse_start = time.time()
 
         while GPIO.input(self.ECHO) == 1:
             pulse_end = time.time()
+            pulse_duration = pulse_end - pulse_start
+            if (pulse_duration >= 0.0145): #0.0145 secondes equals about 2.5 meters
+                break #echo sensors only used as a warning stop so everything over 5 meters is not of interest
 
-        pulse_duration = pulse_end - pulse_start
-        temperature = 20.0 #(air)temperature in °C
-        v_air = (331.5 +(0.6*temperature)) #speed of sound
+        temperature = 20.0 #(air)temperature in °C, assuming normal room temperature
+        v_air = (331.5 +(0.6*temperature)) #speed of sound in m/s
         distance = round(((v_air/2)*pulse_duration), 4) #divide v_air by 2 because wave travels two time the distance
         self.recorded_distances.append(distance)
         self.recorded_distances.pop(0)
@@ -54,7 +56,7 @@ class EchoSensor:
     
     def reset_echo_pins(self):
         GPIO.cleanup()
-        cls.TRIG_already_init=False
+        self.TRIG_already_init=False
     
     @staticmethod
     def setmode():
@@ -64,6 +66,7 @@ class EchoSensor:
     def init_trigger_pin(cls):
         if not cls.TRIG_already_init:
             GPIO.setup(cls.TRIG, GPIO.OUT)
+            time.sleep(0.001) 
             GPIO.output(cls.TRIG, False)
             time.sleep(0.001) 
             cls.TRIG_already_init=True

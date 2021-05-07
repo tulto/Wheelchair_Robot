@@ -66,6 +66,9 @@ if __name__ == '__main__':
     #the front echosensor on the left side of the robot
     #(front is seen from seating position)
     EchoSensor.setmode()
+    #initialising trigger_pin
+    EchoSensor.init_trigger_pin()
+    
     sensor_list = [
     #EchoSensor(2,3),  #elf  #Pins müssen noch überprüft werden
     #EchoSensor(17,27),#elb
