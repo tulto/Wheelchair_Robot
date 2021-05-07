@@ -9,17 +9,22 @@
   // Ramp Forward
   //exapel
 
+
 #include "Motor_Controller.h"
 #include "Echo_Sensor.h"
 
 Echo_Sensor sensor; //definiere Echo_Sensor Class
 
 Motor_Controller::Motor_Controller() 
-: subscriber_motion("/cmd_vel", &Motor_Controller::callback_motion, this)
+: subscriber_motion("/cmd_vel", &Motor_Controller::callback_motion, this),
+encoder("/encoder", &encoder_msg)
 {
   nh.subscribe(subscriber_motion);
 }
 
+/***************************************************************
+Motor Part
+***************************************************************/
 // set depending on subscribed msg /cmd_vel values of array motion
 void Motor_Controller::callback_motion(const geometry_msgs::Twist& msg) {
   x_ = msg.linear.x;
@@ -27,10 +32,9 @@ void Motor_Controller::callback_motion(const geometry_msgs::Twist& msg) {
   t_ = msg.angular.z;
 }
 
-//kann vielleicht entfernt werden
-void Motor_Controller::init(ros::NodeHandle& nh)
-{
-  nh.subscribe(subscriber_motion);
+//ausgeben der momentan gegebenen Werte der Bewegung
+float* Motor_Controller::get_movement(){  
+  return motion;
 }
 
 // controller in front gets commands chanel(1 = left, 2 = right)
@@ -66,11 +70,6 @@ void Motor_Controller::set_movement(float x, float y, float turning){
   motion[2] = turning;
 }
 
-//ausgeben der momentan gegebenen Werte der Bewegung
-float* Motor_Controller::get_movement(){  
-  return motion;
-}
-
 //Bewegungswerte x,y,t werden in Bewegung umgewandelt, sowie abgefragt ob Echosensoren eine Mauer erkennen 
 void Motor_Controller::movement(){
 
@@ -84,4 +83,60 @@ void Motor_Controller::movement(){
   Motor_Controller::control_back(1, x - turning + y);
   Motor_Controller::control_back(2, x + turning - y);
   delay(100);
+}
+
+//eingeben der geplanten Position (ahnand der schritte des encoders)
+void Motor_Controller::planed_position(int position_wheel[4]){
+  
+}
+
+/***************************************************************
+Encoder Part
+***************************************************************/
+//encoder Daten auswerten und als encoder_value[] zurückgeben
+void Motor_Controller::send_encoder_count(){
+  //definiere temporaeren Speicher
+  String a;
+  
+  //encoder Werte für Serial1 Schnittstelle
+  for (int i = 0; i<2; i++){
+    
+    //auszulesende Chanel werden definiert
+    Serial1.println("?C ");
+    Serial1.println(i+1); //Channel festgelegt
+    a = "";
+
+    //Einen String auslesen solange gesenet wird
+    while (Serial1.available()){
+      a += Serial1.readString();
+    }
+    a = a.substring(1); //String erst ab pos 2 eine zahl wegen "C="...
+    encoder_value[i] = a.toInt();  
+  }
+  
+  //encoder Werte für Serial2 Schnittstelle
+  for (int i = 2; i<4; i++){
+    
+    //auszulesende Chanel werden definiert
+    Serial2.println("?C ");
+    Serial2.println(i-1); //Channel festgelegt
+    a = "";
+
+    //Einen String auslesen solange gesenet wird
+    while (Serial2.available()){
+      a += Serial2.readString();
+    }
+    a = a.substring(1); //String erst ab pos 2 eine zahl wegen "C="...
+    encoder_value[i] = a.toInt();
+  }
+
+  //encoder_values werden in encoder_msg umgewandelt
+  for (int i = 0; i<4; i++){
+    encoder_msg.encoder_wheel[i] = encoder_value[i];
+  }
+  encoder.publish(&encoder_msg);
+}
+
+int* Motor_Controller::get_encoder_count(){
+  return encoder_value;
 }
