@@ -69,10 +69,10 @@ if __name__ == '__main__':
     sensor_list = [
     #EchoSensor(2,3),  #elf  #Pins müssen noch überprüft werden
     #EchoSensor(17,27),#elb
-    EchoSensor(5,6),  #erf
-    EchoSensor(16,12),#erb
-    EchoSensor(8,7),  #ef
-    EchoSensor(23,24) #eb
+    EchoSensor(25),  #erf
+    EchoSensor(26),#erb
+    EchoSensor(24),  #ef
+    EchoSensor(5) #eb
     ]
     #initialising all sensor pins:
     for sensor in sensor_list:

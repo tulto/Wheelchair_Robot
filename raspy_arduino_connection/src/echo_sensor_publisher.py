@@ -7,6 +7,7 @@ from services_and_messages.srv import WarningEchoTest #importing selfmade servic
 from echo_sensor_class import EchoSensor #import EchoSensor class
 from request_warning import WarningRequest #import WarningRequest class
 
+
 def handle_warning_test(req): 
     if req.sensor == "el":
         WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())

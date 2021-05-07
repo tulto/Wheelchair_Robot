@@ -4,7 +4,8 @@ import numpy
 
 class EchoSensor:
 
-    TRIG = 12
+    TRIG = 18 #Trigger-Pin for all Sensors
+    TRIG_already_init = False
 
     def __init__(self, ECHOpin):
         #self.TRIG=TRIGERpin as test
@@ -53,16 +54,19 @@ class EchoSensor:
     
     def reset_echo_pins(self):
         GPIO.cleanup()
+        cls.TRIG_already_init=False
     
     @staticmethod
     def setmode():
         GPIO.setmode(GPIO.BCM)
 
     @classmethod
-    def init_trigger_pin():
-        GPIO.setup(cls.TRIG, GPIO.OUT)
-        GPIO.output(cls.TRIG, False)
-        time.sleep(0.001) 
+    def init_trigger_pin(cls):
+        if not cls.TRIG_already_init:
+            GPIO.setup(cls.TRIG, GPIO.OUT)
+            GPIO.output(cls.TRIG, False)
+            time.sleep(0.001) 
+            cls.TRIG_already_init=True
         
         
 
