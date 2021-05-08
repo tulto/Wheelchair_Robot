@@ -1,19 +1,23 @@
 #ifndef Motorcontroll_H
 #define Motorcontroll_H
 
-//#include "arduino.h"
 #include <ros.h>
+#include "Echo_Sensor.h"
 #include <geometry_msgs/Twist.h>
 #include <services_and_messages/Encoder.h>
 
 class Motor_Controller {
   private:
+  Echo_Sensor sensor; //definiere Echo_Sensor Class
+
+  //Motor
   int max_speed = 50;
   float motion[3]={0};
-  int encoder_value[4]={0}; 
   float x_, y_, t_;
   ros::Subscriber<geometry_msgs::Twist, Motor_Controller> subscriber_motion; 
-  
+
+  //encoder  
+  int encoder_value[4]={0}; 
   services_and_messages::Encoder encoder_msg;
   ros::Publisher encoder;
   
@@ -29,6 +33,7 @@ Motor Part
   void init(ros::NodeHandle& nh);
   void set_sent_movement();
   void set_movement(float x, float y, float turning);
+  void filter_movement();
   float* get_movement();
   void control_front(int chanel, int velocity);
   void control_back(int chanel, int velocity);

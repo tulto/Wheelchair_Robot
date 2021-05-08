@@ -11,9 +11,7 @@
 
 
 #include "Motor_Controller.h"
-#include "Echo_Sensor.h"
 
-Echo_Sensor sensor; //definiere Echo_Sensor Class
 
 Motor_Controller::Motor_Controller() 
 : subscriber_motion("/cmd_vel", &Motor_Controller::callback_motion, this),
@@ -37,7 +35,7 @@ float* Motor_Controller::get_movement(){
   return motion;
 }
 
-// controller in front gets commands chanel(1 = left, 2 = right)
+//controller in front gets commands chanel(1 = left, 2 = right)
 void Motor_Controller::control_front (int chanel, int velocity){
   Serial1.print("!G");
   Serial1.print(" ");
@@ -46,7 +44,7 @@ void Motor_Controller::control_front (int chanel, int velocity){
   Serial1.println(velocity);
 }
 
-// controller in back gets commands chanel(1 = left, 2 = right)
+//controller in back gets commands chanel(1 = left, 2 = right)
 void Motor_Controller::control_back (int chanel, int velocity){
   Serial2.print("!G");
   Serial2.print(" ");
@@ -68,6 +66,13 @@ void Motor_Controller::set_movement(float x, float y, float turning){
   motion[0] = x;
   motion[1] = y;
   motion[2] = turning;
+}
+
+//filter der über Echosensoren bestimmt wird
+void Motor_Controller::filter_movement(){
+  for (int i = 0; i<3; i++){  
+    motion[i] = sensor.blocking_path(motion[0], motion[1], motion[2])[i];
+  }
 }
 
 //Bewegungswerte x,y,t werden in Bewegung umgewandelt, sowie abgefragt ob Echosensoren eine Mauer erkennen 
@@ -101,7 +106,7 @@ void Motor_Controller::send_encoder_count(){
   //encoder Werte für Serial1 Schnittstelle
   for (int i = 0; i<2; i++){
     
-    //auszulesende Chanel werden definiert
+    //auszulesende Chanel werden definiert und abgefragt
     Serial1.println("?C ");
     Serial1.println(i+1); //Channel festgelegt
     a = "";
@@ -117,7 +122,7 @@ void Motor_Controller::send_encoder_count(){
   //encoder Werte für Serial2 Schnittstelle
   for (int i = 2; i<4; i++){
     
-    //auszulesende Chanel werden definiert
+    //auszulesende Chanel werden definiert und abgefragt
     Serial2.println("?C ");
     Serial2.println(i-1); //Channel festgelegt
     a = "";
@@ -137,6 +142,7 @@ void Motor_Controller::send_encoder_count(){
   encoder.publish(&encoder_msg);
 }
 
+//alle encoder Werte werden ausgelesen und gesendet (erst sinnvoll direkt nach send_encoder_value nutzbar)
 int* Motor_Controller::get_encoder_count(){
   return encoder_value;
 }

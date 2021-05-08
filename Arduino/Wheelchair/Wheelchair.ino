@@ -1,5 +1,6 @@
 #include <ros.h>
 #include "Motor_Controller.h"
+#include "Echo_Sensor.h"
 
 //Joystick
 #define v 11 //front
@@ -13,7 +14,7 @@ int32_t pos[4] = {0}; //[0] = links forne, [1] = rechst forne, [2] = links hinte
 
 
 Motor_Controller drive;
-
+Echo_Sensor sens;
 
 void setup() {
  Serial1.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
@@ -35,15 +36,20 @@ void setup() {
 
 
 void loop() { 
+  //sens.set_sensor(false, true, false, false);//[0] = front, [1] = links, [2] = rechts, [3] = hinten 
+  
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
     float vel = 4;
     float x = (digitalRead(v)-digitalRead(b))*vel;
     float t = (digitalRead(l)-digitalRead(r))*vel;
     drive.set_movement(x, 0, t);
+    //filter_movement();
   }else {
     drive.set_sent_movement();
+    //filter_movement();
   }
+  //gesetzte bewegungenen werden ausgeführt
   drive.movement();
   
   //Bewegung wird zurückgesetzt
@@ -52,5 +58,5 @@ void loop() {
   //Encoder Werte werden gesendet
   drive.send_encoder_count();
  
-  delay(100); 
+  delay(10); 
 }
