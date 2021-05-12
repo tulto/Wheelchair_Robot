@@ -112,7 +112,7 @@ void Motor_Controller::send_encoder_count(){
     a = "";
 
     //Einen String auslesen solange gesenet wird
-    while (Serial1.available()){
+    for (int i = 0; i<15;i++){
       a += Serial1.readString();
     }
     a = a.substring(2); //String erst ab pos 2 eine zahl wegen "C="...
@@ -128,7 +128,7 @@ void Motor_Controller::send_encoder_count(){
     a = "";
 
     //Einen String auslesen solange gesenet wird
-    while (Serial2.available()){
+    for (int i = 0; i<15;i++){
       a += Serial2.readString();
     }
     a = a.substring(2); //String erst ab pos 2 eine zahl wegen "C="...

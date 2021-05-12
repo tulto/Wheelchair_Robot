@@ -72,7 +72,7 @@ void loop() {
   delay(100); //delay for dem Auslesen der Encoder Werte
 
   //Encoder Werte werden gesendet
-  drive.send_encoder_count();
+  //drive.send_encoder_count();
 
   //testzwecke für zeit pro durchlauf in millisekunden
   ende = millis();
