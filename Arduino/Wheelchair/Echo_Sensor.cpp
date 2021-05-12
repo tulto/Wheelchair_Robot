@@ -3,7 +3,9 @@
 
 Echo_Sensor::Echo_Sensor() 
 : subscriber_echo_("/echo_sensor", &Echo_Sensor::callback_sensor, this)
-{
+{}
+
+void Echo_Sensor::init(ros::NodeHandle& nh){
   nh.subscribe(subscriber_echo_);
 }
 

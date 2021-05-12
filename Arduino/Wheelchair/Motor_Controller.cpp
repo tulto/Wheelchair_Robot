@@ -16,8 +16,11 @@
 Motor_Controller::Motor_Controller() 
 : subscriber_motion("/cmd_vel", &Motor_Controller::callback_motion, this),
 encoder("/encoder", &encoder_msg)
-{
+{}
+
+void Motor_Controller::init(ros::NodeHandle& nh){
   nh.subscribe(subscriber_motion);
+  nh.advertise(encoder);
 }
 
 /***************************************************************
@@ -107,13 +110,13 @@ void Motor_Controller::send_encoder_count(){
   for (int i = 0; i<2; i++){
     
     //auszulesende Chanel werden definiert und abgefragt
-    Serial1.println("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
+    Serial1.print("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
     Serial1.println(i+1); //Channel festgelegt
     a = "";
 
     //Einen String auslesen solange gesenet wird
     for (int i = 0; i<15;i++){
-      a += Serial1.readString();
+      a += Serial1.read();
     }
     a = a.substring(2); //String erst ab pos 2 eine zahl wegen "C="...
     encoder_value[i] = a.toInt();  
@@ -123,13 +126,13 @@ void Motor_Controller::send_encoder_count(){
   for (int i = 2; i<4; i++){
     
     //auszulesende Chanel werden definiert und abgefragt
-    Serial2.println("?C ");  //?CR für relative Encoder Count
+    Serial2.print("?C ");  //?CR für relative Encoder Count
     Serial2.println(i-1); //Channel festgelegt
     a = "";
 
     //Einen String auslesen solange gesenet wird
     for (int i = 0; i<15;i++){
-      a += Serial2.readString();
+      a += Serial2.read();
     }
     a = a.substring(2); //String erst ab pos 2 eine zahl wegen "C="...
     encoder_value[i] = a.toInt();

@@ -9,6 +9,7 @@
 class Motor_Controller {
   private:
   Echo_Sensor sensor; //definiere Echo_Sensor Class
+  
 
   //Motor
   int max_speed = 50;
@@ -18,13 +19,17 @@ class Motor_Controller {
 
   //encoder  
   int encoder_value[4]={0}; 
+
+  ros::NodeHandle nh;
+  
+  
+  
+  
+  public:
   services_and_messages::Encoder encoder_msg;
   ros::Publisher encoder;
-  
-  ros::NodeHandle& nh;
-
-  public:
   Motor_Controller();
+  
 
 /***************************************************************
 Motor Part
