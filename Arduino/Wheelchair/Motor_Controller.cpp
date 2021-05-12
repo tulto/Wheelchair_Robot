@@ -107,7 +107,7 @@ void Motor_Controller::send_encoder_count(){
   for (int i = 0; i<2; i++){
     
     //auszulesende Chanel werden definiert und abgefragt
-    Serial1.println("?C ");
+    Serial1.println("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
     Serial1.println(i+1); //Channel festgelegt
     a = "";
 
@@ -115,7 +115,7 @@ void Motor_Controller::send_encoder_count(){
     while (Serial1.available()){
       a += Serial1.readString();
     }
-    a = a.substring(1); //String erst ab pos 2 eine zahl wegen "C="...
+    a = a.substring(2); //String erst ab pos 2 eine zahl wegen "C="...
     encoder_value[i] = a.toInt();  
   }
   
@@ -123,7 +123,7 @@ void Motor_Controller::send_encoder_count(){
   for (int i = 2; i<4; i++){
     
     //auszulesende Chanel werden definiert und abgefragt
-    Serial2.println("?C ");
+    Serial2.println("?C ");  //?CR für relative Encoder Count
     Serial2.println(i-1); //Channel festgelegt
     a = "";
 
@@ -131,7 +131,7 @@ void Motor_Controller::send_encoder_count(){
     while (Serial2.available()){
       a += Serial2.readString();
     }
-    a = a.substring(1); //String erst ab pos 2 eine zahl wegen "C="...
+    a = a.substring(2); //String erst ab pos 2 eine zahl wegen "C="...
     encoder_value[i] = a.toInt();
   }
 

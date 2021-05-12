@@ -2,6 +2,12 @@
 #include "Motor_Controller.h"
 #include "Echo_Sensor.h"
 
+//testzwecke Zeit pro durchlauf publishen
+#include <std_msgs/Int64.h>
+ros::NodeHandle nh;
+std_msgs::Int64 zeit_msg;
+ros::Publisher dauer("/Zeit", &zeit_msg);
+
 //Joystick
 #define v 11 //front
 #define r 10 //right
@@ -12,6 +18,8 @@
 //encoder Position als Array
 int32_t pos[4] = {0}; //[0] = links forne, [1] = rechst forne, [2] = links hinten, [3] = rechts hinten
 
+long start;
+long ende;
 
 Motor_Controller drive;
 Echo_Sensor sens;
@@ -25,6 +33,10 @@ void setup() {
  pinMode(r,INPUT);//right
  pinMode(b,INPUT);//back
  pinMode(l,INPUT);//left
+
+ //testzwecke zeitdauer pro durchlauf bestimmen
+ nh.initNode();
+ nh.advertise(dauer);
  
  
  // Give the Roboteq some time to boot-up. 
@@ -36,18 +48,20 @@ void setup() {
 
 
 void loop() { 
-  //sens.set_sensor(false, true, false, false);//[0] = front, [1] = links, [2] = rechts, [3] = hinten 
+  start = millis();
   
+  //sens.set_sensor(false, false, false, false);//[0] = front, [1] = links, [2] = rechts, [3] = hinten 
+
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
     float vel = 4;
     float x = (digitalRead(v)-digitalRead(b))*vel;
     float t = (digitalRead(l)-digitalRead(r))*vel;
     drive.set_movement(x, 0, t);
-    //filter_movement();
+    //drive.filter_movement();
   }else {
     drive.set_sent_movement();
-    //filter_movement();
+    //drive.filter_movement();
   }
   //gesetzte bewegungenen werden ausgeführt
   drive.movement();
@@ -55,8 +69,15 @@ void loop() {
   //Bewegung wird zurückgesetzt
   drive.set_movement(0, 0, 0);
 
+  delay(100); //delay for dem Auslesen der Encoder Werte
+
   //Encoder Werte werden gesendet
   drive.send_encoder_count();
+
+  //testzwecke für zeit pro durchlauf in millisekunden
+  ende = millis();
+  zeit_msg.data = ende - start;  
+  dauer.publish(&zeit_msg);
  
-  delay(10); 
+  
 }
