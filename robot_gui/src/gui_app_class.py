@@ -3,6 +3,7 @@
 import rospy
 from kivymd.app import MDApp
 from kivy.lang import Builder
+import os
 
 #creating a class used to make/connect the .kv file in order to run/show the gui
 class GUIApp(MDApp):
@@ -17,5 +18,10 @@ class GUIApp(MDApp):
 
     def build(self):
         return self.screen
+
+    #functions like a button press will be defined in this class
+    def restart_pi(self,*args):
+        os.system('systemctl reboot -i') #reboots system on button press
+        
 
 

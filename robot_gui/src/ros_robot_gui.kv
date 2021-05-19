@@ -1,5 +1,108 @@
 FloatLayout:
 
-    MDLabel:
-        text: "Fertige Robot GUI"
-        halign: "center"
+    BoxLayout:
+        id: box
+        orientation: "vertical"
+        size_hint: 1, 0.2
+
+        MDToolbar:
+            title: "Autonomer Rollstuhl-Roboter"
+
+    Image:
+        source: "/home/dennis/wheelchair-robot_catkin/src/wheelchair_robot/robot_gui/Picture/fhws_2.png"
+        size_hint: 0.64, 0.26
+        pos_hint: {"center_x": .88, "center_y": 0.035}
+
+    Image:
+        source: "/home/dennis/wheelchair-robot_catkin/src/wheelchair_robot/robot_gui/Picture/Ultrasound_up.jpg"
+        size_hint: 0.6, 0.6
+        pos_hint: {"center_x": .35, "center_y": 0.6}
+
+    MDCard:
+        orientation: "vertical"
+        padding: "8dp"
+        size_hint: 0.15, 0.15
+        size: "140dp", "90dp"
+        pos_hint: {"center_x": .35, "center_y": .8}
+        md_bg_color: 0, 1, 0, 1
+
+        MDLabel:
+            text: "Front"
+            theme_text_color: "Primary"
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        MDSeparator:
+            height: "1dp"
+
+        MDLabel:
+            text: "Sensor"
+
+    MDCard:
+        orientation: "vertical"
+        padding: "8dp"
+        size_hint: 0.15, 0.15
+        size: "140dp", "90dp"
+        pos_hint: {"center_x": .35, "center_y": .40}
+        md_bg_color: 0, 1, 0, 1
+
+        MDLabel:
+            text: "Heck"
+            theme_text_color: "Primary"
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        MDSeparator:
+            height: "1dp"
+
+        MDLabel:
+            text: "Sensor"
+
+    MDCard:
+        orientation: "vertical"
+        padding: "8dp"
+        size_hint: 0.15, 0.15
+        size: "140dp", "90dp"
+        pos_hint: {"center_x": .17, "center_y": .6}
+        md_bg_color: 0, 1, 0, 1
+
+        MDLabel:
+            text: "Links"
+            theme_text_color: "Primary"
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        MDSeparator:
+            height: "1dp"
+
+        MDLabel:
+            text: "Sensor"
+
+    MDCard:
+        orientation: "vertical"
+        padding: "8dp"
+        size_hint: 0.15, 0.15
+        size: "140dp", "90dp"
+        pos_hint: {"center_x": .54, "center_y": .6}
+        md_bg_color: 0, 1, 0, 1
+
+        MDLabel:
+            text: "Rechts"
+            theme_text_color: "Primary"
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        MDSeparator:
+            height: "1dp"
+
+        MDLabel:
+            text: "Sensor"
+
+    MDRaisedButton:
+        text: "Neustarten"
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.2, 0.1
+        pos_hint: {"center_x": 0.88, "center_y": 0.85}
+        on_press: app.restart_pi(*args)
+        #app is an instace of the app objet (MDApp) 
+        #from the gui_app_class we created that inherited from MDApp
