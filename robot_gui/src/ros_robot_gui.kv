@@ -1,29 +1,33 @@
 FloatLayout:
 
     BoxLayout:
-        id: box
+        id: box #an id makes it possible to acces the function (here Box Layout) from everywhere else e.g. the python code
         orientation: "vertical"
         size_hint: 1, 0.2
 
         MDToolbar:
             title: "Autonomer Rollstuhl-Roboter"
 
+
     Image:
         source: "/home/dennis/wheelchair-robot_catkin/src/wheelchair_robot/robot_gui/Picture/fhws_2.png"
         size_hint: 0.64, 0.26
         pos_hint: {"center_x": .88, "center_y": 0.035}
+
 
     Image:
         source: "/home/dennis/wheelchair-robot_catkin/src/wheelchair_robot/robot_gui/Picture/Ultrasound_up.jpg"
         size_hint: 0.6, 0.6
         pos_hint: {"center_x": .35, "center_y": 0.6}
 
+
     MDCard:
+        id: front_sensor
         orientation: "vertical"
         padding: "8dp"
         size_hint: 0.15, 0.15
         size: "140dp", "90dp"
-        pos_hint: {"center_x": .35, "center_y": .8}
+        pos_hint: {"center_x": .35, "center_y": .82}
         md_bg_color: 0, 1, 0, 1
 
         MDLabel:
@@ -36,14 +40,17 @@ FloatLayout:
             height: "1dp"
 
         MDLabel:
-            text: "Sensor"
+            id: front_sensor_label
+            text: "Sensor frei"
+
 
     MDCard:
+        id: back_sensor
         orientation: "vertical"
         padding: "8dp"
         size_hint: 0.15, 0.15
         size: "140dp", "90dp"
-        pos_hint: {"center_x": .35, "center_y": .40}
+        pos_hint: {"center_x": .35, "center_y": .38}
         md_bg_color: 0, 1, 0, 1
 
         MDLabel:
@@ -56,9 +63,12 @@ FloatLayout:
             height: "1dp"
 
         MDLabel:
-            text: "Sensor"
+            id: back_sensor_label
+            text: "Sensor frei"
+
 
     MDCard:
+        id: left_sensor
         orientation: "vertical"
         padding: "8dp"
         size_hint: 0.15, 0.15
@@ -76,9 +86,12 @@ FloatLayout:
             height: "1dp"
 
         MDLabel:
-            text: "Sensor"
+            id: left_sensor_label
+            text: "Sensor frei"
+
 
     MDCard:
+        id: right_sensor
         orientation: "vertical"
         padding: "8dp"
         size_hint: 0.15, 0.15
@@ -96,9 +109,12 @@ FloatLayout:
             height: "1dp"
 
         MDLabel:
-            text: "Sensor"
+            id: right_sensor_label
+            text: "Sensor frei"
+
 
     MDRaisedButton:
+        id: restart_button
         text: "Neustarten"
         md_bg_color: 0, 0, 1, 1
         size_hint: 0.2, 0.1
@@ -106,3 +122,11 @@ FloatLayout:
         on_press: app.restart_pi(*args)
         #app is an instace of the app objet (MDApp) 
         #from the gui_app_class we created that inherited from MDApp
+
+    MDRaisedButton:
+        id: test_button
+        text: "Test_Button"
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.2, 0.1
+        pos_hint: {"center_x": 0.88, "center_y": 0.70}
+        on_press: app.testing(*args)
