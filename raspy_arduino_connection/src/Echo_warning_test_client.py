@@ -8,7 +8,7 @@ if __name__=='__main__':
 
     try:
         warning_request = rospy.ServiceProxy("/echo_test_warning", WarningEchoTest)
-        response = warning_request("el") #später mit ROS-parameter ersetzen
+        response = warning_request("el")
         if response.acknowledge:
             rospy.loginfo("Warning test was successful!")
         else:
