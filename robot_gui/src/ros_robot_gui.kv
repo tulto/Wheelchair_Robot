@@ -11,12 +11,16 @@ FloatLayout:
 
         MDToolbar:
             title: "Autonomer Rollstuhl-Roboter"
-
-
-    Image:
-        source: "fhws_2.png"
-        size_hint: 0.64, 0.26
-        pos_hint: {"center_x": .88, "center_y": 0.037}
+            canvas:
+                Rectangle:
+                    source: 'fhws_2.png'
+                    pos: (((self.parent.parent.size[0])/2)+((self.parent.parent.size[0])/5), self.pos[1])
+                    size: (220, 60)
+            #Image:
+            #    source: "fhws_2.png"
+            #    size_hint: 1.7, 1.0
+            #    pos: (((self.parent.size[0])/2)-10, self.pos[1])
+                #pos_hint: {"center_x": .75, "center_y": self.pos[1]}
 
 
     Image:
@@ -121,27 +125,17 @@ FloatLayout:
         id: restart_button
         text: "Neustarten"
         md_bg_color: 0, 0, 1, 1
-        size_hint: 0.2, 0.1
-        pos_hint: {"center_x": 0.82, "center_y": 0.85}
+        size_hint: 0.2, 0.25
+        pos_hint: {"center_x": 0.8, "center_y": 0.8}
         on_press: app.show_alert_dialog()
         #app is an instace of the app objet (MDApp) 
         #from the gui_app_class we created that inherited from MDApp
 
-
-    MDRaisedButton:
-        id: test_button
-        text: "Test_Button"
-        md_bg_color: 0, 0, 1, 1
-        size_hint: 0.2, 0.1
-        pos_hint: {"center_x": 0.82, "center_y": 0.70}
-        on_press: app.testing(*args) #auf jeweils richtige funktion ändern
-
-
     #button for requesting a vertain echo-sensor-error
 
     MDCard:
-        size_hint: 0.28, 0.270
-        pos_hint: {"center_x": .82, "center_y": .355}
+        size_hint: 0.33, 0.39
+        pos_hint: {"center_x": .8, "center_y": .355}
         md_bg_color: 1, 1, 0, 1
         radius: [15, 15, 15, 15]
 
@@ -151,14 +145,14 @@ FloatLayout:
         theme_text_color: "Custom"
         text_color: 0, 0, 0, 1
         halign: "center"
-        pos_hint: {"center_x": 0.82, "center_y": 0.47}
+        pos_hint: {"center_x": 0.8, "center_y": 0.52}
 
     MDRaisedButton:
         id: front_warning
         text: "Front"
         md_bg_color: 0, 0, 1, 1
-        size_hint: 0.08, 0.1
-        pos_hint: {"center_x": 0.82, "center_y": 0.4}
+        size_hint: 0.13, 0.14
+        pos_hint: {"center_x": 0.8, "center_y": 0.41}
         on_press: app.request_echo_warning_front(*args) 
 
     
@@ -166,8 +160,8 @@ FloatLayout:
         id: back_warning
         text: "Heck"
         md_bg_color: 0, 0, 1, 1
-        size_hint: 0.08, 0.1
-        pos_hint: {"center_x": 0.82, "center_y": 0.29}
+        size_hint: 0.13, 0.14
+        pos_hint: {"center_x": 0.8, "center_y": 0.25}
         on_press: app.request_echo_warning_back(*args)
 
 
@@ -175,8 +169,8 @@ FloatLayout:
         id: left_warning
         text: "Links"
         md_bg_color: 0, 0, 1, 1
-        size_hint: 0.08, 0.21
-        pos_hint: {"center_x": 0.735, "center_y": 0.345}
+        size_hint: 0.08, 0.3
+        pos_hint: {"center_x": 0.685, "center_y": 0.33}
         on_press: app.request_echo_warning_left(*args)
 
 
@@ -184,8 +178,8 @@ FloatLayout:
         id: right_warning
         text: "Rechts"
         md_bg_color: 0, 0, 1, 1
-        size_hint: 0.08, 0.21
-        pos_hint: {"center_x": 0.905, "center_y": 0.345}
+        size_hint: 0.08, 0.3
+        pos_hint: {"center_x": 0.915, "center_y": 0.33}
         on_press: app.request_echo_warning_right(*args)
 
     

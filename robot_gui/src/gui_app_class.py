@@ -3,8 +3,9 @@
 import rospy
 from kivymd.app import MDApp
 from kivy.lang import Builder
-from kivymd.uix.button import MDFlatButton
+from kivymd.uix.button import MDRectangleFlatButton
 from kivymd.uix.dialog import MDDialog
+from kivy.core.window import Window
 import os
 from services_and_messages.srv import WarningEchoTest
 
@@ -22,34 +23,37 @@ class GUIApp(MDApp):
         #self.screen=Builder.load_file('/home/wheelchair-robot_catkin/src/wheelchair_robot/robot_gui/ros_robot_gui2.kv')
 
     def build(self):
+        Window.size = (800,480)
         return self.screen
 
     #functions like a button press will be defined in this class (see below)
-    def restart_pi(self):
+    
+    def restart_pi(self, inst):
         os.system('systemctl reboot -i') #reboots system on button press
+
+
+    def closeDialog(self, inst):
+        self.dialog.dismiss()
 
     def show_alert_dialog(self): #showing pop-up window
         if not self.dialog:
             self.dialog = MDDialog(
+                size_hint=[0.4, 0.3],
                 title="Linux Betriebssystem Neustarten?",
-                text="Soll mit dem Neustarten des Betriebssystems fortgefahren werden?\n\nACHTUNG:\nFalls Sie den Computer neustarten warten Sie bitte bis dieser wieder Hochgefahren ist!",
+                text="Soll mit dem Neustarten des Betriebssystems fortgefahren werden?\n\nACHTUNG:\nFalls Sie den Computer neustarten warten Sie bitte bis dieser wieder hochgefahren ist!",
                 buttons=[
-                    MDFlatButton(
-                        text="Ja", text_color=self.theme_cls.primary_color, on_press=self.restart_pi(),
+                    MDRectangleFlatButton(
+                        text="Ja", text_color=self.theme_cls.primary_color, on_press=self.restart_pi
                     ),
-                    MDFlatButton(
-                        text="Nein", text_color=self.theme_cls.primary_color
+                    MDRectangleFlatButton(
+                        text="Nein", text_color=self.theme_cls.primary_color, on_release=self.closeDialog
                     ),
                 ],
             )
+        self.dialog.set_normal_height()
         self.dialog.open()
     
-    def testing(self,*args):
-        print("testbutton has been pressed!")
-        self.screen.ids.front_sensor.md_bg_color=[1,0,0,1]
-        self.screen.ids.front_sensor_label.text="Sensor blockiert"
-
-
+    
     def request_echo_warning_front(self, *args):
         self.change_colour_on_sensor_request_button("ef", self.execute_warning_request("ef"))
 
@@ -77,6 +81,7 @@ class GUIApp(MDApp):
                 service_acknowledge_received = False
         except rospy.ServiceException as e:
             rospy.logwarn("Service failed: " + str(e))
+        
         if service_acknowledge_received:
             if not self.warning_request_button_already_pressed:
                 self.warning_request_button_already_pressed = True
