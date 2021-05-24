@@ -6,6 +6,8 @@
 #include <geometry_msgs/Twist.h>
 #include <services_and_messages/Encoder.h>
 
+#include <std_msgs/String.h>
+
 class Motor_Controller {
   private:
   Echo_Sensor sensor; //definiere Echo_Sensor Class
@@ -13,7 +15,7 @@ class Motor_Controller {
 
   //Motor
   int max_speed = 50;
-  float motion[3]={0};
+  float motion[3];
   float x_, y_, t_;
   ros::Subscriber<geometry_msgs::Twist, Motor_Controller> subscriber_motion; 
 
@@ -28,6 +30,7 @@ class Motor_Controller {
   public:
   services_and_messages::Encoder encoder_msg;
   ros::Publisher encoder;
+  
   Motor_Controller();
   
 

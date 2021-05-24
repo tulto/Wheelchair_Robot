@@ -28,8 +28,6 @@ Motor_Controller drive;
 Echo_Sensor sens;
 
 void setup() {
-
-
  Serial1.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
  Serial2.begin(115200);      // Roboteq SDC2130 COM (Must be 115200) 
 
@@ -60,19 +58,25 @@ void loop() {
   
   start = millis();
 
-  //sens.set_sensor(false, false, false, false);//[0] = front, [1] = links, [2] = rechts, [3] = hinten 
-
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
+  /*
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
-    float vel = 4;
+    float vel = 6;
     float x = (digitalRead(v)-digitalRead(b))*vel;
     float t = (digitalRead(l)-digitalRead(r))*vel;
     drive.set_movement(x, 0, t);
     //drive.filter_movement();
   }else {
-    drive.set_sent_movement();
-    //drive.filter_movement();
+    drive.set_movement(5, 5, 5);
+    //drive.set_sent_movement();
+    drive.filter_movement();
   }
+  */
+  
+  drive.set_movement(1, 2, 3);
+  drive.filter_movement();
+
+  
   //gesetzte bewegungenen werden ausgeführt
   drive.movement();
   

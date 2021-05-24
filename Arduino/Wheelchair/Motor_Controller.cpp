@@ -73,14 +73,19 @@ void Motor_Controller::set_movement(float x, float y, float turning){
 
 //filter der über Echosensoren bestimmt wird
 void Motor_Controller::filter_movement(){
+  sensor.set_sensor(true, true, false, false);
+  //sensor-set_sent_sensor();
+  float *speicher;
+  speicher = sensor.blocking_path(motion[0], motion[1], motion[2]);
   for (int i = 0; i<3; i++){  
-    motion[i] = sensor.blocking_path(motion[0], motion[1], motion[2])[i];
+    motion[i] = speicher[i];
+  
   }
 }
 
 //Bewegungswerte x,y,t werden in Bewegung umgewandelt, sowie abgefragt ob Echosensoren eine Mauer erkennen 
 void Motor_Controller::movement(){
-
+  sensor.set_sensor(true, true, false, false);
   //gegebenen motion Werte werden abgefragt um zu sehen ob der Echo Sensor eine Mauer erkennt und x,y oder t auf null gesetzt werden müssen
   float x = motion[0] * max_speed; //sensor.blocking_path(motion[0], motion[1], motion[2])
   float y = motion[1] * max_speed;
@@ -104,40 +109,59 @@ Encoder Part
 //encoder Daten auswerten und als encoder_value[] zurückgeben
 void Motor_Controller::send_encoder_count(){
   //definiere temporaeren Speicher
-  String a;
-  
-  //encoder Werte für Serial1 Schnittstelle
-  for (int i = 0; i<2; i++){
+  String content;
+  char character;
+  byte modi;
     
     //auszulesende Chanel werden definiert und abgefragt
-    Serial1.print("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
-    Serial1.println(i+1); //Channel festgelegt
-    a = "";
+  content = "";
+  Serial1.print("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
 
-    //Einen String auslesen solange gesenet wird
-    for (int i = 0; i<15;i++){
-      a += Serial1.read();
+  modi = 0;
+  //auslesen solange gesenet wird
+  while (Serial1.available() && modi != 4){
+    character = Serial1.read();
+    if (character == ':'){
+      encoder_value[0] = content.toInt();
+      content = "";
+      modi = 1;
     }
-    a = a.substring(2); //String erst ab pos 2 eine zahl wegen "C="...
-    encoder_value[i] = a.toInt();  
+    if (character == '+' || character == '!' || character == '?'){  //Serialread stopen
+      encoder_value[1] = content.toInt();
+      modi = 4; 
+    }
+    if (modi == 1){
+      content.concat(character);
+    }
+    if (character == '='){
+      modi = 1;
+    }        
   }
   
   //encoder Werte für Serial2 Schnittstelle
-  for (int i = 2; i<4; i++){
+  content = "";
+  Serial2.print("?C ");  
     
-    //auszulesende Chanel werden definiert und abgefragt
-    Serial2.print("?C ");  //?CR für relative Encoder Count
-    Serial2.println(i-1); //Channel festgelegt
-    a = "";
-
-    //Einen String auslesen solange gesenet wird
-    for (int i = 0; i<15;i++){
-      a += Serial2.read();
+  //auslesen solange gesenet wird
+  while (Serial2.available() && modi != 4){
+    character = Serial2.read();
+    if (character == ':'){
+      encoder_value[2] = content.toInt();
+      content = "";
+      modi = 1;
     }
-    a = a.substring(2); //String erst ab pos 2 eine zahl wegen "C="...
-    encoder_value[i] = a.toInt();
+    if (character == '+' || character == '!' || character == '?'){  //Serialread stopen
+      encoder_value[3] = content.toInt();
+      modi = 4; 
+    }
+    if (modi == 1){
+      content.concat(character);
+    }
+    if (character == '='){
+      modi = 1;
+    }
   }
-
+  
   //encoder_values werden in encoder_msg umgewandelt
   for (int i = 0; i<4; i++){
     encoder_msg.encoder_wheel[i] = encoder_value[i];
