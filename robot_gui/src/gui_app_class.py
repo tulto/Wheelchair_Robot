@@ -96,34 +96,34 @@ class GUIApp(MDApp):
         
         if boolean_list[0]:
             self.screen.ids.front_sensor.md_bg_color=[1,0,0,1]
-            self.screen.ids.front_sensor_label.text="Sensor blockiert"
+            self.screen.ids.front_sensor_label.text="Blockiert"
         else:
             self.screen.ids.front_sensor.md_bg_color=[0,1,0,1]
-            self.screen.ids.front_sensor_label.text="Sensor frei"
+            self.screen.ids.front_sensor_label.text="Frei"
 
 
         if boolean_list[1]:
             self.screen.ids.left_sensor.md_bg_color=[1,0,0,1]
-            self.screen.ids.left_sensor_label.text="Sensor blockiert"
+            self.screen.ids.left_sensor_label.text="Blockiert"
         else:
             self.screen.ids.left_sensor.md_bg_color=[0,1,0,1]
-            self.screen.ids.left_sensor_label.text="Sensor frei"
+            self.screen.ids.left_sensor_label.text="Frei"
             
 
         if boolean_list[2]:
             self.screen.ids.right_sensor.md_bg_color=[1,0,0,1]
-            self.screen.ids.right_sensor_label.text="Sensor blockiert"
+            self.screen.ids.right_sensor_label.text="Blockiert"
         else:
             self.screen.ids.right_sensor.md_bg_color=[0,1,0,1]
-            self.screen.ids.right_sensor_label.text="Sensor frei"
+            self.screen.ids.right_sensor_label.text="Frei"
 
 
         if boolean_list[3]:
             self.screen.ids.back_sensor.md_bg_color=[1,0,0,1]
-            self.screen.ids.back_sensor_label.text="Sensor blockiert"
+            self.screen.ids.back_sensor_label.text="Blockiert"
         else:
             self.screen.ids.back_sensor.md_bg_color=[0,1,0,1]
-            self.screen.ids.back_sensor_label.text="Sensor frei"
+            self.screen.ids.back_sensor_label.text="Frei"
 
 
     def change_colour_on_sensor_request_button(self, warning_dir, boolean_button_value):
