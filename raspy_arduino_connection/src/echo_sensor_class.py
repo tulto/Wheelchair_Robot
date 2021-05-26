@@ -36,7 +36,7 @@ class EchoSensor:
         while GPIO.input(self.ECHO) == 1:
             pulse_end = time.time()
             pulse_duration = pulse_end - pulse_start
-            if (pulse_duration >= 0.0145): #0.0145 secondes equals about 2.5 meters
+            if (pulse_duration >= 0.008734): #0.008734 secondes equals about 1.5 meters
                 break #echo sensors only used as a warning stop so everything over 5 meters is not of interest
 
         temperature = 20.0 #(air)temperature in °C, assuming normal room temperature
