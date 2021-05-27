@@ -75,6 +75,8 @@ def echo_warning_direction(echo_warning):
     return warning_list
 
 #########################################################################
+            #Main-Code following
+#########################################################################
 
 if __name__ == '__main__':
     rospy.init_node("echo_sensor_publisher")
