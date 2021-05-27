@@ -26,16 +26,22 @@ class EchoSensor:
         last_ECHO_value = False
 
         GPIO.output(self.TRIG,False)
-        time.sleep(0.001)
+        time.sleep(0.01) #sleeptime was 0.001 changed for tests
         GPIO.output(self.TRIG,True)
         time.sleep(0.00001)
         GPIO.output(self.TRIG,False)
         
+        pulse_start = time.time()
         while pulse_duration <= 0.008734:
             if GPIO.input(self.ECHO) and not last_ECHO_value:
                 pulse_start = time.time()
             elif not GPIO.input(self.ECHO) and last_ECHO_value:
                 pulse_end = time.time()
+                pulse_duration = (pulse_end - pulse_start)
+                break
+            else:
+                pulse_end = time.time()
+
             last_ECHO_value = GPIO.input(self.ECHO)
             pulse_duration = (pulse_end - pulse_start)
         '''
