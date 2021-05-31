@@ -1,0 +1,9 @@
+<launch>
+
+<node name="serial_node" pkg="rosserial_arduino" type="serial_node.py">
+<param name="port" type="string" value="/dev/ttyACM0"/>
+</node>
+<node name="echo_sensor_publisher" pkg="raspy_arduino_connection" type="echo_sensor_publisher.py" />
+<node name="wheelchair_robot_gui" pkg="robot_gui" type="gui_application.py" />
+
+</launch>
