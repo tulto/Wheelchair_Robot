@@ -14,23 +14,25 @@
 
 
 Motor_Controller::Motor_Controller() 
-: subscriber_motion("/cmd_vel", &Motor_Controller::callback_motion, this),
+: subscriber_motion("/cmd_vel", &Motor_Controller::callback_motion,5,this),
 encoder("/encoder", &encoder_msg)
 {}
 
 void Motor_Controller::init(ros::NodeHandle& nh){
+  nh.initNode();
   nh.subscribe(subscriber_motion);
   nh.advertise(encoder);
+  sensor.init(nh);
 }
 
 /***************************************************************
 Motor Part
 ***************************************************************/
 // set depending on subscribed msg /cmd_vel values of array motion
-void Motor_Controller::callback_motion(const geometry_msgs::Twist& msg) {
-  x_ = msg.linear.x;
-  y_ = msg.linear.y;
-  t_ = msg.angular.z;
+void Motor_Controller::callback_motion(const geometry_msgs::Twist& msg_motion) {
+  x_ = msg_motion.linear.x;
+  y_ = msg_motion.linear.y;
+  t_ = msg_motion.angular.z;
 }
 
 //ausgeben der momentan gegebenen Werte der Bewegung
@@ -72,20 +74,16 @@ void Motor_Controller::set_movement(float x, float y, float turning){
 }
 
 //filter der über Echosensoren bestimmt wird
-void Motor_Controller::filter_movement(){
-  sensor.set_sensor(true, true, false, false);
-  //sensor-set_sent_sensor();
+void Motor_Controller::filter_movement(){  
   float *speicher;
   speicher = sensor.blocking_path(motion[0], motion[1], motion[2]);
   for (int i = 0; i<3; i++){  
-    motion[i] = speicher[i];
-  
+    motion[i] = speicher[i]; 
   }
 }
 
 //Bewegungswerte x,y,t werden in Bewegung umgewandelt, sowie abgefragt ob Echosensoren eine Mauer erkennen 
 void Motor_Controller::movement(){
-  sensor.set_sensor(true, true, false, false);
   //gegebenen motion Werte werden abgefragt um zu sehen ob der Echo Sensor eine Mauer erkennt und x,y oder t auf null gesetzt werden müssen
   float x = motion[0] * max_speed; //sensor.blocking_path(motion[0], motion[1], motion[2])
   float y = motion[1] * max_speed;
@@ -96,6 +94,9 @@ void Motor_Controller::movement(){
   Motor_Controller::control_back(1, x - turning + y);
   Motor_Controller::control_back(2, x + turning - y);
   delay(100);
+
+  
+  
 }
 
 //eingeben der geplanten Position (ahnand der schritte des encoders)
@@ -115,7 +116,7 @@ void Motor_Controller::send_encoder_count(){
     
     //auszulesende Chanel werden definiert und abgefragt
   content = "";
-  Serial1.print("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
+  Serial1.println("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
 
   modi = 0;
   //auslesen solange gesenet wird
@@ -126,7 +127,7 @@ void Motor_Controller::send_encoder_count(){
       content = "";
       modi = 1;
     }
-    if (character == '+' || character == '!' || character == '?'){  //Serialread stopen
+    if (character == '+' || character == '!' || character == '?'){  //Serialread stoppen
       encoder_value[1] = content.toInt();
       modi = 4; 
     }
@@ -140,8 +141,8 @@ void Motor_Controller::send_encoder_count(){
   
   //encoder Werte für Serial2 Schnittstelle
   content = "";
-  Serial2.print("?C ");  
-    
+  Serial2.println("?C ");  
+  modi = 0;
   //auslesen solange gesenet wird
   while (Serial2.available() && modi != 4){
     character = Serial2.read();
@@ -161,7 +162,7 @@ void Motor_Controller::send_encoder_count(){
       modi = 1;
     }
   }
-  
+
   //encoder_values werden in encoder_msg umgewandelt
   for (int i = 0; i<4; i++){
     encoder_msg.encoder_wheel[i] = encoder_value[i];

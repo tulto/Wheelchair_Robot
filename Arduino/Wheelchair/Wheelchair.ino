@@ -1,14 +1,8 @@
 #include <ros.h>
 #include "Motor_Controller.h"
-#include "Echo_Sensor.h"
 ros::NodeHandle nh;
 
 #include <services_and_messages/Encoder.h>
-
-//testzwecke Zeit pro durchlauf publishen
-#include <std_msgs/Int64.h>
-std_msgs::Int64 zeit_msg;
-ros::Publisher dauer("/Zeit", &zeit_msg);
 
 
 //Joystick
@@ -25,7 +19,6 @@ long start;
 long ende;
 
 Motor_Controller drive;
-Echo_Sensor sens;
 
 void setup() {
  Serial1.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
@@ -33,10 +26,6 @@ void setup() {
 
  nh.initNode();
  drive.init(nh);
- sens.init(nh);
-
- //testzwecke zeitdauer pro durchlauf bestimmen
- nh.advertise(dauer);
  
   
  //Joystick
@@ -59,39 +48,26 @@ void loop() {
   start = millis();
 
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
-  /*
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
     float vel = 6;
     float x = (digitalRead(v)-digitalRead(b))*vel;
     float t = (digitalRead(l)-digitalRead(r))*vel;
     drive.set_movement(x, 0, t);
-    //drive.filter_movement();
-  }else {
-    drive.set_movement(5, 5, 5);
-    //drive.set_sent_movement();
     drive.filter_movement();
+  }else {
+    drive.set_sent_movement();
+    //drive.filter_movement();  
   }
-  */
-  
-  drive.set_movement(1, 2, 3);
-  drive.filter_movement();
-
-  
+  drive.set_sent_movement();
   //gesetzte bewegungenen werden ausgeführt
   drive.movement();
   
   //Bewegung wird zurückgesetzt
   drive.set_movement(0, 0, 0);
 
-  delay(0); //delay for dem Auslesen der Encoder Werte
-
   //Encoder Werte werden gesendet
   drive.send_encoder_count();
 
-  //testzwecke für zeit pro durchlauf in millisekunden
-  ende = millis();
-  zeit_msg.data = ende - start;  
-  dauer.publish(&zeit_msg);
   nh.spinOnce();
  
   

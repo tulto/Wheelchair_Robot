@@ -5,7 +5,6 @@
 #include "Echo_Sensor.h"
 #include <geometry_msgs/Twist.h>
 #include <services_and_messages/Encoder.h>
-
 #include <std_msgs/String.h>
 
 class Motor_Controller {
@@ -18,21 +17,18 @@ class Motor_Controller {
   float motion[3];
   float x_, y_, t_;
   ros::Subscriber<geometry_msgs::Twist, Motor_Controller> subscriber_motion; 
-
+  
   //encoder  
+  services_and_messages::Encoder encoder_msg;
+  ros::Publisher encoder;
   int encoder_value[4]={0}; 
-
+ 
   ros::NodeHandle nh;
   
   
-  
-  
   public:
-  services_and_messages::Encoder encoder_msg;
-  ros::Publisher encoder;
-  
+   
   Motor_Controller();
-  
 
 /***************************************************************
 Motor Part
