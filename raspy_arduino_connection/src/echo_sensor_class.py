@@ -22,7 +22,11 @@ class EchoSensor:
 
         pulse_start = 0.0
         pulse_end = 0.0
+        loop_start = 0.0
+        loop_duration = 0.0
         pulse_duration = 0.0
+        object_to_far_away = 0.008734 #0.008734 equals about 1,5 meters, 
+        no_detection = 0.014556       #0,014556 equals about 2,5 meters
         echo_was_low = False
 
         GPIO.output(self.TRIG,False)
@@ -30,6 +34,8 @@ class EchoSensor:
         GPIO.output(self.TRIG,True)
         time.sleep(0.00001)
         GPIO.output(self.TRIG,False)
+        
+        loop_start = time.time()
         
         while True:
             if not GPIO.input(self.ECHO) and not echo_was_low:
@@ -43,19 +49,13 @@ class EchoSensor:
                 break
 
             pulse_duration = (pulse_end - pulse_start)
-            if pulse_duration > 0.008734:
+            if pulse_duration > object_to_far_away:
+                break
+            loop_duration = (time.time() - loop_start)
+            if loop_duration > no_detection:
+                pulse_duration = loop_duration
                 break
 
-        '''
-        while GPIO.input(self.ECHO) == 0:
-            pulse_start = time.time()
-
-        while GPIO.input(self.ECHO) == 1:
-            pulse_end = time.time()
-            pulse_duration = pulse_end - pulse_start
-            if (pulse_duration >= 0.008734): #0.008734 secondes equals about 1.5 meters
-                break #echo sensors only used as a warning stop so everything over 5 meters is not of interest
-        '''
         temperature = 20.0 #(air)temperature in °C, assuming normal room temperature
         v_air = (331.5 +(0.6*temperature)) #speed of sound in m/s
         distance = round(((v_air/2)*pulse_duration), 4) #divide v_air by 2 because wave travels two time the distance

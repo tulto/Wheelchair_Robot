@@ -126,7 +126,7 @@ if __name__ == '__main__':
         echo_msg = Echosensors()    #creating an instance of the Echosensor() message type
 
         for sensor in sensor_list:
-            rospy.loginfo("Measured " + str(sensor.get_distance_in_m()) + " from " + str(sensor_dict[sensor]))
+            rospy.loginfo("Measured " + str(sensor.get_distance_in_m()) + " m from " + str(sensor_dict[sensor]))
         
         #looking if one echo sensor senses a distance -
         #that would result in a warning and publishing
@@ -134,7 +134,7 @@ if __name__ == '__main__':
         
         #for safety purposes initialized with all values on true
         for sensor in range(len(sensor_list)):
-            echo_warning_list[sensor] = sensor_list[sensor].distance_warning(0.2, 0.25)
+            echo_warning_list[sensor] = sensor_list[sensor].distance_warning(0.30, 0.35)
     
         echo_msg.echo_dir = echo_warning_direction(echo_warning_list)
 
