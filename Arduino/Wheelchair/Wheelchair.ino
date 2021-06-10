@@ -2,7 +2,6 @@
 #include "Motor_Controller.h"
 ros::NodeHandle nh;
 
-#include <services_and_messages/Encoder.h>
 
 
 //Joystick
@@ -12,15 +11,10 @@ ros::NodeHandle nh;
 #define l 8  //left
 
 
-//encoder Position als Array
-int32_t pos[4] = {0}; //[0] = links forne, [1] = rechst forne, [2] = links hinten, [3] = rechts hinten
-
-long start;
-long ende;
-
 Motor_Controller drive;
 
 void setup() {
+ Serial.begin(57600);  
  Serial1.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
  Serial2.begin(115200);      // Roboteq SDC2130 COM (Must be 115200) 
 
@@ -43,9 +37,6 @@ void setup() {
 
 
 void loop() { 
-  
-  
-  start = millis();
 
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
@@ -58,7 +49,8 @@ void loop() {
     drive.set_sent_movement();
     //drive.filter_movement();  
   }
-  drive.set_sent_movement();
+
+  
   //gesetzte bewegungenen werden ausgeführt
   drive.movement();
   
@@ -66,7 +58,7 @@ void loop() {
   drive.set_movement(0, 0, 0);
 
   //Encoder Werte werden gesendet
-  drive.send_encoder_count();
+  //drive.send_encoder_count();
 
   nh.spinOnce();
  

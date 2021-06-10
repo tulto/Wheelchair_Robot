@@ -5,7 +5,7 @@
 #include "Echo_Sensor.h"
 #include <geometry_msgs/Twist.h>
 #include <services_and_messages/Encoder.h>
-#include <std_msgs/String.h>
+
 
 class Motor_Controller {
   private:
@@ -16,7 +16,7 @@ class Motor_Controller {
   int max_speed = 50;
   float motion[3];
   float x_, y_, t_;
-  ros::Subscriber<geometry_msgs::Twist, Motor_Controller> subscriber_motion; 
+  ros::Subscriber<geometry_msgs::Twist, Motor_Controller> subscriber_motion_; 
   
   //encoder  
   services_and_messages::Encoder encoder_msg;
@@ -33,17 +33,15 @@ class Motor_Controller {
 /***************************************************************
 Motor Part
 ***************************************************************/
-  void callback_motion(const geometry_msgs::Twist& msg);   
+  void callback_motion(const geometry_msgs::Twist &msg);   
   void init(ros::NodeHandle& nh);
   void set_sent_movement();
   void set_movement(float x, float y, float turning);
   void filter_movement();
-  float* get_movement();
   void control_front(int chanel, int velocity);
   void control_back(int chanel, int velocity);
   void movement();
 
-  void planed_position(int position_wheel[4]);
 
 
 /***************************************************************

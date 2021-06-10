@@ -14,13 +14,13 @@
 
 
 Motor_Controller::Motor_Controller() 
-: subscriber_motion("/cmd_vel", &Motor_Controller::callback_motion,5,this),
+: subscriber_motion_("/cmd_vel", &Motor_Controller::callback_motion, this),
 encoder("/encoder", &encoder_msg)
 {}
 
 void Motor_Controller::init(ros::NodeHandle& nh){
   nh.initNode();
-  nh.subscribe(subscriber_motion);
+  nh.subscribe(subscriber_motion_);
   nh.advertise(encoder);
   sensor.init(nh);
 }
@@ -29,15 +29,10 @@ void Motor_Controller::init(ros::NodeHandle& nh){
 Motor Part
 ***************************************************************/
 // set depending on subscribed msg /cmd_vel values of array motion
-void Motor_Controller::callback_motion(const geometry_msgs::Twist& msg_motion) {
+void Motor_Controller::callback_motion(const geometry_msgs::Twist &msg_motion) {
   x_ = msg_motion.linear.x;
   y_ = msg_motion.linear.y;
   t_ = msg_motion.angular.z;
-}
-
-//ausgeben der momentan gegebenen Werte der Bewegung
-float* Motor_Controller::get_movement(){  
-  return motion;
 }
 
 //controller in front gets commands chanel(1 = left, 2 = right)
@@ -89,24 +84,32 @@ void Motor_Controller::movement(){
   float y = motion[1] * max_speed;
   float turning = motion[2] * max_speed;  
 
-  Motor_Controller::control_front(1,x - turning - y);
-  Motor_Controller::control_front(2,x + turning + y);
+  Motor_Controller::control_front(1, x - turning - y);
+  Motor_Controller::control_front(2, x + turning + y);
   Motor_Controller::control_back(1, x - turning + y);
   Motor_Controller::control_back(2, x + turning - y);
-  delay(100);
+  delay(10);
 
   
   
 }
 
-//eingeben der geplanten Position (ahnand der schritte des encoders)
-void Motor_Controller::planed_position(int position_wheel[4]){
-  
-}
 
-/***************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+/*************************************************************************
 Encoder Part
-***************************************************************/
+*************************************************************************/
 //encoder Daten auswerten und als encoder_value[] zurückgeben
 void Motor_Controller::send_encoder_count(){
   //definiere temporaeren Speicher
