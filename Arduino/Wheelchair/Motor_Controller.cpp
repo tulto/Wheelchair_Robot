@@ -9,31 +9,33 @@
   // Ramp Forward
   //exapel
 
-#include "Motor_Controller.h"
-#include "Echo_Sensor.h"
 
-Echo_Sensor sensor; //definiere Echo_Sensor Class
+#include "Motor_Controller.h"
+
 
 Motor_Controller::Motor_Controller() 
-: subscriber_motion("/cmd_vel", &Motor_Controller::callback_motion, this)
-{
-  nh.subscribe(subscriber_motion);
+: subscriber_motion_("/cmd_vel", &Motor_Controller::callback_motion, this),
+encoder("/encoder", &encoder_msg)
+{}
+
+void Motor_Controller::init(ros::NodeHandle& nh){
+  nh.initNode();
+  nh.subscribe(subscriber_motion_);
+  nh.advertise(encoder);
+  sensor.init(nh);
 }
 
+/***************************************************************
+Motor Part
+***************************************************************/
 // set depending on subscribed msg /cmd_vel values of array motion
-void Motor_Controller::callback_motion(const geometry_msgs::Twist& msg) {
-  x_ = msg.linear.x;
-  y_ = msg.linear.y;
-  t_ = msg.angular.z;
+void Motor_Controller::callback_motion(const geometry_msgs::Twist &msg_motion) {
+  x_ = msg_motion.linear.x;
+  y_ = msg_motion.linear.y;
+  t_ = msg_motion.angular.z;
 }
 
-//kann vielleicht entfernt werden
-void Motor_Controller::init(ros::NodeHandle& nh)
-{
-  nh.subscribe(subscriber_motion);
-}
-
-// controller in front gets commands chanel(1 = left, 2 = right)
+//controller in front gets commands chanel(1 = left, 2 = right)
 void Motor_Controller::control_front (int chanel, int velocity){
   Serial1.print("!G");
   Serial1.print(" ");
@@ -42,7 +44,7 @@ void Motor_Controller::control_front (int chanel, int velocity){
   Serial1.println(velocity);
 }
 
-// controller in back gets commands chanel(1 = left, 2 = right)
+//controller in back gets commands chanel(1 = left, 2 = right)
 void Motor_Controller::control_back (int chanel, int velocity){
   Serial2.print("!G");
   Serial2.print(" ");
@@ -66,22 +68,112 @@ void Motor_Controller::set_movement(float x, float y, float turning){
   motion[2] = turning;
 }
 
-//ausgeben der momentan gegebenen Werte der Bewegung
-float* Motor_Controller::get_movement(){  
-  return motion;
+//filter der über Echosensoren bestimmt wird
+void Motor_Controller::filter_movement(){  
+  float *speicher;
+  speicher = sensor.blocking_path(motion[0], motion[1], motion[2]);
+  for (int i = 0; i<3; i++){  
+    motion[i] = speicher[i]; 
+  }
 }
 
 //Bewegungswerte x,y,t werden in Bewegung umgewandelt, sowie abgefragt ob Echosensoren eine Mauer erkennen 
 void Motor_Controller::movement(){
-
   //gegebenen motion Werte werden abgefragt um zu sehen ob der Echo Sensor eine Mauer erkennt und x,y oder t auf null gesetzt werden müssen
   float x = motion[0] * max_speed; //sensor.blocking_path(motion[0], motion[1], motion[2])
   float y = motion[1] * max_speed;
   float turning = motion[2] * max_speed;  
 
-  Motor_Controller::control_front(1,x - turning - y);
-  Motor_Controller::control_front(2,x + turning + y);
+  Motor_Controller::control_front(1, x - turning - y);
+  Motor_Controller::control_front(2, x + turning + y);
   Motor_Controller::control_back(1, x - turning + y);
   Motor_Controller::control_back(2, x + turning - y);
-  delay(100);
+  delay(10);
+
+  
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*************************************************************************
+Encoder Part
+*************************************************************************/
+//encoder Daten auswerten und als encoder_value[] zurückgeben
+void Motor_Controller::send_encoder_count(){
+  //definiere temporaeren Speicher
+  String content;
+  char character;
+  byte modi;
+    
+    //auszulesende Chanel werden definiert und abgefragt
+  content = "";
+  Serial1.println("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
+
+  modi = 0;
+  //auslesen solange gesenet wird
+  while (Serial1.available() && modi != 4){
+    character = Serial1.read();
+    if (character == ':'){
+      encoder_value[0] = content.toInt();
+      content = "";
+      modi = 1;
+    }
+    if (character == '+' || character == '!' || character == '?'){  //Serialread stoppen
+      encoder_value[1] = content.toInt();
+      modi = 4; 
+    }
+    if (modi == 1){
+      content.concat(character);
+    }
+    if (character == '='){
+      modi = 1;
+    }        
+  }
+  
+  //encoder Werte für Serial2 Schnittstelle
+  content = "";
+  Serial2.println("?C ");  
+  modi = 0;
+  //auslesen solange gesenet wird
+  while (Serial2.available() && modi != 4){
+    character = Serial2.read();
+    if (character == ':'){
+      encoder_value[2] = content.toInt();
+      content = "";
+      modi = 1;
+    }
+    if (character == '+' || character == '!' || character == '?'){  //Serialread stopen
+      encoder_value[3] = content.toInt();
+      modi = 4; 
+    }
+    if (modi == 1){
+      content.concat(character);
+    }
+    if (character == '='){
+      modi = 1;
+    }
+  }
+
+  //encoder_values werden in encoder_msg umgewandelt
+  for (int i = 0; i<4; i++){
+    encoder_msg.encoder_wheel[i] = encoder_value[i];
+  }
+  encoder.publish(&encoder_msg);
+}
+
+//alle encoder Werte werden ausgelesen und gesendet (erst sinnvoll direkt nach send_encoder_value nutzbar)
+int* Motor_Controller::get_encoder_count(){
+  return encoder_value;
 }
