@@ -24,11 +24,8 @@ class WarningRequest: #defining a class in order to check if the Service receive
             cls.requested_warning[bool_val]=(list_of_true_echo_values[bool_val] and cls.requested_warning[bool_val])
 
     @classmethod
-    def set_received_warning_request(cls, received_a_request):
-        cls.got_warning_request = received_a_request
-        for bool_val in range(len(cls.got_warning_request)):
-            cls.got_warning_request[bool_val]=(received_a_request[bool_val] or cls.got_warning_request[bool_val])
-
+    def set_received_warning_request(cls, index_num, received_a_request):
+        cls.got_warning_request[index_num] = received_a_request
 
     @classmethod
     def setback_all_values(cls):
