@@ -19,7 +19,7 @@ def handle_warning_test(req):
         return True
     
     elif req.sensor == "er":
-        WarningRequest.set_received_warning_request([False, False, (not WarningRequest.received_warning_request()[1]), False])
+        WarningRequest.set_received_warning_request([False, False, (not WarningRequest.received_warning_request()[2]), False])
         WarningRequest.set_requested_warning([False, False, True, False])
 
         if not WarningRequest.received_warning_request()[2]:
@@ -28,7 +28,7 @@ def handle_warning_test(req):
         return True
     
     elif req.sensor == "ef":
-        WarningRequest.set_received_warning_request([(not WarningRequest.received_warning_request()[1]), False, False, False])
+        WarningRequest.set_received_warning_request([(not WarningRequest.received_warning_request()[0]), False, False, False])
         WarningRequest.set_requested_warning([True, False, False, False])
 
         if not WarningRequest.received_warning_request()[0]:
@@ -37,7 +37,7 @@ def handle_warning_test(req):
         return True
     
     elif req.sensor == "eb":
-        WarningRequest.set_received_warning_request([False, False, False, (not WarningRequest.received_warning_request()[1])])
+        WarningRequest.set_received_warning_request([False, False, False, (not WarningRequest.received_warning_request()[3])])
         WarningRequest.set_requested_warning([False, False, False, True])
 
         if not WarningRequest.received_warning_request()[3]:
