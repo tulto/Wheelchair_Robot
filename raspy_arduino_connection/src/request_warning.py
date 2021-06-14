@@ -2,8 +2,8 @@
 
 class WarningRequest: #defining a class in order to check if the Service received a warning request
 
-    requested_warning = [True, True, True, True]
-    got_warning_request = False
+    requested_warning = [False, False, False, False]
+    got_warning_request = [False, False, False, False]
 
     @classmethod
     def requested_warning_msg(cls):
@@ -15,13 +15,22 @@ class WarningRequest: #defining a class in order to check if the Service receive
 
     @classmethod
     def set_requested_warning(cls, list_of_true_echo_values):
-        cls.requested_warning=list_of_true_echo_values
+        for bool_val in range(len(cls.requested_warning)):
+            cls.requested_warning[bool_val]=(list_of_true_echo_values[bool_val] or cls.requested_warning[bool_val])
+
+    @classmethod
+    def setback_requested_warning(cls, list_of_true_echo_values):
+        for bool_val in range(len(cls.requested_warning)):
+            cls.requested_warning[bool_val]=(list_of_true_echo_values[bool_val] and cls.requested_warning[bool_val])
 
     @classmethod
     def set_received_warning_request(cls, received_a_request):
         cls.got_warning_request = received_a_request
+        for bool_val in range(len(cls.got_warning_request)):
+            cls.got_warning_request[bool_val]=(received_a_request[bool_val] or cls.got_warning_request[bool_val])
+
 
     @classmethod
     def setback_all_values(cls):
-        cls.requested_warning = [True, True, True, True]
-        cls.got_warning_request = False
+        cls.requested_warning = [False, False, False, False]
+        cls.got_warning_request = [False, False, False, False]

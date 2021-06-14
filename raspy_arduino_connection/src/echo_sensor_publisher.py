@@ -10,38 +10,38 @@ from request_warning import WarningRequest              #import WarningRequest c
 
 def handle_warning_test(req): 
     if req.sensor == "el":
-        WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())
+        WarningRequest.set_received_warning_request([False, (not WarningRequest.received_warning_request()[1]), False, False])
         WarningRequest.set_requested_warning([False, True, False, False])
 
-        if not WarningRequest.received_warning_request():
-            WarningRequest.setback_all_values()
+        if not WarningRequest.received_warning_request()[1]:
+            WarningRequest.setback_requested_warning([True, False, True, True])
 
         return True
     
     elif req.sensor == "er":
-        WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())
+        WarningRequest.set_received_warning_request([False, False, (not WarningRequest.received_warning_request()[1]), False])
         WarningRequest.set_requested_warning([False, False, True, False])
 
-        if not WarningRequest.received_warning_request():
-            WarningRequest.setback_all_values()
+        if not WarningRequest.received_warning_request()[2]:
+            WarningRequest.setback_requested_warning([True, True, False, True])
 
         return True
     
     elif req.sensor == "ef":
-        WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())
+        WarningRequest.set_received_warning_request([(not WarningRequest.received_warning_request()[1]), False, False, False])
         WarningRequest.set_requested_warning([True, False, False, False])
 
-        if not WarningRequest.received_warning_request():
-            WarningRequest.setback_all_values()
+        if not WarningRequest.received_warning_request()[0]:
+            WarningRequest.setback_requested_warning([False, True, True, True])
 
         return True
     
     elif req.sensor == "eb":
-        WarningRequest.set_received_warning_request(not WarningRequest.received_warning_request())
+        WarningRequest.set_received_warning_request([False, False, False, (not WarningRequest.received_warning_request()[1])])
         WarningRequest.set_requested_warning([False, False, False, True])
 
-        if not WarningRequest.received_warning_request():
-            WarningRequest.setback_all_values()
+        if not WarningRequest.received_warning_request()[3]:
+            WarningRequest.setback_requested_warning([True, True, True, False])
             
         return True
     
@@ -139,7 +139,7 @@ if __name__ == '__main__':
         echo_msg.echo_dir = echo_warning_direction(echo_warning_list)
 
         #overwriting the message file if WarningRequest has been received
-        if WarningRequest.received_warning_request():
+        if any(WarningRequest.received_warning_request()):
             echo_msg.echo_dir = WarningRequest.requested_warning_msg()
 
         pub.publish(echo_msg)
