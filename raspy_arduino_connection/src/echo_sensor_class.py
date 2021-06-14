@@ -47,13 +47,17 @@ class EchoSensor:
                 pulse_end = time.time()
                 pulse_duration = pulse_end - pulse_start
                 break
-
-            pulse_duration = (pulse_end - pulse_start)
+            
+            
+            
+            if pulse_start > 0:
+                pulse_duration = (pulse_end - pulse_start)
             if pulse_duration > object_to_far_away:
                 break
             loop_duration = (time.time() - loop_start)
             if loop_duration > no_detection:
-                pulse_duration = loop_duration
+                print("ERROR: Pin " + str(self.ECHO) + "is not connected or the sensor has a defect.")
+                pulse_duration = 0.0 #a pulse duration of 0 will result in 0 m distance therefore we will get a distance warning if a sensor is not connected
                 break
 
         temperature = 20.0 #(air)temperature in °C, assuming normal room temperature
