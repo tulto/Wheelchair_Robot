@@ -143,7 +143,7 @@ class GUIApp(MDApp):
             self.screen.ids.back_sensor_label.text="Frei"
 
 
-    def change_colour_on_sensor_request_button(self, warning_dir, boolean_button_value):
+    def change_colour_on_sensor_request_button(self, boolean_button_value):
         #this function changes the colour of the buttons, which are used to request a warning
         if not boolean_button_value[0]:
             self.screen.ids.front_warning.md_bg_color=[0,0,1,1]
