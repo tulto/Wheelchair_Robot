@@ -26,7 +26,8 @@ class EchoSensor:
         loop_duration = 0.0
         pulse_duration = 0.0
         object_to_far_away = 0.008734 #0.008734 equals about 1,5 meters, 
-        no_detection = 0.014556       #0,014556 equals about 2,5 meters
+        no_detection = 0.014556       #0,014556 equals about 2,5 meters, just used for error detection (e.g. not connected pin)
+
         echo_was_low = False
 
         GPIO.output(self.TRIG,False)
@@ -56,8 +57,8 @@ class EchoSensor:
                 break
             loop_duration = (time.time() - loop_start)
             if loop_duration > no_detection:
-                print("ERROR: Pin " + str(self.ECHO) + "is not connected or the sensor has a defect.")
-                pulse_duration = 0.0 #a pulse duration of 0 will result in 0 m distance therefore we will get a distance warning if a sensor is not connected
+                print("ERROR: Pin " + str(self.ECHO) + " is not connected or the sensor has a defect.")
+                pulse_duration = -1.0 #a pulse duration of -1.0 will result in a distance warning if a sensor is not connected
                 break
 
         temperature = 20.0 #(air)temperature in °C, assuming normal room temperature
@@ -68,7 +69,7 @@ class EchoSensor:
         return distance
 
     def distance_warning(self, instant_stop_distance, average_stop_distance):
-        if (sum(self.recorded_distances)) != 0.0 and self.recorded_distances[len(self.recorded_distances)-1] <= instant_stop_distance:
+        if (sum(self.recorded_distances)) != 0.0 and (self.recorded_distances[len(self.recorded_distances)-1] <= instant_stop_distance or self.recorded_distances[len(self.recorded_distances)-1] < 0.0):
             return True
         elif (numpy.prod(self.recorded_distances)) != 0.0 and (sum(self.recorded_distances)/len(self.recorded_distances)) <= average_stop_distance: #calculating a the average over the last 3 distances
             return True
