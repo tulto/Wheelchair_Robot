@@ -16,7 +16,7 @@ class GUIApp(MDApp):
 
     def __init__(self, **kwargs):
 
-        self.warning_request_button_already_pressed = False
+        self.warning_request_button_already_pressed = [False, False, False, False]
         super().__init__(**kwargs)
         self.screen=Builder.load_file('ros_robot_gui.kv')
         #if we had a second .kv file we would add it like this:
@@ -55,16 +55,16 @@ class GUIApp(MDApp):
     
     
     def request_echo_warning_front(self, *args):
-        self.change_colour_on_sensor_request_button("ef", self.execute_warning_request("ef"))
+        self.change_colour_on_sensor_request_button(self.execute_warning_request("ef"))
 
     def request_echo_warning_left(self, *args):
-        self.change_colour_on_sensor_request_button("el", self.execute_warning_request("el")) 
+        self.change_colour_on_sensor_request_button(self.execute_warning_request("el")) 
 
     def request_echo_warning_right(self, *args):
-        self.change_colour_on_sensor_request_button("er", self.execute_warning_request("er"))
+        self.change_colour_on_sensor_request_button(self.execute_warning_request("er"))
 
     def request_echo_warning_back(self, *args):
-        self.change_colour_on_sensor_request_button("eb", self.execute_warning_request("eb"))
+        self.change_colour_on_sensor_request_button(self.execute_warning_request("eb"))
 
 
     def execute_warning_request(self, warning_dir): #function to launch a warning request to the echo_test_warning server
@@ -83,10 +83,27 @@ class GUIApp(MDApp):
             rospy.logwarn("Service failed: " + str(e))
         
         if service_acknowledge_received:
-            if not self.warning_request_button_already_pressed:
-                self.warning_request_button_already_pressed = True
-            else:
-                self.warning_request_button_already_pressed = False
+            if warning_dir == "ef":
+                if not self.warning_request_button_already_pressed[0]:
+                    self.warning_request_button_already_pressed[0] = True
+                else:
+                    self.warning_request_button_already_pressed[0] = False
+            if warning_dir == "el":
+                if not self.warning_request_button_already_pressed[1]:
+                    self.warning_request_button_already_pressed[1] = True
+                else:
+                    self.warning_request_button_already_pressed[1] = False
+            if warning_dir == "er":
+                if not self.warning_request_button_already_pressed[2]:
+                    self.warning_request_button_already_pressed[2] = True
+                else:
+                    self.warning_request_button_already_pressed[2] = False
+            if warning_dir == "eb":
+                if not self.warning_request_button_already_pressed[3]:
+                    self.warning_request_button_already_pressed[3] = True
+                else:
+                    self.warning_request_button_already_pressed[3] = False
+
         return self.warning_request_button_already_pressed
 
 
@@ -128,6 +145,27 @@ class GUIApp(MDApp):
 
     def change_colour_on_sensor_request_button(self, warning_dir, boolean_button_value):
         #this function changes the colour of the buttons, which are used to request a warning
+        if not boolean_button_value[0]:
+            self.screen.ids.front_warning.md_bg_color=[0,0,1,1]
+        else:
+            self.screen.ids.front_warning.md_bg_color=[1,0,0,1]
+        
+        if not boolean_button_value[1]:
+            self.screen.ids.left_warning.md_bg_color=[0,0,1,1]
+        else:
+            self.screen.ids.left_warning.md_bg_color=[1,0,0,1]
+
+        if not boolean_button_value[2]:
+            self.screen.ids.right_warning.md_bg_color=[0,0,1,1]
+        else:
+            self.screen.ids.right_warning.md_bg_color=[1,0,0,1]
+
+        if not boolean_button_value[3]:
+            self.screen.ids.back_warning.md_bg_color=[0,0,1,1]
+        else:
+            self.screen.ids.back_warning.md_bg_color=[1,0,0,1]
+
+        '''
         if not boolean_button_value:
             self.screen.ids.front_warning.md_bg_color=[0,0,1,1]
             self.screen.ids.left_warning.md_bg_color=[0,0,1,1]
@@ -142,6 +180,7 @@ class GUIApp(MDApp):
                 self.screen.ids.right_warning.md_bg_color=[1,0,0,1]
             if warning_dir == "eb":
                 self.screen.ids.back_warning.md_bg_color=[1,0,0,1]
+        '''
             
 
 
