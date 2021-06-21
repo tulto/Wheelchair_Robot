@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>raspy_arduino_connection</name>
+  <name>ultrasonic_sensor</name>
   <version>0.0.0</version>
-  <description>The raspy_arduino_connection package</description>
+  <description>The ultrasonic_sensor package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/raspy_arduino_connection</url> -->
+  <!-- <url type="website">http://wiki.ros.org/ultrasonic_sensor</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
