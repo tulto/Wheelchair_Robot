@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<robot>
+  <gazebo>
+    <!--<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+    </plugin>-->
+
+  <!-- All static links get collapsed down to base_link in Gazebo, so that's
+       the one to apply the colour to (in Gazebo 5+). -->
+  <gazebo reference="base_chassis">
+    <material>Gazebo/Yellow</material>
+    <gravity>true</gravity>
+    <static>true</static>
+  </gazebo>
+
+  <gazebo reference="wcr_base_link">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+  <!-- Wheel friction to zero, as movement is handled by applying forces at the body level. -->
+  <gazebo reference="upper_left_mecanum_wheel">
+    <material>Gazebo/Grey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <gazebo reference="lower_left_mecanum_wheel">
+    <material>Gazebo/Grey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <gazebo reference="upper_right_mecanum_wheel">
+    <material>Gazebo/Grey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <gazebo reference="lower_right_mecanum_wheel">
+    <material>Gazebo/Grey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+</robot>
