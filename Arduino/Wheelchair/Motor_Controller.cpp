@@ -165,12 +165,14 @@ void Motor_Controller::send_encoder_count(){
       modi = 1;
     }
   }
-
-  //encoder_values werden in encoder_msg umgewandelt
-  for (int i = 0; i<4; i++){
-    encoder_msg.encoder_wheel[i] = encoder_value[i];
+  //nur etwas senden wenn Encoder Werte nicht alle Null sind
+  if (encoder_value[0] != 0 && encoder_value[1] != 0 && encoder_value[2] != 0 && encoder_value[3] != 0){
+    //encoder_values werden in encoder_msg umgewandelt
+    for (int i = 0; i<4; i++){
+      encoder_msg.encoder_wheel[i] = encoder_value[i];
+    }
+    encoder.publish(&encoder_msg);
   }
-  encoder.publish(&encoder_msg);
 }
 
 //alle encoder Werte werden ausgelesen und gesendet (erst sinnvoll direkt nach send_encoder_value nutzbar)

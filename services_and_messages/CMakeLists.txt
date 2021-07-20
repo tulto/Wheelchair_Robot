@@ -54,6 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
    Echosensors.msg
    Encoder.msg
    Position.msg
+   Joystick.msg
 #   Message1.msg
 #   Message2.msg
  )

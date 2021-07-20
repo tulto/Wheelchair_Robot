@@ -1,5 +1,6 @@
 #include <ros.h>
 #include "Motor_Controller.h"
+#include <services_and_messages/Joystick.h>
 ros::NodeHandle nh;
 
 
@@ -9,6 +10,14 @@ ros::NodeHandle nh;
 #define r 10 //right
 #define b 9  //back
 #define l 8  //left
+
+int x_movement = A0;
+int y_movement = A1;
+int t_movement = A2;
+int button = 7;
+
+services_and_messages::Joystick joy_msg;
+ros::Publisher joystick("/movement/joystick", &joy_msg);
 
 
 Motor_Controller drive;
@@ -20,6 +29,7 @@ void setup() {
 
  nh.initNode();
  drive.init(nh);
+ nh.advertise(joystick);
  
   
  //Joystick
@@ -27,6 +37,7 @@ void setup() {
  pinMode(r,INPUT);//right
  pinMode(b,INPUT);//back
  pinMode(l,INPUT);//left
+ pinMode(button, INPUT);
  
  // Give the Roboteq some time to boot-up. 
  delay(1000);
@@ -37,6 +48,13 @@ void setup() {
 
 
 void loop() { 
+  //abfragen des analogen Joystickes
+  joy_msg.x = analogRead(x_movement);
+  joy_msg.y = analogRead(y_movement);
+  joy_msg.t = analogRead(t_movement);
+  joy_msg.button = digitalRead(button);
+  joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
+  
 
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
