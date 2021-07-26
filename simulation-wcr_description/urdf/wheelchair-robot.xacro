@@ -196,21 +196,21 @@
   </gazebo>
 
   <joint name="lidar_joint" type="fixed">
-    <origin xyz="0.535 0.2875 0.155" rpy="0 0 0" /> 
+    <origin xyz="0.535 0.2875 0.1838" rpy="0 0 0" /> 
     <parent link="wcr_base_link"/>
     <child link="lidar" /> 
   </joint>
 
   <link name="lidar">
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 -0.0308" rpy="0 0 0" />
       <geometry>
         <mesh filename="package://simulation-wcr_description/meshes/rplidar-a2m4-r1.stl" scale="0.001 0.001 0.001"/> 
       </geometry>
       <material name="black" />
     </visual>
     <collision>
-      <origin xyz="0 0 0.0204" rpy="0 0 0"/>
+      <origin xyz="0 0 -0.0104" rpy="0 0 0"/>
       <geometry>
         <cylinder radius="0.045" length="0.05"/>
       </geometry>
@@ -227,28 +227,28 @@
 
   <gazebo reference="lidar">
     <sensor type="ray" name="RPLiDAR_A2M8">
-      <pose>0 0 0.0308 0 0 0</pose>
+      <pose>0 0 0 0 0 0</pose>
       <always_on>true</always_on>
       <visualize>false</visualize>
-      <update_rate>1800</update_rate>
+      <update_rate>100</update_rate>
       <ray>
         <scan>
           <horizontal>
             <samples>400</samples>
             <resolution>1</resolution>
-            <min_angle>0</min_angle>
-            <max_angle>6.280</max_angle>
+            <min_angle>0.0</min_angle>
+            <max_angle>6.28319</max_angle>
           </horizontal>
         </scan>
         <range>
           <min>0.15</min>
           <max>8.0</max>
-          <resolution>0.008</resolution>
+          <resolution>0.08</resolution>
         </range>
         <noise>
           <type>gaussian</type>
           <mean>0.0</mean>
-          <stddev>0.01</stddev>
+          <stddev>0.015</stddev> <!--stddev needs to be checked again-->
         </noise>
       </ray>
       <plugin name="RPLiDAR_A2M8_measurement" filename="libgazebo_ros_laser.so">

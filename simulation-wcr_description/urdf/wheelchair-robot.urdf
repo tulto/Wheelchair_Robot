@@ -196,127 +196,67 @@
   </gazebo>
 
   <joint name="lidar_joint" type="fixed">
-    <origin xyz="0.535 0.2875 0.187" rpy="0 0 0" /> 
+    <origin xyz="0.535 0.2875 0.1838" rpy="0 0 0" /> 
     <parent link="wcr_base_link"/>
     <child link="lidar" /> 
   </joint>
 
   <link name="lidar">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <inertia
-        ixx="0.001"
-        ixy="0.000"
-        ixz="0.000"
-        iyy="0.001"
-        iyz="0.000"
-        izz="0.001" />
-      <mass value="0.125" /> 
-    </inertial>
-    <collision name="lidar_sensor_collision">
-      <origin xyz="0 0 0" rpy="0 0 0" />
+    <visual>
+      <origin xyz="0 0 -0.0308" rpy="0 0 0" />
       <geometry>
-        <cylinder
-          radius="0.0508"
-          length="0.055" />
-      </geometry>
-    </collision>
-    <visual name="lidar_sensor_visual">
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://simulation-wcr_description/meshes/lds.dae" scale="0.001 0.001 0.001"/> 
+        <mesh filename="package://simulation-wcr_description/meshes/rplidar-a2m4-r1.stl" scale="0.001 0.001 0.001"/> 
       </geometry>
       <material name="black" />
     </visual>
+    <collision>
+      <origin xyz="0 0 -0.0104" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.045" length="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.125"/>
+      <inertia
+        ixx="0.001" ixy="0.0000" ixz="0.00000"
+        iyy="0.001" iyz="0.000"
+        izz="0.001"/>
+    </inertial>
   </link>
 
   <gazebo reference="lidar">
-    <sensor type="gpu_ray" name="RPLiDAR_A2M8">
+    <sensor type="ray" name="RPLiDAR_A2M8">
       <pose>0 0 0 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>4000</update_rate>
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <update_rate>100</update_rate>
       <ray>
         <scan>
           <horizontal>
-            <samples>360</samples>
-            <resolution>0.01570796327</resolution>
-            <min_angle>0</min_angle>
-            <max_angle>6.283185307</max_angle>
+            <samples>400</samples>
+            <resolution>1</resolution>
+            <min_angle>0.0</min_angle>
+            <max_angle>6.28319</max_angle>
           </horizontal>
         </scan>
         <range>
           <min>0.15</min>
-          <max>12.0</max>
-          <resolution>0.0005</resolution>
+          <max>8.0</max>
+          <resolution>0.08</resolution>
         </range>
         <noise>
           <type>gaussian</type>
           <mean>0.0</mean>
-          <stddev>0.5</stddev>
+          <stddev>0.015</stddev> <!--stddev needs to be checked again-->
         </noise>
       </ray>
-      <plugin name="RPLiDAR_A2M8_measurement" filename="libgazebo_ros_gpu_laser.so">
+      <plugin name="RPLiDAR_A2M8_measurement" filename="libgazebo_ros_laser.so">
         <topicName>/lidar_scan</topicName>
         <frameName>RPLiDAR</frameName>
       </plugin>
     </sensor>
   </gazebo>
-
-<!--
-  <link name="lidar">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <inertia
-        ixx="0.001"
-        ixy="0.000"
-        ixz="0.000"
-        iyy="0.001"
-        iyz="0.000"
-        izz="0.001" />
-      <mass value="0.125" /> 
-    </inertial>
-    <collision name="lidar_sensor_collision">
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <cylinder
-          radius="0.0508"
-          length="0.055" />
-      </geometry>
-    </collision>
-    <visual name="lidar_sensor_visual">
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://simulation-wcr_description/meshes/lds.dae" scale="0.001 0.001 0.001"/> 
-      </geometry>
-      <material name="black" />
-    </visual>
-    <sensor name="RPLiDAR_A2M8" type="ray">
-      <always_on>true</always_on>
-      <visualize>true</visualize>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <update_rate value="4000" /> 
-      <ray>
-        <scan>
-          <horizontal>
-            <samples value="360"/> 
-            <resolution value="1.000000" /> 
-            <min_angle>0.000000</min_angle>
-            <max_angle>6.280000</max_angle>
-          </horizontal>
-        </scan>
-          <range>
-            <min>0.12000</min>
-            <max>3.5</max>
-            <resolution>"0.015000</resolution>
-          </range>
-          <noise>
-            <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.5</stddev>
-          </noise>
-      </ray>
-    </sensor>
-  </link> -->
 
   <gazebo reference="lidar">
     <material>Gazebo/Black</material>
