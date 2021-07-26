@@ -1,0 +1,185 @@
+FloatLayout:
+
+    MDBoxLayout:
+        md_bg_color: 0, 0, 0, 1
+        #changing the window background colour
+    
+    BoxLayout:
+        id: box #an id makes it possible to acces the function (here Box Layout) from everywhere else e.g. the python code
+        orientation: "vertical"
+        size_hint: 1, 0.2
+
+        MDToolbar:
+            title: "Autonomer Rollstuhl-Roboter"
+            canvas:
+                Rectangle:
+                    source: 'fhws_2.png'
+                    pos: (((self.parent.parent.size[0])/2)+((self.parent.parent.size[0])/5), self.pos[1])
+                    size: (220, 60)
+            #Image:
+            #    source: "fhws_2.png"
+            #    size_hint: 1.7, 1.0
+            #    pos: (((self.parent.size[0])/2)-10, self.pos[1])
+                #pos_hint: {"center_x": .75, "center_y": self.pos[1]}
+
+
+    Image:
+        source: "Ultrasound_up.jpg"
+        size_hint: 0.25, 0.25
+        pos_hint: {"center_x": .35, "center_y": 0.6}
+
+
+    MDCard:
+        id: front_sensor
+        orientation: "vertical"
+        padding: "8dp"
+        size_hint: 0.15, 0.15
+        size: "140dp", "90dp"
+        pos_hint: {"center_x": .35, "center_y": .82}
+        md_bg_color: 0, 1, 0, 1
+
+        MDLabel:
+            text: "Front"
+            theme_text_color: "Primary"
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        MDSeparator:
+            height: "1dp"
+
+        MDLabel:
+            id: front_sensor_label
+            text: "Frei"
+
+
+    MDCard:
+        id: back_sensor
+        orientation: "vertical"
+        padding: "8dp"
+        size_hint: 0.15, 0.15
+        size: "140dp", "90dp"
+        pos_hint: {"center_x": .35, "center_y": .38}
+        md_bg_color: 0, 1, 0, 1
+
+        MDLabel:
+            text: "Heck"
+            theme_text_color: "Primary"
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        MDSeparator:
+            height: "1dp"
+
+        MDLabel:
+            id: back_sensor_label
+            text: "Frei"
+
+
+    MDCard:
+        id: left_sensor
+        orientation: "vertical"
+        padding: "8dp"
+        size_hint: 0.15, 0.15
+        size: "140dp", "90dp"
+        pos_hint: {"center_x": .17, "center_y": .6}
+        md_bg_color: 0, 1, 0, 1
+
+        MDLabel:
+            text: "Links"
+            theme_text_color: "Primary"
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        MDSeparator:
+            height: "1dp"
+
+        MDLabel:
+            id: left_sensor_label
+            text: "Frei"
+
+
+    MDCard:
+        id: right_sensor
+        orientation: "vertical"
+        padding: "8dp"
+        size_hint: 0.15, 0.15
+        size: "140dp", "90dp"
+        pos_hint: {"center_x": .53, "center_y": .6}
+        md_bg_color: 0, 1, 0, 1
+
+        MDLabel:
+            text: "Rechts"
+            theme_text_color: "Primary"
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        MDSeparator:
+            height: "1dp"
+
+        MDLabel:
+            id: right_sensor_label
+            text: "Frei"
+
+
+    MDRaisedButton:
+        id: restart_button
+        text: "Neustarten"
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.2, 0.25
+        pos_hint: {"center_x": 0.8, "center_y": 0.8}
+        on_press: app.show_alert_dialog()
+        #app is an instace of the app objet (MDApp) 
+        #from the gui_app_class we created that inherited from MDApp
+
+    #button for requesting a vertain echo-sensor-error
+
+    MDCard:
+        size_hint: 0.33, 0.39
+        pos_hint: {"center_x": .8, "center_y": .355}
+        md_bg_color: 1, 1, 0, 1
+        radius: [15, 15, 15, 15]
+
+
+    MDLabel:
+        text: "Sensor Warnung aktivieren:"
+        theme_text_color: "Custom"
+        text_color: 0, 0, 0, 1
+        halign: "center"
+        pos_hint: {"center_x": 0.8, "center_y": 0.52}
+
+    MDRaisedButton:
+        id: front_warning
+        text: "Front"
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.13, 0.14
+        pos_hint: {"center_x": 0.8, "center_y": 0.41}
+        on_press: app.request_echo_warning_front(*args) 
+
+    
+    MDRaisedButton:
+        id: back_warning
+        text: "Heck"
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.13, 0.14
+        pos_hint: {"center_x": 0.8, "center_y": 0.25}
+        on_press: app.request_echo_warning_back(*args)
+
+
+    MDRaisedButton:
+        id: left_warning
+        text: "Links"
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.08, 0.3
+        pos_hint: {"center_x": 0.685, "center_y": 0.33}
+        on_press: app.request_echo_warning_left(*args)
+
+
+    MDRaisedButton:
+        id: right_warning
+        text: "Rechts"
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.08, 0.3
+        pos_hint: {"center_x": 0.915, "center_y": 0.33}
+        on_press: app.request_echo_warning_right(*args)
+
+    
