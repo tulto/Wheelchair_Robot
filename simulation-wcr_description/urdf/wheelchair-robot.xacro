@@ -225,30 +225,49 @@
     </inertial>
   </link>
 
+  <!-- Linking Gazebo and ROS-->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo>
+  <!--Including planar movement (plug-in) in order to imitate omidirectional movement with mecanum wheels-->
+  <gazebo>
+    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>100.0</odometryRate> <!-- Needs to be evaluated with the real one-->
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <cmdTimeout>0.5</cmdTimeout>
+    </plugin>
+  </gazebo>
+
+<!--Below is the code/plug-in for a LiDAR sensor-->
   <gazebo reference="lidar">
     <sensor type="ray" name="RPLiDAR_A2M8">
       <pose>0 0 0 0 0 0</pose>
       <always_on>true</always_on>
-      <visualize>false</visualize>
-      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
       <ray>
         <scan>
           <horizontal>
             <samples>400</samples>
             <resolution>1</resolution>
-            <min_angle>0.0</min_angle>
-            <max_angle>6.28319</max_angle>
+            <min_angle>-1.570796</min_angle> <!--using a field of 270 degrees on one corner (-177° to 90° in Simulation because of the CAD model with LiDAR space in the back)-->
+            <max_angle>3.089233</max_angle>
           </horizontal>
         </scan>
         <range>
           <min>0.15</min>
           <max>8.0</max>
-          <resolution>0.08</resolution>
+          <resolution>0.08</resolution> <!--datasheet only contains resolution no accuracy-->
         </range>
         <noise>
           <type>gaussian</type>
           <mean>0.0</mean>
-          <stddev>0.015</stddev> <!--stddev needs to be checked again-->
+          <stddev>0.02667</stddev> <!--stddev for A2M8-R2 is 0.08/3 (using resolution)-->
         </noise>
       </ray>
       <plugin name="RPLiDAR_A2M8_measurement" filename="libgazebo_ros_laser.so">
@@ -262,26 +281,31 @@
     <material>Gazebo/Black</material>
   </gazebo>
 
-  <!-- Linking Gazebo and ROS-->
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/</robotNamespace>
-    </plugin>
-  </gazebo>
-  <!--Including planar movement in order to imitate omidirectional movement with mecanum wheels-->
-  <gazebo>
-    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <odometryRate>20.0</odometryRate>
-      <robotBaseFrame>base_link</robotBaseFrame>
-      <cmdTimeout>1.0</cmdTimeout>
-    </plugin>
+  <!--Below is the code/plug-in for a IMU (which at first won't be used)-->
+  <gazebo reference="wcr_base_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor_wcr" type="imu">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu_wcr</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>10.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
   </gazebo>
 
+
   <!-- This block connects joints to actuator (dc motors), which informs both
-  simulation and visualization of the robot. Only used for showing model right in RViZ.-->
+  simulation and visualization of the robot. Only used for showing model right in RViZ!!!-->
   <transmission name="left_front_wheel">
     <type>transmission_interface/SimpleTransmission</type>
     <actuator name="$left_front_dc_motor">
