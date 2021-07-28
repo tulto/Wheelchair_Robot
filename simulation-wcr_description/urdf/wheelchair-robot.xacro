@@ -239,7 +239,7 @@
       <odometryFrame>odom</odometryFrame>
       <odometryRate>100.0</odometryRate> <!-- Needs to be evaluated with the real one-->
       <robotBaseFrame>base_link</robotBaseFrame>
-      <cmdTimeout>0.5</cmdTimeout>
+      <cmdTimeout>10.0</cmdTimeout>
     </plugin>
   </gazebo>
 
@@ -272,7 +272,7 @@
       </ray>
       <plugin name="RPLiDAR_A2M8_measurement" filename="libgazebo_ros_laser.so">
         <topicName>/lidar_scan</topicName>
-        <frameName>RPLiDAR</frameName>
+        <frameName>lidar</frameName>
       </plugin>
     </sensor>
   </gazebo>
