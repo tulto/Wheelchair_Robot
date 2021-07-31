@@ -15,6 +15,8 @@ int x_movement = A0;
 int y_movement = A1;
 int t_movement = A2;
 int button = 7;
+int start = micros();
+int timer = 100000;
 
 services_and_messages::Joystick joy_msg;
 ros::Publisher joystick("/movement/joystick", &joy_msg);
@@ -76,7 +78,9 @@ void loop() {
   drive.set_movement(0, 0, 0);
 
   //Encoder Werte werden gesendet
-  //drive.send_encoder_count();
+  drive.send_encoder_count(timer);
+  timer = micros()-start;
+  start = micros();
 
   nh.spinOnce();
  

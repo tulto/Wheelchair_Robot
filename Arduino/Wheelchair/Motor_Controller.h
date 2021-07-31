@@ -47,7 +47,7 @@ Motor Part
 /***************************************************************
 Encoder Part
 ***************************************************************/
-  void send_encoder_count();
+  void send_encoder_count(int timer);
   int* get_encoder_count();
   
 };

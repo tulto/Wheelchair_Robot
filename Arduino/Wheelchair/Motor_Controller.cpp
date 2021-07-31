@@ -111,60 +111,46 @@ void Motor_Controller::movement(){
 Encoder Part
 *************************************************************************/
 //encoder Daten auswerten und als encoder_value[] zurückgeben
-void Motor_Controller::send_encoder_count(){
+void Motor_Controller::send_encoder_count(int timer){
   //definiere temporaeren Speicher
   String content;
-  char character;
-  byte modi;
+  int gleich;
+  int doppel;
     
-    //auszulesende Chanel werden definiert und abgefragt
+  //auszulesende Chanel werden definiert und abgefragt
   content = "";
-  Serial1.println("?C "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
-
-  modi = 0;
+  //encoder Werte für Serial1 Schnittstelle
+  Serial1.println("?CR "); //?CR [chanel]: relative Encoder Count, ?C [chanel] total Encoder Count
+  Serial1.println("!R ");
   //auslesen solange gesenet wird
-  while (Serial1.available() && modi != 4){
-    character = Serial1.read();
-    if (character == ':'){
-      encoder_value[0] = content.toInt();
-      content = "";
-      modi = 1;
-    }
-    if (character == '+' || character == '!' || character == '?'){  //Serialread stoppen
-      encoder_value[1] = content.toInt();
-      modi = 4; 
-    }
-    if (modi == 1){
-      content.concat(character);
-    }
-    if (character == '='){
-      modi = 1;
-    }        
-  }
+  Serial1.setTimeout(3);
+  content = Serial1.readString();
+  gleich = content.indexOf('=');
+  doppel = content.indexOf(':');
+  encoder_value[0] = content.substring(gleich+1,doppel).toInt();
+  encoder_value[1] = content.substring(doppel+1).toInt();
+  
   
   //encoder Werte für Serial2 Schnittstelle
   content = "";
-  Serial2.println("?C ");  
-  modi = 0;
+  Serial2.println("?CR ");
+  Serial2.println("!R ");  
   //auslesen solange gesenet wird
-  while (Serial2.available() && modi != 4){
-    character = Serial2.read();
-    if (character == ':'){
-      encoder_value[2] = content.toInt();
-      content = "";
-      modi = 1;
-    }
-    if (character == '+' || character == '!' || character == '?'){  //Serialread stopen
-      encoder_value[3] = content.toInt();
-      modi = 4; 
-    }
-    if (modi == 1){
-      content.concat(character);
-    }
-    if (character == '='){
-      modi = 1;
-    }
+  Serial2.setTimeout(3);
+  content = Serial2.readString();
+  gleich = content.indexOf('=');
+  doppel = content.indexOf(':');
+  encoder_value[2] = content.substring(gleich+1,doppel).toInt();
+  encoder_value[3] = content.substring(doppel+1).toInt();
+
+
+  //encoder_values werden in encoder_msg umgewandelt
+  encoder_msg.time = timer;
+  for (int i = 0; i<4; i++){
+    encoder_msg.encoder_wheel[i] = encoder_value[i];
   }
+  encoder.publish(&encoder_msg);
+/*  
   //nur etwas senden wenn Encoder Werte nicht alle Null sind
   if (encoder_value[0] != 0 && encoder_value[1] != 0 && encoder_value[2] != 0 && encoder_value[3] != 0){
     //encoder_values werden in encoder_msg umgewandelt
@@ -173,6 +159,8 @@ void Motor_Controller::send_encoder_count(){
     }
     encoder.publish(&encoder_msg);
   }
+*/
+
 }
 
 //alle encoder Werte werden ausgelesen und gesendet (erst sinnvoll direkt nach send_encoder_value nutzbar)
