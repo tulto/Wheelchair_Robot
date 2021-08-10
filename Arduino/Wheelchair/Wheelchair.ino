@@ -1,5 +1,6 @@
 #include <ros.h>
 #include "Motor_Controller.h"
+#include "IMU.h"
 #include <services_and_messages/Joystick.h>
 ros::NodeHandle nh;
 
@@ -23,6 +24,7 @@ ros::Publisher joystick("/movement/joystick", &joy_msg);
 
 
 Motor_Controller drive;
+IMU imu_;
 
 void setup() {
  Serial.begin(57600);  
@@ -31,6 +33,7 @@ void setup() {
 
  nh.initNode();
  drive.init(nh);
+ imu_.init(nh);
  nh.advertise(joystick);
  
   
@@ -81,6 +84,10 @@ void loop() {
   drive.send_encoder_count(timer);
   timer = micros()-start;
   start = micros();
+
+  //IMU Werte und Kalibrierdaten werden gesendet
+  imu_.publish_imu_data(nh);
+  imu_.publish_imu_cali();
 
   nh.spinOnce();
  
