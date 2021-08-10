@@ -22,8 +22,7 @@ def callback_receive_encoder_data(msg):
                         [msg.encoder_wheel[2] * 2 * math.pi / enc], [msg.encoder_wheel[3] * 2 * math.pi / enc]])
     relative_a = np.array([[1, 1, 1, 1], [1, -1, -1, 1], [2 / (L + W), -2 / (L + W), 2 / (L + W), -2 / (L + W)]])
     rel_mov = radius / 4 * np.dot(relative_a, encoder)
-    rospy.loginfo("relative movement")
-    rospy.loginfo(rel_mov)
+    rel_mov = rel_mov * np.array([[1], [0.957], [1.042]])  # Bias factor-error calculated
 
     # calculating absolute position based on starting point
     global pos
@@ -32,8 +31,6 @@ def callback_receive_encoder_data(msg):
                            [0, 0, 1]])
     position = pos + np.dot(absolute_a, rel_mov)
     pos = position
-    rospy.loginfo("absolute position")
-    rospy.loginfo(position)
 
     # publishing Position data to network
     msg_pos = Position()
