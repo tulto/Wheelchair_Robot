@@ -1,6 +1,36 @@
 scan_filter_chain:
-- name: angle
-  type: laser_filters/LaserScanAngularBoundsFilter
+- name: interpolation
+  type: laser_filters/InterpolationFilter
+
+- type: laser_filters/LaserArrayFilter
+  name: laser_median_filter
   params:
-    lower_angle: 3.09796
-    upper_angle: 3.18523
+    range_filter_chain:
+      - name: median_5
+        type: filters/MultiChannelMedianFilterFloat
+        params:
+          number_of_observations: 6
+          unused: 10
+    intensity_filter_chain:
+      - name: median_5
+        type: filters/MultiChannelMedianFilterFloat
+        params:
+          number_of_observations: 6
+          unused: 10
+
+
+- type: laser_filters/LaserArrayFilter
+  name: laser_mean_filter
+  params:
+    range_filter_chain:
+      - name: mean_5
+        type: filters/MultiChannelMeanFilterFloat
+        params:
+          number_of_observations: 3
+          unused: 10
+    intensity_filter_chain:
+      - name: mean_5
+        type: filters/MultiChannelMeanFilterFloat
+        params:
+          number_of_observations: 3
+          unused: 10
