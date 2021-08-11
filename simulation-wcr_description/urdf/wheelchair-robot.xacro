@@ -282,7 +282,18 @@
   </gazebo>
 
   <!--Below is the code/plug-in for a IMU (which at first won't be used)-->
-  <gazebo reference="wcr_base_link">
+  
+  <joint name="imu_joint" type="fixed">
+    <origin xyz="0 0 0.227" rpy="0 0 0" /> 
+    <parent link="base_link"/>
+    <child link="imu_link" /> 
+  </joint>
+  
+  <link name="imu_link">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </link>
+
+  <gazebo reference="imu_link">
     <gravity>true</gravity>
     <sensor name="imu_sensor_wcr" type="imu">
       <always_on>true</always_on>
