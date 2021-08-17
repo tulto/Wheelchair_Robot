@@ -116,7 +116,7 @@ if __name__ == '__main__':
     
     #implementing the publisher for the echo sensors warning
     pub = rospy.Publisher("echo_sensor", Echosensors, queue_size=10)
-    publish_frequency = 2
+    publish_frequency = 5
     rate = rospy.Rate(publish_frequency)
     
     #service server initializing
