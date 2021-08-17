@@ -131,10 +131,13 @@ if __name__ == '__main__':
         #looking if one echo sensor senses a distance -
         #that would result in a warning and publishing
         echo_warning_list = [True, True, True, True, True, True] #creating a boolean list that saves the received warnings -
-        
         #for safety purposes initialized with all values on true
-        for sensor in range(len(sensor_list)):
-            echo_warning_list[sensor] = sensor_list[sensor].distance_warning(0.30, 0.35)
+        echo_warning_list[0] = sensor_list[0].distance_warning(0.30, 0.35)
+        echo_warning_list[1] = sensor_list[1].distance_warning(0.30, 0.35)
+        echo_warning_list[2] = sensor_list[2].distance_warning(0.30, 0.35)
+        echo_warning_list[3] = sensor_list[3].distance_warning(0.30, 0.35)
+        echo_warning_list[4] = sensor_list[4].distance_warning(0.45, 0.50)
+        echo_warning_list[5] = sensor_list[5].distance_warning(0.45, 0.50)
     
         echo_msg.echo_dir = echo_warning_direction(echo_warning_list)
 
