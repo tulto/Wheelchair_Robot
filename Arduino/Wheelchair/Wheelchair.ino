@@ -42,7 +42,7 @@ void setup() {
  pinMode(r,INPUT);//right
  pinMode(b,INPUT);//back
  pinMode(l,INPUT);//left
- pinMode(button, INPUT);
+ pinMode(button, INPUT_PULLUP);
  
  // Give the Roboteq some time to boot-up. 
  delay(1000);
@@ -87,7 +87,7 @@ void loop() {
 
   //IMU Werte und Kalibrierdaten werden gesendet
   imu_.publish_imu_data(nh);
-  imu_.publish_imu_cali();
+  //imu_.publish_imu_cali();
 
   nh.spinOnce();
  

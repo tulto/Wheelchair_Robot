@@ -62,7 +62,7 @@ void IMU::publish_imu_data(ros::NodeHandle& nh){
   // Header
   imu_msg.header.seq = seq;
   imu_msg.header.stamp = nh.now();
-  imu_msg.header.frame_id = "imu_link";
+  imu_msg.header.frame_id = "base_link";
 
   // Quaternion data
   imu_msg.orientation.x = quat.x();

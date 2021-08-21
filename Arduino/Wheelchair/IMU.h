@@ -33,7 +33,7 @@ class IMU {
 
   float orientarion_covariance[9] = {0.001,0,0, 0,0.001,0, 0,0,0.001};
   float gyro_covariance[9] = {0.0045,0,0, 0,0.0122,0, 0,0,0.0064};
-  float linear_covariance[9] = {0.2,0,0, 0,0.2,0, 0,0,0.2};
+  float linear_covariance[9] = {0.5,0,0, 0,0.5,0, 0,0,0.5};
 
 
   public:

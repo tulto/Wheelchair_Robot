@@ -14,9 +14,16 @@ enc = 2750  # encoder count per turn
 
 pos = np.array([[0], [0], [0]])  # starting position
 
+test = 0
+
+
+
+
 
 # calculating encoder data to odometry
 def callback_receive_encoder_data(msg):
+    #rospy.init_node("position")
+
     # setting up formula for calculating relative movement of vehicle
     encoder = np.array([[msg.encoder_wheel[0] * 2 * math.pi / enc], [msg.encoder_wheel[1] * 2 * math.pi / enc],
                         [msg.encoder_wheel[2] * 2 * math.pi / enc], [msg.encoder_wheel[3] * 2 * math.pi / enc]])
@@ -32,6 +39,7 @@ def callback_receive_encoder_data(msg):
     position = pos + np.dot(absolute_a, rel_mov)
     pos = position
 
+
     # publishing Position data to network
     msg_pos = Position()
     msg_pos.x = position[0][0]
@@ -41,26 +49,42 @@ def callback_receive_encoder_data(msg):
 
     # publish velocity
     msg_odom = Odometry()
+
+
+    # msg_odom.header.seq = seq
+    msg_odom.header.stamp = rospy.Time.now()
+    msg_odom.header.frame_id = "odom"
+    msg_odom.child_frame_id = "base_link"
+
+
     msg_odom.pose.pose.position.x = position[0][0]
     msg_odom.pose.pose.position.y = position[1][0]
+    msg_odom.pose.covariance = [0.01, 0, 0, 0, 0, 0,
+                                 0, 0.01, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0,
+                                 0, 0, 0, 0, 0, 0.01]
+
 
     msg_odom.twist.twist.linear.x = rel_mov[0][0] / (msg.time / 100000)
     msg_odom.twist.twist.linear.y = rel_mov[1][0] / (msg.time / 100000)
     msg_odom.twist.twist.angular.z = rel_mov[2][0] / (msg.time / 100000)
-    msg_odom.twist.covariance = [0.1, 0, 0, 0, 0, 0,
-                                 0, 0.1, 0, 0, 0, 0,
+    msg_odom.twist.covariance = [0.01, 0, 0, 0, 0, 0,
+                                 0, 0.01, 0, 0, 0, 0,
                                  0, 0, 0, 0, 0, 0,
                                  0, 0, 0, 0, 0, 0,
                                  0, 0, 0, 0, 0, 0,
-                                 0, 0, 0, 0, 0, 0.1]
+                                 0, 0, 0, 0, 0, 0.5]
     pub_vel.publish(msg_odom)
 
 
+
 if __name__ == '__main__':
+    seq = 0
     rospy.init_node("odometry_encoder")
 
     sub = rospy.Subscriber("/encoder", Encoder, callback_receive_encoder_data)  # subscribe to /encoder data
     pub_pos = rospy.Publisher("/odom/position", Position, queue_size=10)
     pub_vel = rospy.Publisher("/odom/data", Odometry, queue_size=10)
-    rate = rospy.Rate(5)
     rospy.spin()
