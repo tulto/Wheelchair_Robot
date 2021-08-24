@@ -1,53 +1,13 @@
 <launch>
 
-
-  <!-- Run Cartographer Node -->
-  <node name="cartographer_node" pkg="cartographer_ros"
-      type="cartographer_node" args="
-          -configuration_directory
-              $(find slam-algorithms)/config
-          -configuration_basename wheelchair-robot.lua"
-      output="screen">
-    <remap from="imu" to="imu_wcr" />
-    <remap from="odom" to="odom" />
-    <remap from="scan" to="lidar_scan" />
-  </node>
-
-  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
-      type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
-
-</launch>
-
-
-
-<!--
-<launch>
-  <param name="robot_description"
-    textfile="$(find simulation-wcr_description)/urdf/wheelchair-robot.xacro" />
-
-  <node name="cartographer_node" pkg="cartographer_ros"
-     type="cartographer_node" args="
-    -configuration_directory $(find cartographer_ros)/configuration_files
-    -configuration_basename test.lua"
-     output="screen">
-  </node>
-
-  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
-     type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
-</launch>
--->
-
-<!--
-<launch>
-
-<arg name="scan_topic" default ="/lidar_scan" />
+<arg name="scan_topic" default ="/scan_merged" />
 <arg name="base_frame" default ="base_link" />
 <arg name="odom_frame" default ="odom" />
 
 <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher2"></node>
 <node pkg="rviz" type="rviz" name="rviz"></node>
 
-<node pkg="cartographer_ros" type="cartographer_ros" name="cartographer_ros" output="screen">
+<node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
     <param name="base_frame" value="$(arg base_frame)"/>
     <param name="odom_frame" value="$(arg odom_frame)"/>
     <param name="map_update_interval" value="5.0"/>
@@ -87,4 +47,3 @@
 
 
 </launch>
--->
