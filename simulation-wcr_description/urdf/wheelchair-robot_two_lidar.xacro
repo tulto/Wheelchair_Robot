@@ -11,7 +11,20 @@
   <material name="dark_grey"><color rgba="0.2 0.2 0.2 1.0" /></material>
   <material name="light_grey"><color rgba="0.4 0.4 0.4 1.0" /></material>
 
+  <link name="base_foot">
+    <origin xyz="0 0 0.07" rpy="0 0 0" />
+  </link>
 
+  <joint name="base_joint" type="fixed">
+    <origin xyz="0 0 0.0" rpy="0 0 0" /> 
+    <parent link="base_foot"/>
+    <child link="base_link" /> 
+  </joint>
+
+  <gazebo reference="base_foot">
+    <material>Gazebo/Yellow</material>
+    <gravity>true</gravity>
+  </gazebo>
 
   <link name="base_link">
     <visual>
@@ -256,7 +269,7 @@
       <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <odometryRate>100.0</odometryRate> <!-- Needs to be evaluated with the real one-->
-      <robotBaseFrame>base_link</robotBaseFrame>
+      <robotBaseFrame>base_foot</robotBaseFrame>
       <cmdTimeout>10.0</cmdTimeout>
     </plugin>
   </gazebo>
