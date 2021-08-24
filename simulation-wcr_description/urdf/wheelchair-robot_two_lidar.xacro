@@ -16,7 +16,7 @@
   </link>
 
   <joint name="base_joint" type="fixed">
-    <origin xyz="0 0 0.0" rpy="0 0 0" /> 
+    <origin xyz="0 0 0" rpy="0 0 0" /> 
     <parent link="base_foot"/>
     <child link="base_link" /> 
   </joint>
@@ -255,6 +255,16 @@
         izz="0.001"/>
     </inertial>
   </link>
+<!--
+  <joint name="lidar_merge_joint" type="fixed">
+    <origin xyz="0 0 0.1988" rpy="0 0 0" /> 
+    <parent link="base_link"/>
+    <child link="lidar_merge_link" /> 
+  </joint>
+  
+  <link name="lidar_merge_link">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </link> -->
 
   <!-- Linking Gazebo and ROS-->
   <gazebo>

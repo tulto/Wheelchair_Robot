@@ -1,6 +1,5 @@
 <launch>
 
-
   <!-- Run Cartographer Node -->
   <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
@@ -10,7 +9,7 @@
       output="screen">
     <remap from="imu" to="imu_wcr" />
     <remap from="odom" to="odom" />
-    <remap from="scan" to="scan_merged" />
+    <remap from="scan" to="scan_merged_ranged" />
   </node>
 
   <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"

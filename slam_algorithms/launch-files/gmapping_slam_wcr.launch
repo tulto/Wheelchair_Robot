@@ -4,8 +4,6 @@
 <arg name="base_frame" default ="base_link" />
 <arg name="odom_frame" default ="odom" />
 
-<node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher2"></node>
-<node pkg="rviz" type="rviz" name="rviz"></node>
 
 <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
     <param name="base_frame" value="$(arg base_frame)"/>
