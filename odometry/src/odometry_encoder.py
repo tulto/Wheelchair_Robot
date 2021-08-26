@@ -37,6 +37,11 @@ def callback_receive_encoder_data(msg):
                            [math.sin(pos[2][0] + rel_mov[2][0] / 2), math.cos(pos[2][0] + rel_mov[2][0] / 2), 0],
                            [0, 0, 1]])
     position = pos + np.dot(absolute_a, rel_mov)
+    # position only between 0 and 2pi
+    if position[2][0] >= 2 * math.pi:
+        position[2][0] = position[2][0] - 2*math.pi
+    elif position[2][0] <= -2 * math.pi:
+        position[2][0] = position[2][0] + 2 * math.pi
     pos = position
 
 
@@ -59,6 +64,8 @@ def callback_receive_encoder_data(msg):
 
     msg_odom.pose.pose.position.x = position[0][0]
     msg_odom.pose.pose.position.y = position[1][0]
+    msg_odom.pose.pose.orientation.z = math.sin(position[2][0])
+    msg_odom.pose.pose.orientation.w = math.cos(position[2][0])
     msg_odom.pose.covariance = [0.01, 0, 0, 0, 0, 0,
                                  0, 0.01, 0, 0, 0, 0,
                                  0, 0, 0, 0, 0, 0,
