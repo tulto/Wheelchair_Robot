@@ -16,7 +16,7 @@ int x_movement = A0;
 int y_movement = A1;
 int t_movement = A2;
 int button = 7;
-int start = micros();
+int start = millis();
 int timer = 100000;
 
 services_and_messages::Joystick joy_msg;
@@ -74,18 +74,18 @@ void loop() {
   }
 
   
-  //gesetzte bewegungenen werden ausgeführt
+  //Set movement is executed
   drive.movement();
   
-  //Bewegung wird zurückgesetzt
+  //reset movement
   drive.set_movement(0, 0, 0);
 
-  //Encoder Werte werden gesendet
+  //sending encode values
   drive.send_encoder_count(timer);
-  timer = micros()-start;
-  start = micros();
+  timer = millis()-start;
+  start = millis();
 
-  //IMU Werte und Kalibrierdaten werden gesendet
+  //IMU data will be send
   imu_.publish_imu_data(nh);
   //imu_.publish_imu_cali();
 

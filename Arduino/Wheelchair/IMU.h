@@ -30,10 +30,10 @@ class IMU {
   geometry_msgs::Vector3 cali_msg;
   ros::Publisher cali;
 
-
-  float orientarion_covariance[9] = {0.001,0,0, 0,0.001,0, 0,0,0.001};
-  float gyro_covariance[9] = {0.0045,0,0, 0,0.0122,0, 0,0,0.0064};
-  float linear_covariance[9] = {0.5,0,0, 0,0.5,0, 0,0,0.5};
+  //Define covarinace parameters
+  float orientation_covariance[9];// = {0.001,0,0, 0,0.001,0, 0,0,0.001};
+  float gyro_covariance[9];// = {0.0045,0,0, 0,0.0122,0, 0,0,0.0064};
+  float linear_covariance[9];// = {0.5,0,0, 0,0.5,0, 0,0,0.5};
 
 
   public:

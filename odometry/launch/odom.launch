@@ -1,0 +1,33 @@
+<launch> 
+  <?Connection between Arduino and PC?>
+  <node name="serial_node"        pkg="rosserial_python"      type="serial_node.py">
+    <param name="port"              type="string"               value="/dev/ttyACM0"/>
+    <param name="baud"              type="int"                  value="57600"/>
+    <rosparam param="orientation_covariance">[0.1,0.,0.,  0.,0.1,0.,  0.,0.,0.1]</rosparam>
+    <rosparam param="gyro_covariance">[0.1,0.,0.,  0.,0.1,0.,  0.,0.,0.1]</rosparam>
+    <rosparam param="linear_covariance">[0.4,0.,0.,  0.,0.4,0.,  0.,0.,0.4]</rosparam>
+  </node>
+  
+  <?Calculating Odom from Encoder data?>
+  <node pkg="odometry" type="odometry_encoder.py" name="odometry_encoder_node" >
+    <rosparam param="pose_covariance">[0.01,0,0,0,0,0,  0,0.01,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0.1] </rosparam>
+    <rosparam param="twist_covariance">[0.2,0,0,0,0,0,  0,0.2,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0.2] </rosparam>
+  </node>
+  
+  <?Geting movement rigth between analog Joystick to Velocity?>
+  <node pkg="odometry" type="movement_joystick.py" name="movement_joystick" >
+    <param name="speed" type="int" value="70" />
+    <param name="deadzone" type="int" value="50" />
+  </node>
+  
+  <?Sensorfusion over Kalman Filter?>
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find odometry)/params/ekf_template.yaml" />
+
+    <!--  Placeholder for output topic remapping
+    <remap from="odometry/filtered" to="odom"/>
+    <remap from="accel/filtered" to=""/>
+    -->
+
+  </node>
+</launch>
