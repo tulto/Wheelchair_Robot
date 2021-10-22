@@ -253,7 +253,7 @@
       <ray>
         <scan>
           <horizontal>
-            <samples>300</samples>
+            <samples>296</samples>
             <resolution>1</resolution>
             <min_angle>-1.570796</min_angle> <!--using a field of 270 degrees on one corner (-177° to 90° in Simulation because of the CAD model with LiDAR space in the back)-->
             <max_angle>3.089233</max_angle>

@@ -255,7 +255,8 @@
         izz="0.001"/>
     </inertial>
   </link>
-<!--
+
+
   <joint name="lidar_merge_joint" type="fixed">
     <origin xyz="0 0 0.1988" rpy="0 0 0" /> 
     <parent link="base_link"/>
@@ -264,7 +265,8 @@
   
   <link name="lidar_merge_link">
     <origin xyz="0 0 0" rpy="0 0 0" />
-  </link> -->
+  </link> 
+  
 
   <!-- Linking Gazebo and ROS-->
   <gazebo>
@@ -294,7 +296,7 @@
       <ray>
         <scan>
           <horizontal>
-            <samples>300</samples>
+            <samples>296</samples>
             <resolution>1</resolution>
             <min_angle>-1.570796</min_angle> <!--using a field of 270 degrees on one corner (-177° to 90° in Simulation because of the CAD model with LiDAR space in the back)-->
             <max_angle>3.089233</max_angle>
