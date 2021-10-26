@@ -1,5 +1,7 @@
 #include <ros.h>
 #include "Motor_Controller.h"
+#include "IMU.h"
+#include <services_and_messages/Joystick.h>
 ros::NodeHandle nh;
 
 
@@ -10,8 +12,19 @@ ros::NodeHandle nh;
 #define b 9  //back
 #define l 8  //left
 
+int x_movement = A0;
+int y_movement = A1;
+int t_movement = A2;
+int button = 7;
+int start = millis();
+int timer = 100000;
+
+services_and_messages::Joystick joy_msg;
+ros::Publisher joystick("/movement/joystick", &joy_msg);
+
 
 Motor_Controller drive;
+IMU imu_;
 
 void setup() {
  Serial.begin(57600);  
@@ -20,6 +33,8 @@ void setup() {
 
  nh.initNode();
  drive.init(nh);
+ imu_.init(nh);
+ nh.advertise(joystick);
  
   
  //Joystick
@@ -27,6 +42,7 @@ void setup() {
  pinMode(r,INPUT);//right
  pinMode(b,INPUT);//back
  pinMode(l,INPUT);//left
+ pinMode(button, INPUT_PULLUP);
  
  // Give the Roboteq some time to boot-up. 
  delay(1000);
@@ -37,6 +53,13 @@ void setup() {
 
 
 void loop() { 
+  //abfragen des analogen Joystickes
+  joy_msg.x = analogRead(x_movement);
+  joy_msg.y = analogRead(y_movement);
+  joy_msg.t = analogRead(t_movement);
+  joy_msg.button = digitalRead(button);
+  joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
+  
 
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
@@ -51,14 +74,20 @@ void loop() {
   }
 
   
-  //gesetzte bewegungenen werden ausgeführt
+  //Set movement is executed
   drive.movement();
   
-  //Bewegung wird zurückgesetzt
+  //reset movement
   drive.set_movement(0, 0, 0);
 
-  //Encoder Werte werden gesendet
-  //drive.send_encoder_count();
+  //sending encode values
+  drive.send_encoder_count(timer);
+  timer = millis()-start;
+  start = millis();
+
+  //IMU data will be send
+  imu_.publish_imu_data(nh);
+  //imu_.publish_imu_cali();
 
   nh.spinOnce();
  
