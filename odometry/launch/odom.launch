@@ -16,10 +16,10 @@
   
   <?Geting movement rigth between analog Joystick to Velocity?>
   <?the lower the value for speed the faster the wheelchair goes?>
-  <node pkg="odometry" type="movement_joystick.py" name="movement_joystick" >
+  <?node pkg="odometry" type="movement_joystick.py" name="movement_joystick" >
     <param name="speed" type="int" value="70" /> 
     <param name="deadzone" type="int" value="50" />
-  </node>
+  </node?>
   
   <?Sensorfusion over Kalman Filter?>
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
