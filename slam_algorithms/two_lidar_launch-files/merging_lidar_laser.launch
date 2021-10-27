@@ -1,0 +1,28 @@
+<launch>
+
+	<node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
+	<param name="destination_frame" value="lidar_merge_link"/>
+	<!--
+	<param name="base_frame" value="/lidar_front /lidar_back"/> -->
+	<param name="cloud_destination_topic" value="/merged_cloud"/>
+	<param name="scan_destination_topic" value="/scan_merged"/>
+	<param name="laserscan_topics" value ="/lidar_scan_front /lidar_scan_back" /> <!-- LIST OF THE LASER SCAN TOPICS TO SUBSCRIBE -->
+	<!---->
+	<param name="angle_min" value="-3.14159265359"/>
+	<param name="angle_max" value="3.14159265359"/>
+	<param name="angle_increment" value="0.01573796326795"/> <!--Value for correctly used 401 measured values: 0.01570776326795, for 400 measured values: 0.01573796326795-->
+	<param name="scan_time" value="0.0"/>
+	<param name="time_increment" value="0.0"/>
+	<param name="range_min" value="0.15"/>
+	<param name="range_max" value="8.0"/> 
+
+	</node>
+	<!--Needed to change source code of lasercan_multi_merger.cpp line 212 from ros::Time(0) to ros::Time::now() to work properly-->
+
+	<node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="scan_merged_ranged">
+      	<rosparam command="load" file="$(find slam_algorithms)yaml-files/laser_data_remover.yaml" />
+      	<remap from="scan" to="scan_merged" />
+	<remap from="scan_filtered" to="scan_merged_ranged" />
+	</node>
+	
+</launch>
