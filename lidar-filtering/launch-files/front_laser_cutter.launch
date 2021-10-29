@@ -1,0 +1,6 @@
+<launch>
+<node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="front_laser_angle_cutter">
+      <rosparam command="load" file="$(find lidar-filtering)yaml-files/front_laser_angle_cutter.yaml" />
+      <remap from="scan" to="/front_scan" />
+</node>
+</launch>
