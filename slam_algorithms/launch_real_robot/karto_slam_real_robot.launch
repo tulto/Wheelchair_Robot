@@ -1,6 +1,6 @@
 <launch>
 
-<arg name="scan_topic" default ="/lidar_scan" />
+<arg name="scan_topic" default ="/front_scan" />
 <arg name="base_frame" default ="base_link" />
 <arg name="odom_frame" default ="odom" />
 
@@ -11,8 +11,9 @@
 <node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
     <param name="base_frame" value="$(arg base_frame)"/>
     <param name="odom_frame" value="$(arg odom_frame)"/>
-    <param name="map_update_interval" value="5.0"/>
-    
+    <rosparam command="load" file="$(find slam_algorithms)/config/karto_slam_param_real_robot.yaml" />
+    <param name="map_update_interval" value="5"/>
+    <param name="resolution" value="0.025"/>
     <remap from="scan" to="$(arg scan_topic)"/>
   </node>
 
