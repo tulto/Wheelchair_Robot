@@ -1,4 +1,4 @@
-"wheelchair-robot"
+#Wheelchair Robot
 
 This Repository is used to program a wheelchair robot that will be used to autonomously drive older or disabled people with the help of SLAM and path planning. This project is part of a masters-degree-program.
 
