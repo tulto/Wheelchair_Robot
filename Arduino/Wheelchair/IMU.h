@@ -9,6 +9,8 @@
 #include <ros.h>
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/Quaternion.h>
+#include <std_msgs/Header.h>
 
 
 class IMU {
@@ -20,20 +22,27 @@ class IMU {
 
   // Check I2C device address and correct line below (by default address is 0x29 or 0x28)
   //                                   id, address
-  Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
+  Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x28);
 
-  //Publisher für IMU daten
-  sensor_msgs::Imu imu_msg;
-  ros::Publisher imu;
+
+  // Publisher für IMU daten
+  
+  // splitting of the IMU data for a faster transfer of the data into ROS 
+  // all msgs are defined
+  geometry_msgs::Quaternion orient_msg;
+  geometry_msgs::Vector3 accel_msg;
+  geometry_msgs::Vector3 gyro_msg;
+  std_msgs::Header head_msg;
+
+  // publisher are defined
+  ros::Publisher imu_orient;
+  ros::Publisher imu_accel;
+  ros::Publisher imu_gyro;
+  ros::Publisher imu_head;
 
   //Publisher für Kallibrierungsdaten
   geometry_msgs::Vector3 cali_msg;
   ros::Publisher cali;
-
-  //Define covarinace parameters
-  float orientation_covariance[9];// = {0.001,0,0, 0,0.001,0, 0,0,0.001};
-  float gyro_covariance[9];// = {0.0045,0,0, 0,0.0122,0, 0,0,0.0064};
-  float linear_covariance[9];// = {0.5,0,0, 0,0.5,0, 0,0,0.5};
 
 
   public:
