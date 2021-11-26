@@ -1,0 +1,7 @@
+<launch>
+
+<include file="$(find lidar-filtering)/launch-files/front_lidar_angle_cutter.launch" />
+
+<include file="$(find lidar-filtering)/launch-files/back_lidar_angle_cutter.launch" />
+
+</launch>
