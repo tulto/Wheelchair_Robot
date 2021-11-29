@@ -15,10 +15,9 @@
 
   <node name="wcr_controller_spawner" pkg="controller_manager" type="spawner"
     args="wcr_joint_state_controller
-          --shutdown-timeout 1"/>
+          --shutdown-timeout 3"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name  ="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_house.world" />
     <arg name="debug" value="0" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="use_sim_time" value="$(arg use_sim_time)" />
@@ -28,10 +27,10 @@
   </include>
 
 <!-- Load robot description -->
-<include file="$(find simulation-wcr_description)/launch/simulation_wcr_description_two_lidar_test.launch" />
+<include file="$(find simulation-wcr_gazebo)/launch/empty_wcr_simulation_description.launch" />
 
   <!-- Spawn the robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
-        args="-urdf -model wheelchair-robot-fhws -param robot_description -x -3 -y 1.2 -z 0.0" />
+        args="-urdf -model wheelchair-robot-fhws -param robot_description -x 0 -y 0 -z 0.0" />
 
 </launch>

@@ -27,7 +27,7 @@
   </include>
 
 <!-- Load robot description -->
-<include file="$(find simulation-wcr_description)/launch/simulation_wcr_description.launch" />
+<include file="$(find simulation-wcr_gazebo)/launch/empty_wcr_two_lidar_simulation_description.launch" />
 
   <!-- Spawn the robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
