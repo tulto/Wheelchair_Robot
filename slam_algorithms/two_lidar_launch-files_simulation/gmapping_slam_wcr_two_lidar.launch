@@ -3,6 +3,7 @@
 <arg name="scan_topic" default ="/scan_merged_ranged" />
 <arg name="base_frame" default ="base_link" />
 <arg name="odom_frame" default ="odom" />
+<arg name="map_name" default ="map_gmapping" />
 
 <!--
 <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher2"></node>
@@ -45,6 +46,7 @@
     <param name="lasamplerange" value="0.005"/>
     <param name="lasamplestep" value="0.005"/>
     <remap from="scan" to="$(arg scan_topic)"/>
+    <remap from="map" to="$(arg map_name)"/>
   </node>
 
 

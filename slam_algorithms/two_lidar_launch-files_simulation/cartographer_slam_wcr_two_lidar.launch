@@ -7,9 +7,11 @@
               $(find slam_algorithms)/config
           -configuration_basename wheelchair-robot.lua"
       output="screen">
+    <remap from="map" to="map_cartographer" />
     <remap from="imu" to="imu_wcr" />
     <remap from="odom" to="odom" />
     <remap from="scan" to="scan_merged_ranged" />
+    
   </node>
 
   <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"

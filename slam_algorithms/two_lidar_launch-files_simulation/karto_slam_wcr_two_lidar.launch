@@ -3,6 +3,7 @@
 <arg name="scan_topic" default ="/scan_merged_ranged" />
 <arg name="base_frame" default ="base_link" />
 <arg name="odom_frame" default ="odom" />
+<arg name="map_name" default ="map_karto" />
 
 <node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
     <param name="base_frame" value="$(arg base_frame)"/>
@@ -10,9 +11,11 @@
     <param name="map_update_interval" value="5.0"/>
     <param name="resolution" value="0.025"/>
     <param name="maxRange" value="8.0"/>
+    <param name="map" value="map_karto"/>
     <param name="/use_sim_time" value="true" />
     
     <remap from="scan" to="$(arg scan_topic)"/>
+    <remap from="map" to="$(arg map_name)"/>
   </node>
 
 
