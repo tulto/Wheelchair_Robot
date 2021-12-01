@@ -1,8 +1,11 @@
 <launch>
 
+<!-- now with good parameters from nursing home test-->
+
 <arg name="scan_topic" default ="/front_scan" />
 <arg name="base_frame" default ="base_link" />
 <arg name="odom_frame" default ="odom" />
+<arg name="map_name" default ="map_karto" />
 
 <!--
 <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher2"></node>
@@ -11,10 +14,44 @@
 <node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
     <param name="base_frame" value="$(arg base_frame)"/>
     <param name="odom_frame" value="$(arg odom_frame)"/>
-    <rosparam command="load" file="$(find slam_algorithms)/config/karto_slam_param_real_robot.yaml" />
-    <param name="map_update_interval" value="5"/>
-    <param name="resolution" value="0.025"/>
+    <param name="map_update_interval" value="3.5"/>
+    <param name="resolution" value="0.05"/>
+    <param name="maxRange" value="8.0"/>
+    <param name="map" value="map_karto"/>
+    <param name="transform_publisher_period" value="0.05" />
+    <param name="use_scan_barycenter" value="true" />
+    <param name="use_scan_matching" value="true" />
+    <param name="minimum_travel_distance" value="0.15" />
+    <param name="minimum_travel_heading" value="deg2rad(7)" />
+    <param name="scan_buffer_size" value="38" />
+    <param name="scan_bufffer_maximum_scan_distance" value="8" />
+    <param name="link_match_minimum_response_fine" value="0.86" />
+    <param name="link_scan_maximum_distance" value="4" />
+    <param name="loop_search_maximum_distance" value="4" />
+    <param name="do_loop_closing" value="true" />
+    <param name="loop_match_minimum_chain_size" value="10" />
+    <param name="loop_match_maximum_variance_coarse" value="sqrt(0.4)" />
+    <param name="loop_match_minimum_response_coarse" value="0.8" />
+    <param name="loop_mathc_minimum_response_fine" value="0.8" />
+    <param name="correlation_search_space_dimension" value="0.3" />
+    <param name="correlation_search_space_resolution" value="0.01" />
+    <param name="correlation_search_space_smear_deviation" value="0.03" />
+    <param name="loop_search_space_dimension" value="8.0" />
+    <param name="loop_search_space_resolution" value="0.05" />
+    <param name="loop_search_space_smear_deviation" value="0.03" />
+    <param name="distance_variance_penalty" value="sqrt(0.3)" />
+    <param name="angle_variance_penalty" value="sqrt(deg2rad(20))" />
+    <param name="fine_search_angle_offset" value="deg2rad(0.2)" />
+    <param name="coarse_search_angle_offset" value="deg2rad(20.0)" />
+    <param name="coarse_angle_resolution" value="deg2rad(2.0)" />
+    <param name="minimum_angle_penalty" value="0.9" />
+    <param name="minimum_distance_penalty" value="0.5" />
+    <param name="use_response_expansion" value="false" />
+
+
+    
     <remap from="scan" to="$(arg scan_topic)"/>
+    <remap from="map" to="$(arg map_name)"/>
   </node>
 
 
