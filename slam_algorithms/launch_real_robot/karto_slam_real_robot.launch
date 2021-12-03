@@ -14,19 +14,19 @@
 <node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
     <param name="base_frame" value="$(arg base_frame)"/>
     <param name="odom_frame" value="$(arg odom_frame)"/>
-    <param name="map_update_interval" value="3.5"/>
+    <param name="map_update_interval" value="5.0"/>
     <param name="resolution" value="0.05"/>
     <param name="maxRange" value="8.0"/>
     <param name="map" value="map_karto"/>
     <param name="transform_publisher_period" value="0.05" />
     <param name="use_scan_barycenter" value="true" />
     <param name="use_scan_matching" value="true" />
-    <param name="minimum_travel_distance" value="0.15" />
-    <param name="minimum_travel_heading" value="deg2rad(7)" />
-    <param name="scan_buffer_size" value="38" />
-    <param name="scan_bufffer_maximum_scan_distance" value="8" />
-    <param name="link_match_minimum_response_fine" value="0.86" />
-    <param name="link_scan_maximum_distance" value="4" />
+    <param name="minimum_travel_distance" value="0.2" />
+    <param name="minimum_travel_heading" value="deg2rad(10)" />
+    <param name="scan_buffer_size" value="70" />
+    <param name="scan_bufffer_maximum_scan_distance" value="20" />
+    <param name="link_match_minimum_response_fine" value="0.8" />
+    <param name="link_scan_maximum_distance" value="10" />
     <param name="loop_search_maximum_distance" value="4" />
     <param name="do_loop_closing" value="true" />
     <param name="loop_match_minimum_chain_size" value="10" />
