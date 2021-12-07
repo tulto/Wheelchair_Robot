@@ -59,8 +59,8 @@ def callback_receive_encoder_data(msg):
 
     # publishing Position data to network
     msg_pos = Position()
-    msg_pos.x = rel_mov[0][0]
-    msg_pos.y = rel_mov[1][0]
+    msg_pos.x = position[0][0]
+    msg_pos.y = position[1][0]
     msg_pos.turn = position[2][0]
     pub_pos.publish(msg_pos)
 
