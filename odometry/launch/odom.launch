@@ -42,7 +42,7 @@
   <arg name="map_file" default="$(find odometry)/map/labor.yaml"/>
   
    <!-- Map server -->
-  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+  <?node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
   
   <!-- Arguments -->
   <arg name="scan_topic"     default="front_scan"/>
@@ -90,6 +90,6 @@
     <param name="odom_frame_id"             value="odom"/>
     <param name="base_frame_id"             value="base_link"/>
 
-  </node>
+  </node?>
   
 </launch>

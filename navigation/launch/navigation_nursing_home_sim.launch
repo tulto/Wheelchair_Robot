@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="use_sim_time" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="headless" default="false" />
+  <arg name="map_file" default="$(find navigation)/maps/simulation/gmapping_default_param_nursing_home.yaml"/>
+  
+  <rosparam command="load"
+            file="$(find simulation-wcr_description)/config/joints.yaml"
+            ns="wcr_joint_state_controller" />
+
+  <node name="wcr_controller_spawner" pkg="controller_manager" type="spawner"
+    args="wcr_joint_state_controller
+          --shutdown-timeout 1"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name  ="world_name" value="$(find simulation-wcr_gazebo)/worlds/nursingHome.world" />
+    <arg name="debug" value="0" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="use_sim_time" value="$(arg use_sim_time)" />
+    <arg name="headless" value="$(arg headless)" />
+    <!-- <arg name="world_name" value="$(arg world_name)" /> -->
+    <arg name="paused" value="false"/>
+  </include>
+
+<!-- Load robot description -->
+<include file="$(find simulation-wcr_gazebo)/launch/nursing_home_wcr_simulation_description.launch" />
+
+  <!-- Spawn the robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -model wheelchair-robot-fhws -param robot_description -x 0.0 -y 0.0 -z 0.0" />
+
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+   
+  <include file="$(find navigation)/launch/amcl_sim.launch"/>
+
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find navigation)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/dwa_local_planner_params_wheelchair.yaml" command="load" />
+    <remap from="cmd_vel" to="/cmd_vel"/>
+    <remap from="odom" to="odom"/>
+    <param name="DWAPlannerROS/min_vel_x" value="0.0" />
+  </node>
+  
+  <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find turtlebot3_navigation)/rviz/turtlebot3_navigation.rviz"/>
+
+
+</launch>
