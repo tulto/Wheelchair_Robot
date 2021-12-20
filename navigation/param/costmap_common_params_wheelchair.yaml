@@ -3,7 +3,7 @@ robot_base_frame: base_foot
 obstacle_range: 3.0
 raytrace_range: 3.5
 
-footprint: [[-0.55, -0.37], [-0.55, 0.37], [0.55, 0.37], [0.55, -0.37]]
+footprint: [[-0.52, -0.37], [-0.52, 0.37], [0.52, 0.37], [0.52, -0.37]]
 #robot_radius: 0.17
 
 inflation_radius: 1.0
@@ -11,4 +11,4 @@ cost_scaling_factor: 3.0
 
 map_type: costmap
 observation_sources: scan
-scan: {sensor_frame: lidar_front, data_type: LaserScan, topic: lidar_scan_front, marking: true, clearing: true}
+scan: {sensor_frame: lidar_front, data_type: LaserScan, topic: front_scan_cut, marking: true, clearing: true}

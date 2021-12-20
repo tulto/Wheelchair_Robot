@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
+  <rosparam name="use_sim_time" value="true"/>
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
@@ -23,12 +24,23 @@
     <arg name="paused" value="false"/>
   </include>
 
-<!-- Load robot description -->
-<include file="$(find simulation-wcr_gazebo)/launch/nursing_home_wcr_simulation_description.launch" />
+  <!-- Load robot description -->
+  <include file="$(find simulation-wcr_gazebo)/launch/nursing_home_wcr_simulation_description.launch" />
 
   <!-- Spawn the robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
         args="-urdf -model wheelchair-robot-fhws -param robot_description -x 0.0 -y 0.0 -z 0.0" />
+
+  <!-- Laser TF -->
+  <node pkg="frame_setup_tf" type="front_laser_tf" name="front_laser_tf_publisher">
+  </node>
+
+  <!-- Setup lidar scan -->
+  <include file="$(find lidar-filtering)/launch-files/front_lidar_angle_cutter.launch" />
+
+  <include file="$(find lidar-filtering)/launch-files/back_lidar_angle_cutter.launch" />
+
+  <include file="$(find lidar-filtering)/launch-files/merging_lidar_laser.launch" />
 
 
   <!-- Map server -->
@@ -37,20 +49,42 @@
   <include file="$(find navigation)/launch/amcl_sim.launch"/>
 
 
+  <!-- move base Pathplaning -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    # Global planner
+    # carrot_planner/CarrotPlanner global_planner/GlobalPlanner navfn/NavfnROS
+    <param name="base_global_planner" value="global_planner/GlobalPlanner" />  
+    
+    # Local planner
+    #base_local_planner/TrajectoryPlannerROS dwa_local_planner/DWAPlannerROS teb_local_planner/TebLocalPlannerROS
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS" /> 
+    
+    # Costmap
     <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find navigation)/param/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find navigation)/param/global_costmap_params.yaml" command="load" />
+    
+    # Movebase
     <rosparam file="$(find navigation)/param/move_base_params.yaml" command="load" />
-    <rosparam file="$(find navigation)/param/dwa_local_planner_params_wheelchair.yaml" command="load" />
+    
+    # global planer parameter
+    <?rosparam file="$(find navigation)/param/global_planner/carrot_global_planner_params.yaml" command="load"/>
+    <rosparam file="$(find navigation)/param/global_planner/global_global_planner_params.yaml" command="load"/>
+    <rosparam file="$(find navigation)/param/global_planner/navfn_global_planner_params.yaml" command="load"/?>
+    
+    
+    # local planer parameter
+    <rosparam file="$(find navigation)/param/local_planner/dwa_local_planner_params_wheelchair.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/local_planner/teb_local_planner_params_wheelchair.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/local_planner/trajectory_local_planner_params_wheelchair.yaml" command="load" />
+    
     <remap from="cmd_vel" to="/cmd_vel"/>
     <remap from="odom" to="odom"/>
-    <param name="DWAPlannerROS/min_vel_x" value="0.0" />
+    <param name="DWAPlannerROS/min_vel_x" value="-0.5" />
   </node>
   
-  <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find turtlebot3_navigation)/rviz/turtlebot3_navigation.rviz"/>
+  <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
 
 
 </launch>
