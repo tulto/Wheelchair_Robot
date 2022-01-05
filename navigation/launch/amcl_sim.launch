@@ -1,6 +1,6 @@
 <launch>
   <!-- Arguments -->
-  <arg name="scan_topic"     default="lidar_scan_front"/>
+  <arg name="scan_topic"     default="scan_merged_ranged"/>
   <arg name="initial_pose_x" default="0.6"/> #0.6
   <arg name="initial_pose_y" default="-1.1"/> #-1.1
   <arg name="initial_pose_a" default="0.0"/>
@@ -20,12 +20,12 @@
     <param name="initial_pose_x"            value="$(arg initial_pose_x)"/>
     <param name="initial_pose_y"            value="$(arg initial_pose_y)"/>
     <param name="initial_pose_a"            value="$(arg initial_pose_a)"/>
-    <param name="initial_cov_xx"            value="5.0"/>
-    <param name="initial_cov_yy"            value="5.0"/>
+    <param name="initial_cov_xx"            value="0.5"/>
+    <param name="initial_cov_yy"            value="0.5"/>
     <param name="initial_cov_aa"            value="3.14"/>
     <param name="gui_publish_rate"          value="50.0"/>
 
-    <remap from="scan"                      to="lidar_scan_front"/>
+    <remap from="scan"                      to="scan_merged"/>
     <param name="laser_max_range"           value="3.5"/>
     <param name="laser_max_beams"           value="270"/>
     <param name="laser_z_hit"               value="0.5"/>
