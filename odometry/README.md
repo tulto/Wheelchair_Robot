@@ -21,7 +21,7 @@ and ``dwa_local_planner`` and ``base_local_planner`` for local planning.
 Inside our wheelchair we also want to test the ``teb_local_planner`` with its time elastic band methode. 
 
 ```
-sudo apt install ros-noetic-tep-local-planner
+sudo apt install ros-noetic-teb-local-planner
 ```
 
 Inside the simulation file we also use ``ira_laser_tools`` for merging two laser scan data
