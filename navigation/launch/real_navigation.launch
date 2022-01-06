@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<launch>
+  <rosparam name="use_sim_time" value="true"/>
+  <arg name="use_sim_time" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="headless" default="false" />
+  <arg name="map_file" default="$(find navigation)/maps/simulation/gmapping_default_param_nursing_home.yaml"/>
+
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+   
+  <include file="$(find navigation)/launch/amcl_sim.launch"/>
+
+
+  <!-- move base Pathplaning -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    # Global planner
+    # carrot_planner/CarrotPlanner global_planner/GlobalPlanner navfn/NavfnROS
+    <param name="base_global_planner" value="global_planner/GlobalPlanner" />  
+    
+    # Local planner
+    #base_local_planner/TrajectoryPlannerROS dwa_local_planner/DWAPlannerROS teb_local_planner/TebLocalPlannerROS
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" /> 
+    
+    # Costmap
+    <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find navigation)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/global_costmap_params.yaml" command="load" />
+    
+    # Movebase
+    <rosparam file="$(find navigation)/param/move_base_params.yaml" command="load" />
+    
+    # global planer parameter
+    <rosparam file="$(find navigation)/param/global_planner/carrot_global_planner_params.yaml" command="load"/>
+    <rosparam file="$(find navigation)/param/global_planner/global_global_planner_params.yaml" command="load"/>
+    <rosparam file="$(find navigation)/param/global_planner/navfn_global_planner_params.yaml" command="load"/>
+    
+    
+    # local planer parameter
+    <rosparam file="$(find navigation)/param/local_planner/dwa_local_planner_params_wheelchair.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/local_planner/teb_local_planner_params_wheelchair.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/local_planner/trajectory_local_planner_params_wheelchair.yaml" command="load"/>
+    
+    <remap from="cmd_vel" to="/cmd_vel"/>
+    <remap from="odom" to="odom"/>
+  </node>
+
+
+</launch>
