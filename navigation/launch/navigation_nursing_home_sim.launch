@@ -48,13 +48,17 @@
 
   <!-- move base Pathplaning -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  
+    #recovery behavior
+    <rosparam file="$(find navigation)/param/recovery_behaviors.yaml" command="load" />
+    
     # Global planner
     # carrot_planner/CarrotPlanner global_planner/GlobalPlanner navfn/NavfnROS
     <param name="base_global_planner" value="global_planner/GlobalPlanner" />  
     
     # Local planner
     #base_local_planner/TrajectoryPlannerROS dwa_local_planner/DWAPlannerROS teb_local_planner/TebLocalPlannerROS
-    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" /> 
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /> 
     
     # Costmap
     <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="global_costmap" />
