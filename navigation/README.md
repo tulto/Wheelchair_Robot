@@ -29,6 +29,11 @@ Inside the simulation file we also use ``ira_laser_tools`` for merging two laser
 sudo apt install ros-noetic-ira-laser-tools
 ```
 
+We also use the twist_recovery package for a more flexible recovery behaviour system.
+```
+sudo apt install ros-noetic-twist-recovery
+```
+
 ### Launch
 The lauch of the simulation file:
 ```
