@@ -11,6 +11,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   services_and_messages
+  std_msgs
+  geometry_msgs
+  tf
+  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -73,8 +77,6 @@ find_package(catkin REQUIRED COMPONENTS
 #   std_msgs  # Or other packages containing msgs
 # )
 
-add_executable(robo_dimensions_block src/robo_dimensions.cpp)
-target_link_libraries(robo_dimensions_block ${catkin_LIBRARIES})
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -106,10 +108,10 @@ target_link_libraries(robo_dimensions_block ${catkin_LIBRARIES})
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES amcl_localization
-#  CATKIN_DEPENDS roscpp rospy services_and_messages
-#  DEPENDS system_lib
+  #INCLUDE_DIRS include
+  #LIBRARIES amcl_localization
+  #CATKIN_DEPENDS roscpp rospy services_and_messages visualization_msgs tf std_msgs geometry_msgs
+  #DEPENDS system_lib
 )
 
 ###########
@@ -119,7 +121,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  #include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -127,6 +129,9 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/amcl_localization.cpp
 # )
+
+add_executable(robo_dimensions_block src/block_robo_dimensions.cpp)
+target_link_libraries(robo_dimensions_block ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
