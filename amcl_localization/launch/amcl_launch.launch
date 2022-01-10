@@ -2,7 +2,7 @@
 	<!--The following parameters are the empirically found best paramters for global localization of the robot-->
 
   <!-- Start the dimension visualization of the robot-->
-  <node pkg="amcl_localization" type="robo_dimensions" name="robo_dimensions_block">
+  <node pkg="amcl_localization" type="robo_dimensions_block" name="robo_dimensions_pub">
   </node>
 
   <!-- initiate some variables -->
