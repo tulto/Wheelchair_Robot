@@ -1,0 +1,95 @@
+<launch>
+	<!--The following parameters are the empirically found best paramters for global localization of the robot-->
+  <!-- Load the map (from hector slam/mapping) -->
+  <arg name="map_file" default="$(find temp_files)/maps/hector_third_new_param_nursing_home.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+    <param name="frame_id" value="map"/>
+    </node>
+
+  <!-- Start the dimension visualization of the robot-->
+  <node pkg="test_dir" type="robo_dimensions" name="robo_dimensions_block">
+  </node>
+
+  <!-- initiate some variables -->
+  <arg name="use_map_topic" default="true"/>
+  <arg name="scan_topic" default="/scan_merged_ranged" />
+  <arg name="odom_frame_name" default="odom" />
+  <arg name="base_frame_name" default="base_link" />
+
+  <!-- start and configure amcl-->
+  <node pkg="amcl" type="amcl" name="amcl">
+
+    <param name="use_map_topic" value="$(arg use_map_topic)"/> <!-- When set to true, AMCL will subscribe to the map topic rather than making a service call to receive its map. New in navigation 1.4.2 -->
+    <param name="first_map_topic" value="true"/> <!-- When set to true, AMCL will only use the first map it subscribes to, rather than updating each time a new one is received. New in navigation 1.4.2 -->
+    <param name="selective_resampling" value="true"/> <!-- When set to true, will reduce the resampling rate when not needed and help avoid particle deprivation. The resampling will only happen if the effective number of particles (N_eff = 1/(sum(k_i^2))) is lower than half the current number of particles. Reference: Grisetti, Giorgio, Cyrill Stachniss, and Wolfram Burgard. "Improved techniques for grid mapping with rao-blackwellized particle filters." IEEE transactions on Robotics 23.1 (2007): 34 -->
+    <param name="odom_model_type" value="omni"/> <!--  then we use the sample_motion_model_odometry algorithm from Probabilistic Robotics, p136; this model uses the noise parameters odom_alpha1 through odom_alpha4, as defined in the book.  -->
+    <param name="save_pose_rate" value="1"/> <!-- Maximum rate (Hz) at which to store the last estimated pose and covariance to the parameter server, in the variables ~initial_pose_* and ~initial_cov_*. This saved pose will be used on subsequent runs to initialize the filter. -1.0 to disable.  -->
+    
+    <param name="gui_publish_rate" value="10.0"/> <!-- Maximum rate (Hz) at which scans and paths are published for visualization, -1.0 to disable.  -->
+    <param name="laser_max_beams" value="300"/> <!-- def: 30 How many evenly-spaced beams in each scan to be used when updating the filter.  -->
+    <param name="min_particles" value="800"/> <!-- def: 100 Minimum allowed number of particles. -->
+    <param name="max_particles" value="24000"/> <!-- def: 5000 Maximum allowed number of particles. -->
+    <param name="kld_err" value="0.02"/> <!-- def: 0.01Maximum error between the true distribution and the estimated distribution. -->
+    <param name="kld_z" value="0.99"/> <!-- Upper standard normal quantile for (1 - p), where p is the probability that the error on the estimated distrubition will be less than kld_err -->
+
+    <param name="odom_alpha1" value="0.2"/> <!-- Specifies the expected noise in odometry's rotation estimate from the rotational component of the robot's motion. -->
+    <param name="odom_alpha2" value="0.2"/> <!-- Specifies the expected noise in odometry's rotation estimate from translational component of the robot's motion.  -->
+    <param name="odom_alpha3" value="0.2"/> <!-- Specifies the expected noise in odometry's translation estimate from the translational component of the robot's motion.  -->
+    <param name="odom_alpha4" value="0.2"/> <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion. -->
+    <param name="odom_alpha5" value="0.2"/> <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion. -->
+
+    <param name="laser_z_hit" value="0.5"/> <!-- Mixture weight for the z_hit part of the model.  -->
+    <param name="laser_z_short" value="0.05"/> <!-- Mixture weight for the z_short part of the model.  -->
+    <param name="laser_z_max" value="0.05"/> <!-- Mixture weight for the z_max part of the model.  -->
+    <param name="laser_z_rand" value="0.5"/> <!-- Mixture weight for the z_rand part of the model. -->
+    <param name="laser_sigma_hit" value="0.266"/> <!-- Standard deviation for Gaussian model used in z_hit part of the model.  -->
+    <param name="laser_lambda_short" value="0.1"/> <!-- Exponential decay parameter for z_short part of model. -->
+    <param name="laser_model_type" value="likelihood_field"/> <!-- Which model to use, either beam, likelihood_field, or likelihood_field_prob (same as likelihood_field but incorporates the beamskip feature, if enabled).  -->
+    <param name="laser_min_range" value="0.15" /> <!--Minimum scan range to be considered; -1.0 will cause the laser's reported minimum range to be used. -->
+    <param name="laser_max_range" value="6.5" /> <!--Maximum scan range to be considered; -1.0 will cause the laser's reported maximum range to be used. -->
+
+    <param name="laser_likelihood_max_dist" value="2.0"/> <!-- Maximum distance to do obstacle inflation on map, for use in likelihood_field model.  -->
+    <param name="update_min_d" value="0.25"/> <!-- Translational movement required before performing a filter update.  -->
+    <param name="update_min_a" value="0.2"/> <!-- Rotational movement required before performing a filter update. -->
+
+    <param name ="initial_pose_x" value="0.0" /> <!-- Initial pose mean (x), used to initialize filter with Gaussian distribution.   -->
+    <param name ="initial_pose_y" value="0.0" /> <!-- Initial pose mean (y), used to initialize filter with Gaussian distribution.  -->
+    <param name ="initial_pose_a" value="0.0" /> <!-- Initial pose mean (yaw), used to initialize filter with Gaussian distribution.  -->
+
+    <param name="initial_cov_xx" value="25.0" /> <!-- Initial pose covariance (x*x), used to initialize filter with Gaussian distribution.  -->
+    <param name="initial_cov_yy" value="25.0" /> <!-- Initial pose covariance (y*y), used to initialize filter with Gaussian distribution.  -->
+    <param name="initial_cov_aa" value="3.1416" /> <!-- Initial pose covariance (yaw*yaw), used to initialize filter with Gaussian distribution.  -->
+
+    <param name="odom_frame_id" value="$(arg odom_frame_name)"/> <!-- Which frame to use for odometry. -->
+    <param name="resample_interval" value="6"/> <!-- Number of filter updates required before resampling. -->
+    <param name="base_frame_id" value="$(arg base_frame_name)"/> <!-- Which frame to use for the robot base  -->
+    <param name="global_frame_id" value="map"/> <!-- The name of the coordinate frame published by the localization system  -->
+    <param name="tf_broadcast" value="true"/> <!-- Set this to false to prevent amcl from publishing the transform between the global frame and the odometry frame. -->
+
+    <param name="transform_tolerance" value="2"/> <!--  Time with which to post-date the transform that is published, to indicate that this transform is valid into the future.  -->
+    <param name="recovery_alpha_slow" value="0.0"/> <!-- Exponential decay rate for the slow average weight filter, used in deciding when to recover by adding random poses. A good value might be 0.001.  -->
+    <param name="recovery_alpha_fast" value="0.0"/> <!--  Exponential decay rate for the fast average weight filter, used in deciding when to recover by adding random poses. A good value might be 0.1.    -->
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+  
+  <arg name="node_start_delay" default="2.0" />  
+  <node pkg="rosservice" type="rosservice" name="global_loc" args="call --wait /global_localization" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+<!-- 
+	    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+	<remap from="scan" to="$(arg scan_topic)"/>
+	<param name="odom_frame_id" value="odom"/>
+	<param name="odom_model_type" value="diff-corrected"/>
+	<param name="base_frame_id" value="base_link"/>
+	<param name="update_min_d" value="0.1"/>
+	<param name="update_min_a" value="0.2"/>
+	<param name="min_particles" value="500"/>
+	<param name="global_frame_id" value="map"/>
+	<param name="tf_broadcast" value="true" />
+	<param name="initial_pose_x" value="0.0"/>
+	<param name="initial_pose_y" value="0.0"/>
+	<param name="initial_pose_a" value="0.0"/>
+    </node>
+-->
+
+
+</launch>
