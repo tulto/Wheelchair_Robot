@@ -73,6 +73,9 @@ find_package(catkin REQUIRED COMPONENTS
 #   std_msgs  # Or other packages containing msgs
 # )
 
+add_executable(robo_dimensions src/robo_dimensions.cpp)
+target_link_libraries(robo_dimensions ${catkin_LIBRARIES})
+
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################

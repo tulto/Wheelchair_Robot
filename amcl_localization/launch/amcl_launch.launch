@@ -1,13 +1,8 @@
 <launch>
 	<!--The following parameters are the empirically found best paramters for global localization of the robot-->
-  <!-- Load the map (from hector slam/mapping) -->
-  <arg name="map_file" default="$(find temp_files)/maps/hector_third_new_param_nursing_home.yaml"/>
-  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
-    <param name="frame_id" value="map"/>
-    </node>
 
   <!-- Start the dimension visualization of the robot-->
-  <node pkg="test_dir" type="robo_dimensions" name="robo_dimensions_block">
+  <node pkg="amcl_localization" type="robo_dimensions" name="robo_dimensions_block">
   </node>
 
   <!-- initiate some variables -->
