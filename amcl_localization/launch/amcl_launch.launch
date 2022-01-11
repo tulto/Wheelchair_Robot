@@ -23,7 +23,7 @@
     <param name="gui_publish_rate" value="10.0"/> <!-- Maximum rate (Hz) at which scans and paths are published for visualization, -1.0 to disable.  -->
     <param name="laser_max_beams" value="300"/> <!-- def: 30 How many evenly-spaced beams in each scan to be used when updating the filter.  -->
     <param name="min_particles" value="800"/> <!-- def: 100 Minimum allowed number of particles. -->
-    <param name="max_particles" value="24000"/> <!-- def: 5000 Maximum allowed number of particles. -->
+    <param name="max_particles" value="10000"/> <!-- def: 5000 Maximum allowed number of particles. --> <!--Before best found was 24000 but didn't work on pi, now 10000 also works on pi!-->
     <param name="kld_err" value="0.02"/> <!-- def: 0.01Maximum error between the true distribution and the estimated distribution. -->
     <param name="kld_z" value="0.99"/> <!-- Upper standard normal quantile for (1 - p), where p is the probability that the error on the estimated distrubition will be less than kld_err -->
 
