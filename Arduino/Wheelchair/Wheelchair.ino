@@ -2,6 +2,7 @@
 #include "Motor_Controller.h"
 #include "IMU.h"
 #include <services_and_messages/Joystick.h>
+#include "joystick.h"
 ros::NodeHandle nh;
 
 
@@ -25,6 +26,7 @@ ros::Publisher joystick("/movement/joystick", &joy_msg);
 
 Motor_Controller drive;
 IMU imu_;
+Joystick joy;
 
 void setup() {
  Serial.begin(57600);  
@@ -35,6 +37,7 @@ void setup() {
  drive.init(nh);
  imu_.init(nh);
  nh.advertise(joystick);
+ joy.init(nh);
  
   
  //Joystick
@@ -43,8 +46,7 @@ void setup() {
  pinMode(b,INPUT);//back
  pinMode(l,INPUT);//left
  pinMode(button, INPUT_PULLUP);
-
- attachInterrupt(2, now, CHANGE);
+ 
  
  // Give the Roboteq some time to boot-up. 
  delay(1000);
@@ -61,8 +63,19 @@ void loop() {
   joy_msg.t = analogRead(t_movement);
   joy_msg.button = digitalRead(button);
   joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
+
+  //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
+  // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS
+  if (joy.movement()){   
+    drive.set_movement(joy.x_velocity(), joy.y_velocity(), joy.t_velocity());
+    drive.filter_movement();
+  }else{
+    drive.set_sent_movement();
+    //drive.filter_movement();  
+  }
   
 
+/*
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
     float vel = 6;
@@ -73,7 +86,7 @@ void loop() {
   }else {
     drive.set_sent_movement();
     //drive.filter_movement();  
-  }
+  }*/
 
   
   //Set movement is executed
@@ -91,11 +104,5 @@ void loop() {
   imu_.publish_imu_data(nh);
   imu_.publish_imu_cali();
   
-  nh.spinOnce();
- 
-  
-}
-
-void now(){
-  //imu_.publish_imu_data(nh);
+  nh.spinOnce(); 
 }
