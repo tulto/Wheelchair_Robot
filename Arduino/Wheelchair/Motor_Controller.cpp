@@ -60,6 +60,16 @@ void Motor_Controller::set_sent_movement(){
   motion[2] = t_;
 }
 
+float Motor_Controller::get_x(){
+  return motion[0];
+}
+float Motor_Controller::get_y(){
+  return motion[1];
+}
+float Motor_Controller::get_t(){
+  return motion[2];
+}
+
 
 //manuelles setzen der Bewegungen
 void Motor_Controller::set_movement(float x, float y, float turning){
