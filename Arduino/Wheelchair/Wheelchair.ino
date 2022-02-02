@@ -3,9 +3,127 @@
 #include "IMU.h"
 #include <services_and_messages/Joystick.h>
 #include "joystick.h"
+#include "EchoSensor.h"
+#include "services_and_messages/Echosensors.h"
+#include "ArduinoSTL.h"
+#include "TOFLaserDistanzSensor.h"
+#include "services_and_messages/TOF_sensor.h"
+
 ros::NodeHandle nh;
 
+//warning message for the TOF_Sensors (used for recognizing stairs)
+//publisher for warning message
+services_and_messages::TOF_sensor stair_warn_msg;
+ros::Publisher stair_warning_pub("/stair_warning_dir", &stair_warn_msg);
 
+//warning message for collision and
+//publisher for collision warning message
+services_and_messages::Echosensors collision_warn_msg;
+ros::Publisher collision_warning_pub("/collision_warning_dir", &collision_warn_msg);
+
+//TOF-IR sensors
+// defining the addresses of the different sensors
+#define TOF_SENSOR_1_ADDRESS 0x30
+#define TOF_SENSOR_2_ADDRESS 0x31
+#define TOF_SENSOR_3_ADDRESS 0x32
+#define TOF_SENSOR_4_ADDRESS 0x32
+
+// define the xshut pins for the different sensors
+#define XSHT_SENSOR_1 2 //front tof sensor
+#define XSHT_SENSOR_2 4 //left tof sensor
+#define XSHT_SENSOR_3 5 //right tof sensor
+#define XSHT_SENSOR_4 3 //back tof sensor
+
+//implementing different TOFLaserDistanzSensor objects
+TOFLaserDistanzSensor sensor1(TOF_SENSOR_1_ADDRESS, XSHT_SENSOR_1);
+TOFLaserDistanzSensor sensor2(TOF_SENSOR_2_ADDRESS, XSHT_SENSOR_2);
+TOFLaserDistanzSensor sensor3(TOF_SENSOR_3_ADDRESS, XSHT_SENSOR_3);
+TOFLaserDistanzSensor sensor4(TOF_SENSOR_4_ADDRESS, XSHT_SENSOR_4);
+
+//vector of pointers to TOFLaserDistanzSensor objects
+std::vector<TOFLaserDistanzSensor*> sensors_all = {&sensor4, &sensor3, &sensor2, &sensor1};
+
+//function for init all tof-light-sensors with different i2c addresses (use this function in setup()
+void initTOFirSetupPins() {
+  
+  // reset all sensors  
+  for(int i = 0; i < sensors_all.size(); i++){
+    sensors_all[i]->shutdown_sensor();
+  }
+  delay(10);
+
+
+  // start all sensors
+  for(int i = 0; i < sensors_all.size(); i++){
+    sensors_all[i]->start_sensor();
+  }
+  delay(10);
+
+  //giving all sensors new i2c addresses
+  sensors_all.pop_back();
+  sensor1.set_i2c_address(sensors_all);
+  sensors_all.pop_back();
+  sensor2.set_i2c_address(sensors_all);
+  sensors_all.pop_back();
+  sensor3.set_i2c_address(sensors_all);
+  sensors_all.pop_back();
+  sensor4.set_i2c_address(sensors_all);
+  sensors_all.pop_back();
+  
+
+  //fill sensor vector again with all pointers to sensor elements
+  sensors_all.push_back(&sensor1);
+  sensors_all.push_back(&sensor2);
+  sensors_all.push_back(&sensor3);
+  sensors_all.push_back(&sensor4); 
+}
+
+//function for generating the stair_warn_msg with corresponding direction of the warning
+void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
+
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(380, 550);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(380, 550);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(380, 550);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(380, 550);
+
+  //publish stair_warn_msg to ros
+  stair_warning_pub.publish(&stair_warn_msg);
+   
+}
+
+//Ultrasonic sensors
+//define all the pins needed for the ultrasonicsensors
+#define TRIG_PIN_ALL_SENSORS 5
+#define ECHO_SENSOR_1_PIN 38 //echo-sensor-front
+#define ECHO_SENSOR_2_PIN 27 //echo-sensor-left-front
+#define ECHO_SENSOR_3_PIN 39 //echo-sensor-left-back
+#define ECHO_SENSOR_4_PIN 49 //echo-sensor-right-front
+#define ECHO_SENSOR_5_PIN 50 //echo-sensor-right-back
+#define ECHO_SENSOR_6_PIN 40 //echo-sensor-back
+
+//implementing different EchoSensor objects
+EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_1_PIN);
+EchoSensor echo_sensor_2 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_2_PIN);
+EchoSensor echo_sensor_3 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_3_PIN);
+EchoSensor echo_sensor_4 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_4_PIN);
+EchoSensor echo_sensor_5 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_5_PIN);
+EchoSensor echo_sensor_6 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_6_PIN);
+
+//put references (pointer to the objets) into a pointer vector for easier use
+std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_sensor_3, &echo_sensor_4, &echo_sensor_5, &echo_sensor_6};
+
+//function for generating the collisono_warn_msg with corresponding direction of the warning
+void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSensor &left_back, EchoSensor &right_front, EchoSensor &right_back, EchoSensor &back){
+
+  collision_warn_msg.echo_dir[0] = front.get_echo_dist_warning(450);
+  collision_warn_msg.echo_dir[1] = (left_front.get_echo_dist_warning(350) || left_back.get_echo_dist_warning(350));
+  collision_warn_msg.echo_dir[2] = (right_front.get_echo_dist_warning(350) || right_back.get_echo_dist_warning(350));
+  collision_warn_msg.echo_dir[3] = back.get_echo_dist_warning(450);
+
+  //publish the collision_warn_msg to ros
+  collision_warning_pub.publish(&collision_warn_msg);
+  
+}
 
 //Joystick
 #define v 11 //front
@@ -38,7 +156,34 @@ void setup() {
  imu_.init(nh);
  nh.advertise(joystick);
  joy.init(nh);
- 
+
+
+ //TOF-IR-Sensors
+ //declaring xshut pins for all tof-light-sensors to output pins
+  for(int i = 0; i < sensors_all.size(); i++){
+    sensors_all[i]->pin_setup();
+  }
+  
+  Serial.println("All tof-ir-sensors shut down..");
+  delay(10);
+  Serial.println("Starting all tof-ir-sensors...");
+  
+  //setup sensors and i2c addresses of the different sensors
+  initTOFirSetupPins();
+  //advertise stair_warning_pub ros publisher
+  nh.advertise(stair_warning_pub);
+
+  
+ //Echo-Sensors
+ //setup all pins for the ultrasonic sensors
+  for (int i = 0; i < echo_all.size(); i++) {
+    echo_all[i]->setup_pins();
+  }
+  
+  delay(10);
+  //advertise collision_warning_pub ros publisher
+  nh.advertise(collision_warning_pub);
+
   
  //Joystick
  pinMode(v,INPUT);//front
@@ -73,9 +218,38 @@ void loop() {
     drive.set_sent_movement();
     //drive.filter_movement();  
   }
+
+  //tof-ir sensors for stair warning 
+  //variable for checking if all tof_sensors have a message ready
+  bool all_tof_sensors_data_ready = true;
+  
+  //start all tof_sensor measurements
+  for(int i = 0; i < sensors_all.size(); i++){
+    sensors_all[i]->start_single_measurement();
+  }
+
+  //check if measurement is ready for all sensors and print output
+  for(int i = 0; i<sensors_all.size(); i++){
+    if(!sensors_all[i]->is_measurement_ready()){
+      all_tof_sensors_data_ready = false;
+    }
+  }
+
+  //if data is ready publish ros message
+  if(all_tof_sensors_data_ready){
+    
+    send_stair_warning(sensor1, sensor2, sensor3, sensor4);
+
+    all_tof_sensors_data_ready = false;
+
+  }
+
+  
+  //ultrasonic sensors for collision warning
+  send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
+
   
 
-/*
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
     float vel = 6;
@@ -86,7 +260,7 @@ void loop() {
   }else {
     drive.set_sent_movement();
     //drive.filter_movement();  
-  }*/
+  }
 
   
   //Set movement is executed

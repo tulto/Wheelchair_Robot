@@ -76,8 +76,7 @@ void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &lef
   stair_warn_msg.stair_warning_dir[3] = false;
 
   stair_warning_pub.publish(&stair_warn_msg);
-  
-  
+   
 }
 
 

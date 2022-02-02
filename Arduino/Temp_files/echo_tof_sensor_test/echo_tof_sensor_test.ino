@@ -21,7 +21,7 @@ ros::Publisher collision_warning_pub("/collision_warning_dir", &collision_warn_m
 EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_1_PIN);
 EchoSensor echo_sensor_2 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_2_PIN);
 
-//put a reference (a pointer to the objets) into a pointer vector for easier use
+//put references (a pointer to the objets) into a pointer vector for easier use
 std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2};
 
 
