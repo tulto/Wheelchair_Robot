@@ -41,50 +41,50 @@ TOFLaserDistanzSensor sensor3(TOF_SENSOR_3_ADDRESS, XSHT_SENSOR_3);
 TOFLaserDistanzSensor sensor4(TOF_SENSOR_4_ADDRESS, XSHT_SENSOR_4);
 
 //vector of pointers to TOFLaserDistanzSensor objects
-std::vector<TOFLaserDistanzSensor*> sensors_all = {&sensor4, &sensor3, &sensor2, &sensor1};
+std::vector<TOFLaserDistanzSensor*> tof_sensor_all = {&sensor4, &sensor3, &sensor2, &sensor1};
 
 //function for init all tof-light-sensors with different i2c addresses (use this function in setup()
 void initTOFirSetupPins() {
   
   // reset all sensors  
-  for(int i = 0; i < sensors_all.size(); i++){
-    sensors_all[i]->shutdown_sensor();
+  for(int i = 0; i < tof_sensor_all.size(); i++){
+    tof_sensor_all[i]->shutdown_sensor();
   }
   delay(10);
 
 
   // start all sensors
-  for(int i = 0; i < sensors_all.size(); i++){
-    sensors_all[i]->start_sensor();
+  for(int i = 0; i < tof_sensor_all.size(); i++){
+    tof_sensor_all[i]->start_sensor();
   }
   delay(10);
 
   //giving all sensors new i2c addresses
-  sensors_all.pop_back();
-  sensor1.set_i2c_address(sensors_all);
-  sensors_all.pop_back();
-  sensor2.set_i2c_address(sensors_all);
-  sensors_all.pop_back();
-  sensor3.set_i2c_address(sensors_all);
-  sensors_all.pop_back();
-  sensor4.set_i2c_address(sensors_all);
-  sensors_all.pop_back();
+  tof_sensor_all.pop_back();
+  sensor1.set_i2c_address(tof_sensor_all);
+  tof_sensor_all.pop_back();
+  sensor2.set_i2c_address(tof_sensor_all);
+  tof_sensor_all.pop_back();
+  sensor3.set_i2c_address(tof_sensor_all);
+  tof_sensor_all.pop_back();
+  sensor4.set_i2c_address(tof_sensor_all);
+  tof_sensor_all.pop_back();
   
 
   //fill sensor vector again with all pointers to sensor elements
-  sensors_all.push_back(&sensor1);
-  sensors_all.push_back(&sensor2);
-  sensors_all.push_back(&sensor3);
-  sensors_all.push_back(&sensor4); 
+  tof_sensor_all.push_back(&sensor1);
+  tof_sensor_all.push_back(&sensor2);
+  tof_sensor_all.push_back(&sensor3);
+  tof_sensor_all.push_back(&sensor4); 
 }
 
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(380, 550);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(380, 550);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(380, 550);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(380, 550);
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(452, 557);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(452, 557);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(452, 557);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(452, 557);
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);
@@ -155,13 +155,16 @@ void setup() {
  drive.init(nh);
  imu_.init(nh);
  nh.advertise(joystick);
+
+ nh.negotiateTopics();
+ 
  joy.init(nh);
 
 
  //TOF-IR-Sensors
  //declaring xshut pins for all tof-light-sensors to output pins
-  for(int i = 0; i < sensors_all.size(); i++){
-    sensors_all[i]->pin_setup();
+  for(int i = 0; i < tof_sensor_all.size(); i++){
+    tof_sensor_all[i]->pin_setup();
   }
   
   Serial.println("All tof-ir-sensors shut down..");
@@ -172,6 +175,8 @@ void setup() {
   initTOFirSetupPins();
   //advertise stair_warning_pub ros publisher
   nh.advertise(stair_warning_pub);
+  nh.negotiateTopics();
+  delay(2);
 
   
  //Echo-Sensors
@@ -183,7 +188,8 @@ void setup() {
   delay(10);
   //advertise collision_warning_pub ros publisher
   nh.advertise(collision_warning_pub);
-
+  nh.negotiateTopics();
+  delay(2);
   
  //Joystick
  pinMode(v,INPUT);//front
@@ -212,11 +218,11 @@ void loop() {
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS
   if (joy.movement()){   
-    drive.set_movement(joy.x_velocity(), joy.y_velocity(), joy.t_velocity());
+    //drive.set_movement(joy.x_velocity(), joy.y_velocity(), joy.t_velocity());
     drive.filter_movement();
   }else{
     drive.set_sent_movement();
-    //drive.filter_movement();  
+    //drive.filter_movement();  //nicht von Dennis Auskommentiert
   }
 
   //tof-ir sensors for stair warning 
@@ -224,13 +230,13 @@ void loop() {
   bool all_tof_sensors_data_ready = true;
   
   //start all tof_sensor measurements
-  for(int i = 0; i < sensors_all.size(); i++){
-    sensors_all[i]->start_single_measurement();
+  for(int i = 0; i < tof_sensor_all.size(); i++){
+    tof_sensor_all[i]->start_single_measurement();
   }
 
   //check if measurement is ready for all sensors and print output
-  for(int i = 0; i<sensors_all.size(); i++){
-    if(!sensors_all[i]->is_measurement_ready()){
+  for(int i = 0; i<tof_sensor_all.size(); i++){
+    if(!tof_sensor_all[i]->is_measurement_ready()){
       all_tof_sensors_data_ready = false;
     }
   }
@@ -249,7 +255,7 @@ void loop() {
   send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
 
   
-
+/*
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
     float vel = 6;
@@ -260,7 +266,7 @@ void loop() {
   }else {
     drive.set_sent_movement();
     //drive.filter_movement();  
-  }
+  }*/
 
   
   //Set movement is executed

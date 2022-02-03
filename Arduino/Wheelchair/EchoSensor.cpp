@@ -26,7 +26,8 @@ void EchoSensor::setup_pins()
 
 int EchoSensor::get_distance_in_mm()
 {
-  unsigned int max_time_for_measurement = 5827; //this time equals a distance (from the sensor) of about 1.0 meter
+  //calculate the max_time_for_measurement: t=(distance*2)/(343.5*10e⁻6)
+  unsigned int max_time_for_measurement = 4366; //this time equals a distance (from the sensor) of about 0.75 meter
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
