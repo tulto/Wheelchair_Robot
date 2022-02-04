@@ -1,6 +1,6 @@
 #include "joystick.h"
 
-Joystick::Joystick(short int x_axis = A0, short int y_axis = A1, short int t_axis = A2, short int button = 7)
+Joystick::Joystick(short int x_axis = A1, short int y_axis = A2, short int t_axis = A3, short int button = 7)
 {}
 
 void Joystick::init(ros::NodeHandle& nh) {

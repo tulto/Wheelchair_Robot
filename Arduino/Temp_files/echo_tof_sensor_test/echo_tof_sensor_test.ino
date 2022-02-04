@@ -14,29 +14,38 @@ services_and_messages::Echosensors collision_warn_msg;
 ros::Publisher collision_warning_pub("/collision_warning_dir", &collision_warn_msg);
 
 
-#define TRIG_PIN_ALL_SENSORS 5
-#define ECHO_SENSOR_1_PIN 22
-#define ECHO_SENSOR_2_PIN 9
 
+//Ultrasonic sensors
+//define all the pins needed for the ultrasonicsensors
+#define TRIG_PIN_ALL_SENSORS 44
+#define ECHO_SENSOR_1_PIN 38 //echo-sensor-front
+#define ECHO_SENSOR_2_PIN 27 //echo-sensor-left-front
+#define ECHO_SENSOR_3_PIN 39 //echo-sensor-left-back
+#define ECHO_SENSOR_4_PIN 49 //echo-sensor-right-front
+#define ECHO_SENSOR_5_PIN 50 //echo-sensor-right-back
+#define ECHO_SENSOR_6_PIN 40 //echo-sensor-back
+
+//implementing different EchoSensor objects
 EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_1_PIN);
 EchoSensor echo_sensor_2 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_2_PIN);
+EchoSensor echo_sensor_3 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_3_PIN);
+EchoSensor echo_sensor_4 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_4_PIN);
+EchoSensor echo_sensor_5 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_5_PIN);
+EchoSensor echo_sensor_6 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_6_PIN);
 
-//put references (a pointer to the objets) into a pointer vector for easier use
-std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2};
+//put references (pointer to the objets) into a pointer vector for easier use
+std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_sensor_3, &echo_sensor_4, &echo_sensor_5, &echo_sensor_6};
 
 
 //function for generating the collisono_warn_msg with corresponding direction of the warning
-void send_collision_warning(EchoSensor &front, EchoSensor &left /*, EchoSensor &right , EchoSensor &back*/){
+void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSensor &left_back, EchoSensor &right_front, EchoSensor &right_back, EchoSensor &back){
 
   collision_warn_msg.echo_dir[0] = front.get_echo_dist_warning(450);
-  collision_warn_msg.echo_dir[1] = left.get_echo_dist_warning(350);
-  //collision_warn_msg.echo_dir[2] = right.get_echo_dist_warning(350);
-  //collision_warn_msg.echo_dir[3] = back.get_echo_dist_warning(450);
+  collision_warn_msg.echo_dir[1] = (left_front.get_echo_dist_warning(350) || left_back.get_echo_dist_warning(350));
+  collision_warn_msg.echo_dir[2] = (right_front.get_echo_dist_warning(350) || right_back.get_echo_dist_warning(350));
+  collision_warn_msg.echo_dir[3] = back.get_echo_dist_warning(450);
 
-  //just needed for now because the last sensors is not pressent
-  collision_warn_msg.echo_dir[2] = false;
-  collision_warn_msg.echo_dir[3] = false;
-
+  //publish the collision_warn_msg to ros
   collision_warning_pub.publish(&collision_warn_msg);
   
 }
@@ -51,7 +60,7 @@ void setup() {
 
   nh.initNode();
   
-  //Serial.print("Start programm...");
+  Serial.print("Start programm...");
 
   //setup all pins for the echosensors
   for (int i = 0; i < echo_all.size(); i++) {
@@ -75,17 +84,16 @@ std::vector<int> dist = {};
 void loop() {
   //m++; //variable for runtime measurement
 
-  /*//Printing different sensor Messages
+  //Printing different sensor Messages
   for (int i = 0; i < echo_all.size(); i++) {
     Serial.print(i);
     Serial.print(": ");
     Serial.println(echo_all[i]->get_distance_in_mm());
   }
 
-  delay(100);*/
 
-  send_collision_warning(echo_sensor_1, echo_sensor_2);
-  delay(50);
+  send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
+  delay(500);
   
   /*
     delta = millis()-lastTime;

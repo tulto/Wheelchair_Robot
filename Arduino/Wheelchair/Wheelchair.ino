@@ -26,7 +26,7 @@ ros::Publisher collision_warning_pub("/collision_warning_dir", &collision_warn_m
 #define TOF_SENSOR_1_ADDRESS 0x30
 #define TOF_SENSOR_2_ADDRESS 0x31
 #define TOF_SENSOR_3_ADDRESS 0x32
-#define TOF_SENSOR_4_ADDRESS 0x32
+#define TOF_SENSOR_4_ADDRESS 0x33
 
 // define the xshut pins for the different sensors
 #define XSHT_SENSOR_1 2 //front tof sensor
@@ -93,7 +93,7 @@ void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &lef
 
 //Ultrasonic sensors
 //define all the pins needed for the ultrasonicsensors
-#define TRIG_PIN_ALL_SENSORS 5
+#define TRIG_PIN_ALL_SENSORS 44
 #define ECHO_SENSOR_1_PIN 38 //echo-sensor-front
 #define ECHO_SENSOR_2_PIN 27 //echo-sensor-left-front
 #define ECHO_SENSOR_3_PIN 39 //echo-sensor-left-back
@@ -218,7 +218,7 @@ void loop() {
   //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
   // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS
   if (joy.movement()){   
-    //drive.set_movement(joy.x_velocity(), joy.y_velocity(), joy.t_velocity());
+    drive.set_movement(joy.x_velocity(), joy.y_velocity(), joy.t_velocity());
     drive.filter_movement();
   }else{
     drive.set_sent_movement();

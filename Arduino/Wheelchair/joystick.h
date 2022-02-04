@@ -20,7 +20,7 @@ class Joystick
 
   public: 
     //declaring constructor and destructor
-    Joystick(short int x_axis = A0, short int y_axis = A1, short int t_axis = A2, short int button = 7);
+    Joystick(short int x_axis = A1, short int y_axis = A2, short int t_axis = A3, short int button = 7);
 
     //declaring needed functions
     void init(ros::NodeHandle& nh);
