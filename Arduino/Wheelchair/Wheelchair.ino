@@ -131,9 +131,9 @@ void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSenso
 #define b 9  //back
 #define l 8  //left
 
-int x_movement = A0;
-int y_movement = A1;
-int t_movement = A2;
+int x_movement = A1;
+int y_movement = A2;
+int t_movement = A3;
 int button = 7;
 int start = millis();
 int timer = 100000;
@@ -144,7 +144,7 @@ ros::Publisher joystick("/movement/joystick", &joy_msg);
 
 Motor_Controller drive;
 IMU imu_;
-Joystick joy;
+Joystick joy(A1,A2,A3);
 
 void setup() {
  Serial.begin(57600);  
@@ -191,12 +191,6 @@ void setup() {
   nh.negotiateTopics();
   delay(2);
   
- //Joystick
- pinMode(v,INPUT);//front
- pinMode(r,INPUT);//right
- pinMode(b,INPUT);//back
- pinMode(l,INPUT);//left
- pinMode(button, INPUT_PULLUP);
  
  
  // Give the Roboteq some time to boot-up. 
@@ -209,22 +203,16 @@ void setup() {
 
 void loop() { 
   //abfragen des analogen Joystickes
+  /*
   joy_msg.x = analogRead(x_movement);
   joy_msg.y = analogRead(y_movement);
   joy_msg.t = analogRead(t_movement);
   joy_msg.button = digitalRead(button);
   joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
-
-  //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
-  // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS
-  if (joy.movement()){   
-    drive.set_movement(joy.x_velocity(), joy.y_velocity(), joy.t_velocity());
-    drive.filter_movement();
-  }else{
-    drive.set_sent_movement();
-    //drive.filter_movement();  //nicht von Dennis Auskommentiert
-  }
-
+  */
+  
+  
+  
   //tof-ir sensors for stair warning 
   //variable for checking if all tof_sensors have a message ready
   bool all_tof_sensors_data_ready = true;
@@ -233,6 +221,7 @@ void loop() {
   for(int i = 0; i < tof_sensor_all.size(); i++){
     tof_sensor_all[i]->start_single_measurement();
   }
+  
 
   //check if measurement is ready for all sensors and print output
   for(int i = 0; i<tof_sensor_all.size(); i++){
@@ -240,6 +229,7 @@ void loop() {
       all_tof_sensors_data_ready = false;
     }
   }
+  
 
   //if data is ready publish ros message
   if(all_tof_sensors_data_ready){
@@ -249,25 +239,21 @@ void loop() {
     all_tof_sensors_data_ready = false;
 
   }
-
+  
   
   //ultrasonic sensors for collision warning
   send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
-
   
-/*
-  //abfragen ob Joystik verwendet wird, wenn ja dann soll er alle Bewegungen vorgeben
-  if (digitalRead(v) == 1 || digitalRead(r) == 1  || digitalRead(b) == 1  || digitalRead(l) == 1 ){
-    float vel = 6;
-    float x = (digitalRead(v)-digitalRead(b))*vel;
-    float t = (digitalRead(l)-digitalRead(r))*vel;
-    drive.set_movement(x, 0, t);
+  
+  // query if joystick is used, if yes then it should predefine all movements
+  // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS 
+  if (joy.movement()){   
+    drive.set_movement(joy.x_velocity(), joy.y_velocity(), joy.t_velocity());
     drive.filter_movement();
-  }else {
+  }else{
     drive.set_sent_movement();
-    //drive.filter_movement();  
-  }*/
-
+    //drive.filter_movement();
+  }
   
   //Set movement is executed
   drive.movement();

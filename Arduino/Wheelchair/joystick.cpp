@@ -1,6 +1,7 @@
 #include "joystick.h"
 
 Joystick::Joystick(short int x_axis = A1, short int y_axis = A2, short int t_axis = A3, short int button = 7)
+: x_axis(x_axis), y_axis(y_axis), t_axis(t_axis), button(button)
 {}
 
 void Joystick::init(ros::NodeHandle& nh) {
@@ -38,15 +39,15 @@ bool Joystick::movement(){
 
 
 float Joystick::x_velocity(){
-  return calculate(analogRead(x_axis), 10);
+  return calculate(analogRead(x_axis), 0.5);
 }
 
 
 float Joystick::y_velocity(){
-  return calculate(analogRead(y_axis), 10);
+  return calculate(analogRead(y_axis), 0.5);
 }
 
 
 float Joystick::t_velocity(){
-  return calculate(analogRead(t_axis), 10);
+  return calculate(analogRead(t_axis), 0.5);
 }
