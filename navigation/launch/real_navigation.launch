@@ -15,6 +15,10 @@
   <!-- preventing backwards movement -->
   <node pkg="navigation" type="prevent_initial_backwards_movement.py" name="prevent_initial_backwards_movement_node" />
 
+  <!-- prevent backwards movement if not necessary -->
+  <node pkg="navigation" type="my_planner" name="my_planner" >
+        <rosparam file="$(find navigation)/launch/my_planner.yaml" command="load"/>
+  </node>
 
   <!-- move base Pathplaning -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">

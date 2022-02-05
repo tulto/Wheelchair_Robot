@@ -39,16 +39,15 @@
 
   <include file="$(find lidar-filtering)/launch-files/merging_lidar_laser.launch" />
 
+  <!-- prevent backwards movement if not necessary -->
+  <node pkg="navigation" type="my_planner" name="my_planner" >
+        <rosparam file="$(find navigation)/launch/my_planner.yaml" command="load"/>
+  </node>
 
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
    
   <include file="$(find navigation)/launch/amcl_sim.launch"/>
-
-
-  <!-- preventing backwards movement -->
-  <node pkg="navigation" type="prevent_initial_backwards_movement.py" name="prevent_initial_backwards_movement_node" />
-
 
   <!-- move base Pathplaning -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
@@ -89,10 +88,5 @@
   </node>
   
   <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
-
-
-  <node pkg="navigation" type="my_planner" name="my_planner" >
-        <rosparam file="$(find navigation)/launch/my_planner.yaml" command="load"/>
-  </node>
 
 </launch>

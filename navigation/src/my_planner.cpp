@@ -5,10 +5,9 @@
 #include <tf/transform_listener.h>
 #include <base_local_planner/trajectory_planner_ros.h>
 
-#include <dynamic_reconfigure/server.h>
-
 
 int main(int argc, char **argv){
+
     ros::init(argc, argv, "my_planner");
 
     ros::NodeHandle nh;
@@ -16,12 +15,11 @@ int main(int argc, char **argv){
     ros::Rate loop_rate(5);
     
     // TF2 objects
-    tf2_ros::Buffer tf_buff(ros::Duration(10));
+    tf2_ros::Buffer tf_buff(ros::Duration(2));
     tf2_ros::TransformListener tf(tf_buff);
 
-    // Initialize costmaps (global and local)
+    // Initialize costmaps
     costmap_2d::Costmap2DROS l_costmap("local_costmap", tf_buff);
-    costmap_2d::Costmap2DROS g_costmap("global_costmap", tf_buff);
    
     // Initialize TrajectoryPlannerROS
     base_local_planner::TrajectoryPlannerROS tp;
@@ -29,24 +27,29 @@ int main(int argc, char **argv){
 
     //Start map
     l_costmap.start();
-    g_costmap.start();
 
-    
-    geometry_msgs::Twist cmd_vel;
-    geometry_msgs::PoseStamped global_pose;
-    geometry_msgs::PoseStamped local_pose;
+    bool state = false; // true = 0 and false = 0.5
+
+    double max_vel_x; // max_vel_x of parameter
     
     while(ros::ok()){
 
-        l_costmap.updateMap();
-        g_costmap.updateMap();
+        l_costmap.updateMap(); // update local_costmap
 
-        //test = tp.checkTrajectory(0, 0, 20);
+        // check possibility in tuning trajectory 
+        bool traj_state = tp.checkTrajectory(0, 0, 20);
         
-        if(tp.checkTrajectory(0, 0, 20)){
-            ROS_WARN("True");;
-        }else{
-            ROS_WARN("False");
+        // if Trajecotry is possible (true) then use velocity 0 else 0.5
+        // setting velocities over cml with dynamic_reconfigure
+        if(traj_state == true && state == false){
+            state = true;
+            ROS_WARN("min_vel_x auf 0");
+            system("rosrun dynamic_reconfigure dynparam set move_base/DWAPlannerROS min_vel_x 0");
+
+        }else if(traj_state == false && state == true){
+            state = false;
+            ROS_WARN("min_vel_x auf -0.5");
+            system("rosrun dynamic_reconfigure dynparam set move_base/DWAPlannerROS min_vel_x -0.5");
         }
 
         loop_rate.sleep();
