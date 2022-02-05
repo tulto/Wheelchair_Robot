@@ -12,6 +12,9 @@
    
   <include file="$(find navigation)/launch/amcl_sim.launch"/>
 
+  <!-- preventing backwards movement -->
+  <node pkg="navigation" type="prevent_initial_backwards_movement.py" name="prevent_initial_backwards_movement_node" />
+
 
   <!-- move base Pathplaning -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
@@ -21,7 +24,7 @@
     
     # Local planner
     #base_local_planner/TrajectoryPlannerROS dwa_local_planner/DWAPlannerROS teb_local_planner/TebLocalPlannerROS
-    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" /> 
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /> 
     
     # Costmap
     <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="global_costmap" />

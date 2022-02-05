@@ -13,7 +13,22 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  geometry_msgs
+  base_local_planner
+  dwa_local_planner
+  costmap_2d
+  rotate_recovery
+  tf
 )
+
+find_package(Eigen3 REQUIRED)
+remove_definitions(-DDISABLE_LIBUSB-1.0)
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
+)
+add_definitions(${EIGEN3_DEFINITIONS})
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -136,6 +151,13 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/navigation_node.cpp)
+
+add_executable(prevent_back_and_check_collision src/prevent_back_and_check_collision.cpp)
+target_link_libraries(prevent_back_and_check_collision ${catkin_LIBRARIES})
+
+add_executable(my_planner src/my_planner.cpp)
+target_link_libraries(my_planner ${catkin_LIBRARIES})
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
