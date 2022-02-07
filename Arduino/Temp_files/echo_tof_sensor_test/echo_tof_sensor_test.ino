@@ -40,10 +40,11 @@ std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_senso
 //function for generating the collisono_warn_msg with corresponding direction of the warning
 void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSensor &left_back, EchoSensor &right_front, EchoSensor &right_back, EchoSensor &back){
 
-  collision_warn_msg.echo_dir[0] = front.get_echo_dist_warning(450);
   collision_warn_msg.echo_dir[1] = (left_front.get_echo_dist_warning(350) || left_back.get_echo_dist_warning(350));
-  collision_warn_msg.echo_dir[2] = (right_front.get_echo_dist_warning(350) || right_back.get_echo_dist_warning(350));
+  collision_warn_msg.echo_dir[0] = front.get_echo_dist_warning(450);
   collision_warn_msg.echo_dir[3] = back.get_echo_dist_warning(450);
+  collision_warn_msg.echo_dir[2] = (right_front.get_echo_dist_warning(350) || right_back.get_echo_dist_warning(350));
+  
 
   //publish the collision_warn_msg to ros
   collision_warning_pub.publish(&collision_warn_msg);
@@ -85,30 +86,32 @@ void loop() {
   //m++; //variable for runtime measurement
 
   //Printing different sensor Messages
+  /*
   for (int i = 0; i < echo_all.size(); i++) {
     Serial.print(i);
     Serial.print(": ");
     Serial.println(echo_all[i]->get_distance_in_mm());
-  }
-
+  }*/
 
   send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
-  delay(500);
-  
+  delay(110);
   /*
+  
     delta = millis()-lastTime;
     lastTime = millis();
+    long int nowTime=lastTime;
     sum += delta;
 
 
-    if(millis()>10000 & millis()<10500){
-    Serial.print(sum/m);
-    Serial.println("zeit");
-    for(int i=0; i<dist.size(); i++){
-      Serial.println(dist[i]);
-    }
+    if(nowTime > 10000 && nowTime <10040){
+    Serial.print("\n");
+    Serial.println(m);
+    Serial.print("\n");
+    Serial.println(sum/m);
+    while(1);
+  } */
 
-    }*/
+    
     nh.spinOnce();
 
 }

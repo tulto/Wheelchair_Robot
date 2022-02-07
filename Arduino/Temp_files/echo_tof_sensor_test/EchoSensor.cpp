@@ -70,6 +70,9 @@ bool EchoSensor::get_echo_dist_warning(short int minDist)
 {
   short int measured_dist = get_distance_in_mm();
   if(measured_dist <= minDist || last_measurement <= minDist){
+    /*if(measured_dist <= 0.4*last_measurement && measured_dist > 250){
+      return false;
+    }*/
     last_measurement = measured_dist;
     return true;
   }

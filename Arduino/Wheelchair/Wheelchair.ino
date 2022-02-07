@@ -115,11 +115,11 @@ std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_senso
 //function for generating the collisono_warn_msg with corresponding direction of the warning
 void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSensor &left_back, EchoSensor &right_front, EchoSensor &right_back, EchoSensor &back){
 
-  collision_warn_msg.echo_dir[0] = front.get_echo_dist_warning(450);
   collision_warn_msg.echo_dir[1] = (left_front.get_echo_dist_warning(350) || left_back.get_echo_dist_warning(350));
-  collision_warn_msg.echo_dir[2] = (right_front.get_echo_dist_warning(350) || right_back.get_echo_dist_warning(350));
+  collision_warn_msg.echo_dir[0] = front.get_echo_dist_warning(450);
   collision_warn_msg.echo_dir[3] = back.get_echo_dist_warning(450);
-
+  collision_warn_msg.echo_dir[2] = (right_front.get_echo_dist_warning(350) || right_back.get_echo_dist_warning(350));
+  
   //publish the collision_warn_msg to ros
   collision_warning_pub.publish(&collision_warn_msg);
   
@@ -203,13 +203,13 @@ void setup() {
 
 void loop() { 
   //abfragen des analogen Joystickes
-  /*
+  
   joy_msg.x = analogRead(x_movement);
   joy_msg.y = analogRead(y_movement);
   joy_msg.t = analogRead(t_movement);
   joy_msg.button = digitalRead(button);
   joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
-  */
+  
   
   
   
@@ -223,7 +223,7 @@ void loop() {
   }
   
 
-  //check if measurement is ready for all sensors and print output
+  //check if measurement is ready 
   for(int i = 0; i<tof_sensor_all.size(); i++){
     if(!tof_sensor_all[i]->is_measurement_ready()){
       all_tof_sensors_data_ready = false;

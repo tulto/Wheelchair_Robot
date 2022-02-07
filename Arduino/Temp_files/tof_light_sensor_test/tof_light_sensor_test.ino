@@ -146,22 +146,22 @@ void loop() {
     /*
     for(int i = 0; i < sensors_all.size(); i++){
         measured_values.push_back(sensors_all[i]->get_distance_mm());
-    }*/
-
+    } */
+/*
     for(int i = 0; i<sensors_all.size(); i++){
         Serial.print("Sensor ");
         Serial.print(i);
         Serial.print(": ");
         Serial.println(sensors_all[i]->get_distance_mm());
-    }
+    } */
+    
     send_stair_warning(sensor1, sensor2, sensor3, sensor4);
     
-
     all_tof_sensors_data_ready = false;
 
   }
 
-  delay(750);
+  //delay(750);
 
   //code for testing needed runtime
   /*
@@ -177,6 +177,9 @@ void loop() {
     Serial.println();
     Serial.print("Anzahl aufgenommener Werte: ");
     Serial.println(measured_values.size());
+    Serial.print("\n");
+    Serial.println(m);
+    Serial.print("\n");
     Serial.println(sum/m);
     while(1);
   }*/
