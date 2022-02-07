@@ -75,10 +75,10 @@ void initSetupPins() {
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(452, 557);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(452, 557);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(452, 557);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(452, 557);
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(398, 470);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(398, 470);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(398, 470);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(398, 470);
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);
@@ -147,13 +147,13 @@ void loop() {
     for(int i = 0; i < sensors_all.size(); i++){
         measured_values.push_back(sensors_all[i]->get_distance_mm());
     } */
-/*
+
     for(int i = 0; i<sensors_all.size(); i++){
         Serial.print("Sensor ");
         Serial.print(i);
         Serial.print(": ");
         Serial.println(sensors_all[i]->get_distance_mm());
-    } */
+    } 
     
     send_stair_warning(sensor1, sensor2, sensor3, sensor4);
     
@@ -161,7 +161,7 @@ void loop() {
 
   }
 
-  //delay(750);
+  delay(750);
 
   //code for testing needed runtime
   /*
