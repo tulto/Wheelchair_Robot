@@ -44,7 +44,7 @@ float Joystick::x_velocity(){
 
 
 float Joystick::y_velocity(){
-  return calculate(analogRead(y_axis), 0.8);
+  return calculate(analogRead(y_axis), 0.45);
 }
 
 

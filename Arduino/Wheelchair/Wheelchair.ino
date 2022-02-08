@@ -101,6 +101,10 @@ void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &lef
 #define ECHO_SENSOR_5_PIN 50 //echo-sensor-right-back
 #define ECHO_SENSOR_6_PIN 40 //echo-sensor-back
 
+//boolean values to only send collision_warn_msg every second code loop
+bool send_collision_warn = false;
+bool send_collision_warn_was_changed = false;
+
 //implementing different EchoSensor objects
 EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_1_PIN);
 EchoSensor echo_sensor_2 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_2_PIN);
@@ -110,9 +114,10 @@ EchoSensor echo_sensor_5 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_5_PIN);
 EchoSensor echo_sensor_6 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_6_PIN);
 
 //put references (pointer to the objets) into a pointer vector for easier use
-std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_sensor_3, &echo_sensor_4, &echo_sensor_5, &echo_sensor_6};
+//std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_sensor_3, &echo_sensor_4, &echo_sensor_5, &echo_sensor_6};
 
 //function for generating the collisono_warn_msg with corresponding direction of the warning
+/*
 void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSensor &left_back, EchoSensor &right_front, EchoSensor &right_back, EchoSensor &back){
 
   collision_warn_msg.echo_dir[1] = (left_front.get_echo_dist_warning(350) || left_back.get_echo_dist_warning(350));
@@ -123,7 +128,7 @@ void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSenso
   //publish the collision_warn_msg to ros
   collision_warning_pub.publish(&collision_warn_msg);
   
-}
+}*/
 
 //Joystick
 #define v 11 //front
@@ -181,9 +186,16 @@ void setup() {
   
  //Echo-Sensors
  //setup all pins for the ultrasonic sensors
-  for (int i = 0; i < echo_all.size(); i++) {
+  /*for (int i = 0; i < echo_all.size(); i++) {
     echo_all[i]->setup_pins();
-  }
+  }*/
+  echo_sensor_1.setup_pins();
+  echo_sensor_2.setup_pins();
+  echo_sensor_3.setup_pins();
+  echo_sensor_4.setup_pins();
+  echo_sensor_5.setup_pins();
+  echo_sensor_6.setup_pins();
+  
   
   delay(10);
   //advertise collision_warning_pub ros publisher
@@ -203,6 +215,9 @@ void setup() {
 
 void loop() { 
   //abfragen des analogen Joystickes
+
+  //reset send_collision_warn_was_changed to notice if the value has been changed in this iteration
+  bool send_collision_warn_was_changed = false;
   /*
   joy_msg.x = analogRead(x_movement);
   joy_msg.y = analogRead(y_movement);
@@ -211,7 +226,14 @@ void loop() {
   joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
   */
   
-  
+  //searching for possible collisions on the left side of the robot
+  if(send_collision_warn){
+    collision_warn_msg.echo_dir[1] = (echo_sensor_2.get_echo_dist_warning(350) || echo_sensor_3.get_echo_dist_warning(350));
+  }
+  //searching for possible collisions on the right side of the robot
+  if(!send_collision_warn){
+    collision_warn_msg.echo_dir[2] = (echo_sensor_4.get_echo_dist_warning(350) || echo_sensor_5.get_echo_dist_warning(350));
+  }
   
   //tof-ir sensors for stair warning 
   //variable for checking if all tof_sensors have a message ready
@@ -240,9 +262,7 @@ void loop() {
 
   }
   
-  
-  //ultrasonic sensors for collision warning
-  send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
+  //send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
   
   
   // query if joystick is used, if yes then it should predefine all movements
@@ -265,12 +285,38 @@ void loop() {
   drive.send_encoder_count(timer);
   timer = millis()-start;
   start = millis();
-
+  
   //IMU data will be send
   imu_.publish_imu_data(nh);
   imu_.publish_imu_cali();
 
-  Serial.print("test");
+  //searching for possible collisions on the front side of the robot
+  if(send_collision_warn){
+    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(450);
+  }
+  
+  //searching for possible collisions on the back side of the robot
+  if(!send_collision_warn){
+    collision_warn_msg.echo_dir[3] = echo_sensor_6.get_echo_dist_warning(450);
+  }
+
+
+  if(!send_collision_warn){
+    send_collision_warn=true;
+    send_collision_warn_was_changed = true;
+  }
+   
+  //publish the collision_warn_msg to ros
+  if(send_collision_warn && !send_collision_warn_was_changed){
+    send_collision_warn = false;
+    collision_warning_pub.publish(&collision_warn_msg);
+    
+    collision_warn_msg.echo_dir[0]=true;
+    collision_warn_msg.echo_dir[1]=true;
+    collision_warn_msg.echo_dir[2]=true;
+    collision_warn_msg.echo_dir[3]=true;
+  }
+
   
   nh.spinOnce(); 
 }
