@@ -75,10 +75,10 @@ void initSetupPins() {
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(398, 470);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(398, 470);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(398, 470);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(398, 470);
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(398, 490);
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);

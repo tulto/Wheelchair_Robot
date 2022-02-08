@@ -81,10 +81,10 @@ void initTOFirSetupPins() {
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(398, 470);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(398, 470);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(398, 470);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(398, 470);
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(398, 490);
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);
@@ -203,13 +203,13 @@ void setup() {
 
 void loop() { 
   //abfragen des analogen Joystickes
-  
+  /*
   joy_msg.x = analogRead(x_movement);
   joy_msg.y = analogRead(y_movement);
   joy_msg.t = analogRead(t_movement);
   joy_msg.button = digitalRead(button);
   joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
-  
+  */
   
   
   
@@ -248,7 +248,7 @@ void loop() {
   // query if joystick is used, if yes then it should predefine all movements
   // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS 
   if (joy.movement()){   
-    drive.set_movement(joy.x_velocity(), joy.y_velocity(), joy.t_velocity());
+    drive.set_movement(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity());
     drive.filter_movement();
   }else{
     drive.set_sent_movement();

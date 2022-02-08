@@ -13,7 +13,7 @@ class Motor_Controller {
   
 
   //Motor
-  int max_speed = 50;
+  int max_speed = 800;
   float motion[3];
   float x_, y_, t_;
   ros::Subscriber<geometry_msgs::Twist, Motor_Controller> subscriber_motion_; 
