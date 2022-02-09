@@ -86,15 +86,16 @@ void loop() {
   //m++; //variable for runtime measurement
 
   //Printing different sensor Messages
-  /*
+  
   for (int i = 0; i < echo_all.size(); i++) {
     Serial.print(i);
     Serial.print(": ");
     Serial.println(echo_all[i]->get_distance_in_mm());
-  }*/
-
+    delay(15);
+  }
+  delay(250);
   send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
-  delay(110);
+  delay(250);
   /*
   
     delta = millis()-lastTime;

@@ -11,6 +11,7 @@ class EchoSensor
   int tof_time = 0;
   short int last_measurement = -1;
   short int trigPin, echoPin;
+  bool warning = false;
 
   public:
   //declare constructor and destructor

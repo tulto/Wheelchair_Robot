@@ -82,10 +82,10 @@ void initTOFirSetupPins() {
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(370, 560);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(370, 560);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(370, 560);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(370, 560);
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);
@@ -223,13 +223,13 @@ void loop() {
   joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
   */
   
-  //searching for possible collisions on the left side of the robot
+  //searching for possible collisions on the front side of the robot
   if(send_collision_warn){
-    collision_warn_msg.echo_dir[1] = (echo_sensor_2.get_echo_dist_warning(350) || echo_sensor_3.get_echo_dist_warning(350));
+    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(450);
   }
   //searching for possible collisions on the right side of the robot
   if(!send_collision_warn){
-    collision_warn_msg.echo_dir[2] = (echo_sensor_4.get_echo_dist_warning(350) || echo_sensor_5.get_echo_dist_warning(350));
+    collision_warn_msg.echo_dir[2] = (echo_sensor_4.get_echo_dist_warning(320) || echo_sensor_5.get_echo_dist_warning(320));
   }
   
   //tof-ir sensors for stair warning 
@@ -293,9 +293,9 @@ void loop() {
   imu_.publish_imu_data(nh);
   imu_.publish_imu_cali();
 
-  //searching for possible collisions on the front side of the robot
+  //searching for possible collisions on the left side of the robot
   if(send_collision_warn){
-    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(450);
+    collision_warn_msg.echo_dir[1] = (echo_sensor_2.get_echo_dist_warning(320) || echo_sensor_3.get_echo_dist_warning(320));
   }
   
   //searching for possible collisions on the back side of the robot
@@ -319,10 +319,10 @@ void loop() {
                     collision_warn_msg.echo_dir[2]||stair_warn_msg.stair_warning_dir[2], 
                     collision_warn_msg.echo_dir[3]||stair_warn_msg.stair_warning_dir[3]);
     
-    collision_warn_msg.echo_dir[0]=true;
+    /*collision_warn_msg.echo_dir[0]=true;
     collision_warn_msg.echo_dir[1]=true;
     collision_warn_msg.echo_dir[2]=true;
-    collision_warn_msg.echo_dir[3]=true;
+    collision_warn_msg.echo_dir[3]=true;*/
   }
 
   

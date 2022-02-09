@@ -24,7 +24,7 @@ void EchoSensor::setup_pins()
 }
 
 
-int EchoSensor::get_distance_in_mm()
+short int EchoSensor::get_distance_in_mm()
 {
   //calculate the max_time_for_measurement: t=(distance*2)/(343.5*10e⁻6)
   unsigned int max_time_for_measurement = 4366; //this time equals a distance (from the sensor) of about 1.0 meter
@@ -68,15 +68,21 @@ int EchoSensor::get_distance_in_mm()
 
 bool EchoSensor::get_echo_dist_warning(short int minDist)
 {
+ 
   short int measured_dist = get_distance_in_mm();
-  if(measured_dist <= minDist || last_measurement <= minDist){
-    /*if(measured_dist <= 0.4*last_measurement && measured_dist > 250){
-      return false;
-    }*/
+  bool is_warning_needed=(measured_dist <= minDist && last_measurement <= minDist);
+  
+  if( is_warning_needed || warning){
+    warning=false;
+    if(is_warning_needed){
+      warning = true;
+    }
+    
     last_measurement = measured_dist;
     return true;
   }
   else{
+    warning = false;
     last_measurement = measured_dist;
     return false;
   }
