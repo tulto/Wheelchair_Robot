@@ -152,9 +152,6 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/navigation_node.cpp)
 
-add_executable(prevent_back_and_check_collision src/prevent_back_and_check_collision.cpp)
-target_link_libraries(prevent_back_and_check_collision ${catkin_LIBRARIES})
-
 add_executable(my_planner src/my_planner.cpp)
 target_link_libraries(my_planner ${catkin_LIBRARIES})
 
