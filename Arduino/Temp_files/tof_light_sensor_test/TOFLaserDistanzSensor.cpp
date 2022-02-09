@@ -46,7 +46,7 @@ void TOFLaserDistanzSensor::set_i2c_address(std::vector<TOFLaserDistanzSensor*> 
   delay(10);
   
   if(!tof_sensor.begin(i2c_address)) {
-    Serial.println(F("Failed to boot first VL53L0X"));
+    Serial.println(F("Failed to boot VL53L0X"));
     while(1);
   }
   
@@ -95,6 +95,9 @@ bool TOFLaserDistanzSensor::get_distance_warning(int minDist, int maxDist)
 {
   short int measured_dist = get_distance_mm();
   if(measured_dist >= maxDist || measured_dist <= minDist || last_measurement >= maxDist || last_measurement <= minDist ){
+    if(measured_dist >= 1000){
+      return false;
+    }
     last_measurement = measured_dist;
     return true;
   }
