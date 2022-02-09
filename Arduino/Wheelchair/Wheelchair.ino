@@ -4,10 +4,11 @@
 #include <services_and_messages/Joystick.h>
 #include "joystick.h"
 #include "EchoSensor.h"
-#include "services_and_messages/Echosensors.h"
 #include "ArduinoSTL.h"
 #include "TOFLaserDistanzSensor.h"
 #include "services_and_messages/TOF_sensor.h"
+#include "services_and_messages/Echosensors.h"
+#include "Filter_movement.h"
 
 ros::NodeHandle nh;
 
@@ -130,12 +131,7 @@ void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSenso
   
 }*/
 
-//Joystick
-#define v 11 //front
-#define r 10 //right
-#define b 9  //back
-#define l 8  //left
-
+// Joystick
 int x_movement = A1;
 int y_movement = A2;
 int t_movement = A3;
@@ -150,6 +146,7 @@ ros::Publisher joystick("/movement/joystick", &joy_msg);
 Motor_Controller drive;
 IMU imu_;
 Joystick joy(A1,A2,A3);
+Filter_movement filter;
 
 void setup() {
  Serial.begin(57600);  
@@ -262,14 +259,20 @@ void loop() {
 
   }
   
-  //send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
   
+  //ultrasonic sensors for collision warning
+  //send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
+
+  // filter.set_sensor(0,0,0,0);
   
   // query if joystick is used, if yes then it should predefine all movements
   // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS 
   if (joy.movement()){   
-    drive.set_movement(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity());
-    drive.filter_movement();
+    float vel[3];
+    vel[0] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[0];
+    vel[1] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[1];
+    vel[2] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[2];
+    drive.set_movement(vel[0], vel[1], vel[2]);
   }else{
     drive.set_sent_movement();
     //drive.filter_movement();
@@ -310,6 +313,11 @@ void loop() {
   if(send_collision_warn && !send_collision_warn_was_changed){
     send_collision_warn = false;
     collision_warning_pub.publish(&collision_warn_msg);
+
+    filter.set_sensor(collision_warn_msg.echo_dir[0]||stair_warn_msg.stair_warning_dir[0], 
+                    collision_warn_msg.echo_dir[1]||stair_warn_msg.stair_warning_dir[1], 
+                    collision_warn_msg.echo_dir[2]||stair_warn_msg.stair_warning_dir[2], 
+                    collision_warn_msg.echo_dir[3]||stair_warn_msg.stair_warning_dir[3]);
     
     collision_warn_msg.echo_dir[0]=true;
     collision_warn_msg.echo_dir[1]=true;

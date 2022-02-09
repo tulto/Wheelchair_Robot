@@ -39,15 +39,15 @@ bool Joystick::movement(){
 
 
 float Joystick::x_velocity(){
-  return calculate(analogRead(x_axis), 0.8);
+  return calculate(analogRead(x_axis), 0.6);
 }
 
 
 float Joystick::y_velocity(){
-  return calculate(analogRead(y_axis), 0.45);
+  return calculate(analogRead(y_axis), 0.35);
 }
 
 
 float Joystick::t_velocity(){
-  return calculate(analogRead(t_axis), 0.4);
+  return calculate(analogRead(t_axis), 0.35);
 }

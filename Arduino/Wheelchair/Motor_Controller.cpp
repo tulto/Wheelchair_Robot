@@ -22,7 +22,6 @@ void Motor_Controller::init(ros::NodeHandle& nh){
   nh.initNode();
   nh.subscribe(subscriber_motion_);
   nh.advertise(encoder);
-  sensor.init(nh);
 }
 
 /***************************************************************
@@ -76,15 +75,6 @@ void Motor_Controller::set_movement(float x, float y, float turning){
   motion[0] = x;
   motion[1] = y;
   motion[2] = turning;
-}
-
-//filter der über Echosensoren bestimmt wird
-void Motor_Controller::filter_movement(){  
-  float *speicher;
-  speicher = sensor.blocking_path(motion[0], motion[1], motion[2]);
-  for (int i = 0; i<3; i++){  
-    motion[i] = speicher[i]; 
-  }
 }
 
 //Bewegungswerte x,y,t werden in Bewegung umgewandelt, sowie abgefragt ob Echosensoren eine Mauer erkennen 
