@@ -1,0 +1,19 @@
+<launch>
+
+<node pkg="rplidar_ros" type="rplidarNode" name="rplidar_front">
+<param name="frame_id" value="laser_frame_front" />
+<remap from="scan" to="/scan_front_lidar" />
+<param name="serial_port" value="/dev/ttyUSB0" />
+</node>
+
+<!--
+<node pkg="rplidar_ros" type="rplidarNode" name="rplidar_back">
+<param name="frame_id" value="laser_frame_back" />
+<remap from="scan" to="/scan_back_lidar" />
+<param name="serial_port" value="/dev/ttyUSB1" />
+</node>
+-->
+
+<include file="$(find lidar-filtering)/launch-files/real_robot_laser_cutter.launch"/>
+
+</launch>

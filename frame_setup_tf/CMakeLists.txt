@@ -136,8 +136,11 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/frame_setup_tf_node.cpp)
 
-add_executable(one_laser_tf src/one_laser_tf.cpp)
-target_link_libraries(one_laser_tf ${catkin_LIBRARIES})
+add_executable(front_laser_tf src/front_laser_tf.cpp)
+target_link_libraries(front_laser_tf ${catkin_LIBRARIES})
+
+add_executable(back_laser_tf src/back_laser_tf.cpp)
+target_link_libraries(back_laser_tf ${catkin_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

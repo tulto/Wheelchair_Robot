@@ -1,0 +1,1 @@
+bool[4] stair_warning_dir

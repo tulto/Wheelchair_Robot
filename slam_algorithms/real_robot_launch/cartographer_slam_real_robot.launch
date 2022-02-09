@@ -1,0 +1,20 @@
+<launch>
+
+
+  <!-- Run Cartographer Node -->
+  <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory
+              $(find slam_algorithms)/config
+          -configuration_basename wheelchair-robot-real.lua"
+      output="screen">
+    <remap from="imu" to="/imu/data" />
+    <remap from="odom" to="/odom/data" />
+    <remap from="scan" to="/front_scan" />
+  
+  </node>
+
+  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+      type="cartographer_occupancy_grid_node" args="-resolution 0.025" /> <!--resolution was 0.05-->
+
+</launch>
