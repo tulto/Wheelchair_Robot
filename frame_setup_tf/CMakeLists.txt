@@ -139,6 +139,9 @@ include_directories(
 add_executable(front_laser_tf src/front_laser_tf.cpp)
 target_link_libraries(front_laser_tf ${catkin_LIBRARIES})
 
+add_executable(back_laser_tf src/back_laser_tf.cpp)
+target_link_libraries(back_laser_tf ${catkin_LIBRARIES})
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
