@@ -94,12 +94,18 @@ void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &lef
 
 //Ultrasonic sensors
 //define all the pins needed for the ultrasonicsensors
-#define TRIG_PIN_ALL_SENSORS 44
+#define TRIG_PIN_FRONT 11       //trig-sensor-front
+#define TRIG_PIN_LEFT_FRONT 10  //trig-sensor-left-front
+#define TRIG_PIN_LEFT_BACK 12   //trig-sensor-left-back
+#define TRIG_PIN_RIGHT_FRONT 8  //trig-sensor-right-front
+#define TRIG_PIN_RIGHT_BACK 9   //trig-sensor-right-back
+#define TRIG_PIN_BACK 13        //trig-sensor-back
+
 #define ECHO_SENSOR_1_PIN 38 //echo-sensor-front
 #define ECHO_SENSOR_2_PIN 27 //echo-sensor-left-front
 #define ECHO_SENSOR_3_PIN 39 //echo-sensor-left-back
 #define ECHO_SENSOR_4_PIN 49 //echo-sensor-right-front
-#define ECHO_SENSOR_5_PIN 50 //echo-sensor-right-back
+#define ECHO_SENSOR_5_PIN 32 //echo-sensor-right-back
 #define ECHO_SENSOR_6_PIN 40 //echo-sensor-back
 
 //boolean values to only send collision_warn_msg every second code loop
@@ -107,12 +113,12 @@ bool send_collision_warn = false;
 bool send_collision_warn_was_changed = false;
 
 //implementing different EchoSensor objects
-EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_1_PIN);
-EchoSensor echo_sensor_2 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_2_PIN);
-EchoSensor echo_sensor_3 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_3_PIN);
-EchoSensor echo_sensor_4 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_4_PIN);
-EchoSensor echo_sensor_5 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_5_PIN);
-EchoSensor echo_sensor_6 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_6_PIN);
+EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_FRONT, ECHO_SENSOR_1_PIN);
+EchoSensor echo_sensor_2 = EchoSensor(TRIG_PIN_LEFT_FRONT, ECHO_SENSOR_2_PIN);
+EchoSensor echo_sensor_3 = EchoSensor(TRIG_PIN_LEFT_BACK, ECHO_SENSOR_3_PIN);
+EchoSensor echo_sensor_4 = EchoSensor(TRIG_PIN_RIGHT_FRONT, ECHO_SENSOR_4_PIN);
+EchoSensor echo_sensor_5 = EchoSensor(TRIG_PIN_RIGHT_BACK, ECHO_SENSOR_5_PIN);
+EchoSensor echo_sensor_6 = EchoSensor(TRIG_PIN_BACK, ECHO_SENSOR_6_PIN);
 
 //put references (pointer to the objets) into a pointer vector for easier use
 //std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_sensor_3, &echo_sensor_4, &echo_sensor_5, &echo_sensor_6};
