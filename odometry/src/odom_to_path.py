@@ -170,7 +170,7 @@ if __name__ == '__main__':
 
     # Subscription to the required odom topic (edit accordingly)
     msg = rospy.Subscriber('/odometry/filtered', Odometry, callback)
-    msg2 = rospy.Subscriber('/odometry/encoder', Odometry, callback_2)
+    msg2 = rospy.Subscriber('/odom/data', Odometry, callback_2)
     msg3 = rospy.Subscriber('/odometry/imu', Odometry, callback_3)
     rate = rospy.Rate(5)  # 30hz
 
