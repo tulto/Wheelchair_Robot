@@ -46,7 +46,7 @@ void TOFLaserDistanzSensor::set_i2c_address(std::vector<TOFLaserDistanzSensor*> 
   delay(10);
   
   if(!tof_sensor.begin(i2c_address)) {
-    Serial.println(F("Failed to boot first VL53L0X"));
+    Serial.println(("Failed to boot first VL53L0X"));
     //while(1);
   }
   
