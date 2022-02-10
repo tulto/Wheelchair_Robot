@@ -95,9 +95,9 @@ bool TOFLaserDistanzSensor::get_distance_warning(int minDist, int maxDist)
 {
   short int measured_dist = get_distance_mm();
   if(measured_dist >= maxDist || measured_dist <= minDist || last_measurement >= maxDist || last_measurement <= minDist ){
-    if(measured_dist >= 1000){
+    /*if(measured_dist >= 1000){
       return false;
-    }
+    }*/
     last_measurement = measured_dist;
     return true;
   }

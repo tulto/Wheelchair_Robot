@@ -12,6 +12,7 @@ class TOFLaserDistanzSensor
     short int i2c_address;
     short int xshut_pin;
     short int last_measurement = -1;
+    short int second_last_measurement = -1;
     bool measurement_in_progress = false;
     Adafruit_VL53L0X_short tof_sensor = Adafruit_VL53L0X_short();
 

@@ -111,6 +111,11 @@ void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &lef
 //boolean values to only send collision_warn_msg every second code loop
 bool send_collision_warn = false;
 bool send_collision_warn_was_changed = false;
+//measurement of the ultrasonic sensors takes 2 iterations of the code (for better measurements)
+  bool echo_front = true;
+  bool echo_left = true;
+  bool echo_right = true;
+  bool echo_back = true;
 
 //implementing different EchoSensor objects
 EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_FRONT, ECHO_SENSOR_1_PIN);
@@ -221,6 +226,11 @@ void loop() {
 
   //reset send_collision_warn_was_changed to notice if the value has been changed in this iteration
   bool send_collision_warn_was_changed = false;
+  //variable for checking if all tof_sensors have a message ready
+  bool all_tof_sensors_data_ready = true;
+  //variable to pass the sensed collision warnings to the movement filter to stop the movement in one direction (needed because one whole
+
+  
   /*
   joy_msg.x = analogRead(x_movement);
   joy_msg.y = analogRead(y_movement);
@@ -231,20 +241,17 @@ void loop() {
   
   //searching for possible collisions on the front side of the robot
   if(send_collision_warn){
-    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(450);
+    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(490);
   }
   //searching for possible collisions on the right-front and left-back
   if(!send_collision_warn){
-    collision_warn_msg.echo_dir[2] = echo_sensor_4.get_echo_dist_warning(320);
-    collision_warn_msg.echo_dir[1] = echo_sensor_3.get_echo_dist_warning(329);
+    collision_warn_msg.echo_dir[2] = echo_sensor_4.get_echo_dist_warning(370);
+    collision_warn_msg.echo_dir[1] = echo_sensor_3.get_echo_dist_warning(370);
   }
   
-  //tof-ir sensors for stair warning 
-  //variable for checking if all tof_sensors have a message ready
-  bool all_tof_sensors_data_ready = true;
-  
+  //tof-ir sensors for stair warning   
   //start all tof_sensor measurements
-  if(send_collision_warn){
+  if(true){
     for(int i = 0; i < tof_sensor_all.size(); i++){
       tof_sensor_all[i]->start_single_measurement();
     }
@@ -304,13 +311,13 @@ void loop() {
 
   //searching for possible collisions on the left-front and right-back
   if(send_collision_warn){
-    collision_warn_msg.echo_dir[1] = (collision_warn_msg.echo_dir[1] || echo_sensor_2.get_echo_dist_warning(320));
-    collision_warn_msg.echo_dir[2] = (collision_warn_msg.echo_dir[2] || echo_sensor_5.get_echo_dist_warning(320));
+    collision_warn_msg.echo_dir[1] = (collision_warn_msg.echo_dir[1] || echo_sensor_2.get_echo_dist_warning(370));
+    collision_warn_msg.echo_dir[2] = (collision_warn_msg.echo_dir[2] || echo_sensor_5.get_echo_dist_warning(370));
   }
   
   //searching for possible collisions on the back side of the robot
   if(!send_collision_warn){
-    collision_warn_msg.echo_dir[3] = echo_sensor_6.get_echo_dist_warning(450);
+    collision_warn_msg.echo_dir[3] = echo_sensor_6.get_echo_dist_warning(490);
   }
 
 
@@ -324,16 +331,22 @@ void loop() {
     send_collision_warn = false;
     collision_warning_pub.publish(&collision_warn_msg);
 
-    filter.set_sensor(collision_warn_msg.echo_dir[0]||stair_warn_msg.stair_warning_dir[0], 
-                    collision_warn_msg.echo_dir[1]||stair_warn_msg.stair_warning_dir[1], 
-                    collision_warn_msg.echo_dir[2]||stair_warn_msg.stair_warning_dir[2], 
-                    collision_warn_msg.echo_dir[3]||stair_warn_msg.stair_warning_dir[3]);
+    echo_front = collision_warn_msg.echo_dir[0];
+    echo_left = collision_warn_msg.echo_dir[1];
+    echo_right = collision_warn_msg.echo_dir[2];
+    echo_back = collision_warn_msg.echo_dir[3];
     
     /*collision_warn_msg.echo_dir[0]=true;
     collision_warn_msg.echo_dir[1]=true;
     collision_warn_msg.echo_dir[2]=true;
     collision_warn_msg.echo_dir[3]=true;*/
   }
+
+  filter.set_sensor(echo_front || stair_warn_msg.stair_warning_dir[0], 
+                    echo_left || stair_warn_msg.stair_warning_dir[1], 
+                    echo_right || stair_warn_msg.stair_warning_dir[2], 
+                    echo_back || stair_warn_msg.stair_warning_dir[3]);
+
 
   
   nh.spinOnce(); 
