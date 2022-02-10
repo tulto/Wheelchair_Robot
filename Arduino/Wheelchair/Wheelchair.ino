@@ -4,10 +4,11 @@
 #include <services_and_messages/Joystick.h>
 #include "joystick.h"
 #include "EchoSensor.h"
-#include "services_and_messages/Echosensors.h"
 #include "ArduinoSTL.h"
 #include "TOFLaserDistanzSensor.h"
 #include "services_and_messages/TOF_sensor.h"
+#include "services_and_messages/Echosensors.h"
+#include "Filter_movement.h"
 
 ros::NodeHandle nh;
 
@@ -23,10 +24,10 @@ ros::Publisher collision_warning_pub("/collision_warning_dir", &collision_warn_m
 
 //TOF-IR sensors
 // defining the addresses of the different sensors
-#define TOF_SENSOR_1_ADDRESS 0x30
-#define TOF_SENSOR_2_ADDRESS 0x31
-#define TOF_SENSOR_3_ADDRESS 0x32
-#define TOF_SENSOR_4_ADDRESS 0x33
+#define TOF_SENSOR_1_ADDRESS 0x34
+#define TOF_SENSOR_2_ADDRESS 0x36
+#define TOF_SENSOR_3_ADDRESS 0x38
+#define TOF_SENSOR_4_ADDRESS 0x40
 
 // define the xshut pins for the different sensors
 #define XSHT_SENSOR_1 2 //front tof sensor
@@ -81,10 +82,10 @@ void initTOFirSetupPins() {
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(370, 560);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(370, 560);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(370, 560);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(370, 560);
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);
@@ -93,25 +94,36 @@ void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &lef
 
 //Ultrasonic sensors
 //define all the pins needed for the ultrasonicsensors
-#define TRIG_PIN_ALL_SENSORS 44
+#define TRIG_PIN_FRONT 11       //trig-sensor-front
+#define TRIG_PIN_LEFT_FRONT 10  //trig-sensor-left-front
+#define TRIG_PIN_LEFT_BACK 12   //trig-sensor-left-back
+#define TRIG_PIN_RIGHT_FRONT 8  //trig-sensor-right-front
+#define TRIG_PIN_RIGHT_BACK 9   //trig-sensor-right-back
+#define TRIG_PIN_BACK 13        //trig-sensor-back
+
 #define ECHO_SENSOR_1_PIN 38 //echo-sensor-front
 #define ECHO_SENSOR_2_PIN 27 //echo-sensor-left-front
 #define ECHO_SENSOR_3_PIN 39 //echo-sensor-left-back
 #define ECHO_SENSOR_4_PIN 49 //echo-sensor-right-front
-#define ECHO_SENSOR_5_PIN 50 //echo-sensor-right-back
+#define ECHO_SENSOR_5_PIN 32 //echo-sensor-right-back
 #define ECHO_SENSOR_6_PIN 40 //echo-sensor-back
 
 //boolean values to only send collision_warn_msg every second code loop
 bool send_collision_warn = false;
 bool send_collision_warn_was_changed = false;
+//measurement of the ultrasonic sensors takes 2 iterations of the code (for better measurements)
+  bool echo_front = true;
+  bool echo_left = true;
+  bool echo_right = true;
+  bool echo_back = true;
 
 //implementing different EchoSensor objects
-EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_1_PIN);
-EchoSensor echo_sensor_2 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_2_PIN);
-EchoSensor echo_sensor_3 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_3_PIN);
-EchoSensor echo_sensor_4 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_4_PIN);
-EchoSensor echo_sensor_5 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_5_PIN);
-EchoSensor echo_sensor_6 = EchoSensor(TRIG_PIN_ALL_SENSORS, ECHO_SENSOR_6_PIN);
+EchoSensor echo_sensor_1 = EchoSensor(TRIG_PIN_FRONT, ECHO_SENSOR_1_PIN);
+EchoSensor echo_sensor_2 = EchoSensor(TRIG_PIN_LEFT_FRONT, ECHO_SENSOR_2_PIN);
+EchoSensor echo_sensor_3 = EchoSensor(TRIG_PIN_LEFT_BACK, ECHO_SENSOR_3_PIN);
+EchoSensor echo_sensor_4 = EchoSensor(TRIG_PIN_RIGHT_FRONT, ECHO_SENSOR_4_PIN);
+EchoSensor echo_sensor_5 = EchoSensor(TRIG_PIN_RIGHT_BACK, ECHO_SENSOR_5_PIN);
+EchoSensor echo_sensor_6 = EchoSensor(TRIG_PIN_BACK, ECHO_SENSOR_6_PIN);
 
 //put references (pointer to the objets) into a pointer vector for easier use
 //std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_sensor_3, &echo_sensor_4, &echo_sensor_5, &echo_sensor_6};
@@ -130,12 +142,7 @@ void send_collision_warning(EchoSensor &front, EchoSensor &left_front, EchoSenso
   
 }*/
 
-//Joystick
-#define v 11 //front
-#define r 10 //right
-#define b 9  //back
-#define l 8  //left
-
+// Joystick
 int x_movement = A1;
 int y_movement = A2;
 int t_movement = A3;
@@ -150,6 +157,7 @@ ros::Publisher joystick("/movement/joystick", &joy_msg);
 Motor_Controller drive;
 IMU imu_;
 Joystick joy(A1,A2,A3);
+Filter_movement filter;
 
 void setup() {
  Serial.begin(57600);  
@@ -218,6 +226,11 @@ void loop() {
 
   //reset send_collision_warn_was_changed to notice if the value has been changed in this iteration
   bool send_collision_warn_was_changed = false;
+  //variable for checking if all tof_sensors have a message ready
+  bool all_tof_sensors_data_ready = true;
+  //variable to pass the sensed collision warnings to the movement filter to stop the movement in one direction (needed because one whole
+
+  
   /*
   joy_msg.x = analogRead(x_movement);
   joy_msg.y = analogRead(y_movement);
@@ -226,50 +239,56 @@ void loop() {
   joystick.publish( &joy_msg ); //senden der analogen Joystick Daten
   */
   
-  //searching for possible collisions on the left side of the robot
+  //searching for possible collisions on the front side of the robot
   if(send_collision_warn){
-    collision_warn_msg.echo_dir[1] = (echo_sensor_2.get_echo_dist_warning(350) || echo_sensor_3.get_echo_dist_warning(350));
+    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(490);
   }
-  //searching for possible collisions on the right side of the robot
+  //searching for possible collisions on the right-front and left-back
   if(!send_collision_warn){
-    collision_warn_msg.echo_dir[2] = (echo_sensor_4.get_echo_dist_warning(350) || echo_sensor_5.get_echo_dist_warning(350));
+    collision_warn_msg.echo_dir[2] = echo_sensor_4.get_echo_dist_warning(370);
+    collision_warn_msg.echo_dir[1] = echo_sensor_3.get_echo_dist_warning(370);
   }
   
-  //tof-ir sensors for stair warning 
-  //variable for checking if all tof_sensors have a message ready
-  bool all_tof_sensors_data_ready = true;
-  
+  //tof-ir sensors for stair warning   
   //start all tof_sensor measurements
-  for(int i = 0; i < tof_sensor_all.size(); i++){
-    tof_sensor_all[i]->start_single_measurement();
-  }
+  if(true){
+    for(int i = 0; i < tof_sensor_all.size(); i++){
+      tof_sensor_all[i]->start_single_measurement();
+    }
+    
   
-
-  //check if measurement is ready 
-  for(int i = 0; i<tof_sensor_all.size(); i++){
-    if(!tof_sensor_all[i]->is_measurement_ready()){
+    //check if measurement is ready 
+    for(int i = 0; i<tof_sensor_all.size(); i++){
+      if(!tof_sensor_all[i]->is_measurement_ready()){
+        all_tof_sensors_data_ready = false;
+        break;
+      }
+    }
+    
+  
+    //if data is ready publish ros message
+    if(all_tof_sensors_data_ready){
+      
+      send_stair_warning(sensor1, sensor2, sensor3, sensor4);
+  
       all_tof_sensors_data_ready = false;
+  
     }
   }
   
-
-  //if data is ready publish ros message
-  if(all_tof_sensors_data_ready){
-    
-    send_stair_warning(sensor1, sensor2, sensor3, sensor4);
-
-    all_tof_sensors_data_ready = false;
-
-  }
-  
+  //ultrasonic sensors for collision warning
   //send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
-  
+
+  // filter.set_sensor(0,0,0,0);
   
   // query if joystick is used, if yes then it should predefine all movements
   // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS 
   if (joy.movement()){   
-    drive.set_movement(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity());
-    drive.filter_movement();
+    float vel[3];
+    vel[0] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[0];
+    vel[1] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[1];
+    vel[2] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[2];
+    drive.set_movement(vel[0], vel[1], vel[2]);
   }else{
     drive.set_sent_movement();
     //drive.filter_movement();
@@ -290,14 +309,15 @@ void loop() {
   imu_.publish_imu_data(nh);
   imu_.publish_imu_cali();
 
-  //searching for possible collisions on the front side of the robot
+  //searching for possible collisions on the left-front and right-back
   if(send_collision_warn){
-    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(450);
+    collision_warn_msg.echo_dir[1] = (collision_warn_msg.echo_dir[1] || echo_sensor_2.get_echo_dist_warning(370));
+    collision_warn_msg.echo_dir[2] = (collision_warn_msg.echo_dir[2] || echo_sensor_5.get_echo_dist_warning(370));
   }
   
   //searching for possible collisions on the back side of the robot
   if(!send_collision_warn){
-    collision_warn_msg.echo_dir[3] = echo_sensor_6.get_echo_dist_warning(450);
+    collision_warn_msg.echo_dir[3] = echo_sensor_6.get_echo_dist_warning(490);
   }
 
 
@@ -310,12 +330,23 @@ void loop() {
   if(send_collision_warn && !send_collision_warn_was_changed){
     send_collision_warn = false;
     collision_warning_pub.publish(&collision_warn_msg);
+
+    echo_front = collision_warn_msg.echo_dir[0];
+    echo_left = collision_warn_msg.echo_dir[1];
+    echo_right = collision_warn_msg.echo_dir[2];
+    echo_back = collision_warn_msg.echo_dir[3];
     
-    collision_warn_msg.echo_dir[0]=true;
+    /*collision_warn_msg.echo_dir[0]=true;
     collision_warn_msg.echo_dir[1]=true;
     collision_warn_msg.echo_dir[2]=true;
-    collision_warn_msg.echo_dir[3]=true;
+    collision_warn_msg.echo_dir[3]=true;*/
   }
+
+  filter.set_sensor(echo_front || stair_warn_msg.stair_warning_dir[0], 
+                    echo_left || stair_warn_msg.stair_warning_dir[1], 
+                    echo_right || stair_warn_msg.stair_warning_dir[2], 
+                    echo_back || stair_warn_msg.stair_warning_dir[3]);
+
 
   
   nh.spinOnce(); 

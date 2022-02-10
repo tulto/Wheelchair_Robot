@@ -2,16 +2,12 @@
 #define Motorcontroll_H
 
 #include <ros.h>
-#include "Echo_Sensor.h"
 #include <geometry_msgs/Twist.h>
 #include <services_and_messages/Encoder.h>
 
 
 class Motor_Controller {
   private:
-  Echo_Sensor sensor; //definiere Echo_Sensor Class
-  
-
   //Motor
   int max_speed = 800;
   float motion[3];
@@ -40,7 +36,6 @@ Motor Part
   float get_t();
   void set_sent_movement();
   void set_movement(float x, float y, float turning);
-  void filter_movement();
   void control_front(int chanel, int velocity);
   void control_back(int chanel, int velocity);
   void movement();

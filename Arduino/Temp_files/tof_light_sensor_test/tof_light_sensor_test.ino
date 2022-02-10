@@ -14,10 +14,10 @@ ros::Publisher stair_warning_pub("/stair_warning_dir", &stair_warn_msg);
 
 
 // defining the addresses of the different sensors
-#define TOF_SENSOR_1_ADDRESS 0x30
-#define TOF_SENSOR_2_ADDRESS 0x31
-#define TOF_SENSOR_3_ADDRESS 0x32
-#define TOF_SENSOR_4_ADDRESS 0x33
+#define TOF_SENSOR_1_ADDRESS 0x34
+#define TOF_SENSOR_2_ADDRESS 0x36
+#define TOF_SENSOR_3_ADDRESS 0x38
+#define TOF_SENSOR_4_ADDRESS 0x40
 
 
 // define the xshut pins for the different sensors
@@ -75,10 +75,10 @@ void initSetupPins() {
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(398, 490);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(398, 490);
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(380, 490);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(380, 490);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(380, 490);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(380, 490);
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);
@@ -138,6 +138,7 @@ void loop() {
   for(int i = 0; i<sensors_all.size(); i++){
     if(!sensors_all[i]->is_measurement_ready()){
       all_tof_sensors_data_ready = false;
+      break;
     }
   }
 
@@ -161,7 +162,7 @@ void loop() {
 
   }
 
-  delay(750);
+  delay(50);
 
   //code for testing needed runtime
   /*
