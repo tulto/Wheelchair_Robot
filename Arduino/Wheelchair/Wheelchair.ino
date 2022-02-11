@@ -251,30 +251,25 @@ void loop() {
   
   //tof-ir sensors for stair warning   
   //start all tof_sensor measurements
-  if(true){
-    for(int i = 0; i < tof_sensor_all.size(); i++){
-      tof_sensor_all[i]->start_single_measurement();
-    }
-    
+  for(int i = 0; i < tof_sensor_all.size(); i++){
+    tof_sensor_all[i]->start_single_measurement();
+  }
   
-    //check if measurement is ready 
-    for(int i = 0; i<tof_sensor_all.size(); i++){
-      if(!tof_sensor_all[i]->is_measurement_ready()){
-        all_tof_sensors_data_ready = false;
-        break;
-      }
-    }
-    
-  
-    //if data is ready publish ros message
-    if(all_tof_sensors_data_ready){
-      
-      send_stair_warning(sensor1, sensor2, sensor3, sensor4);
-  
+  //check if measurement is ready 
+  for(int i = 0; i<tof_sensor_all.size(); i++){
+    if(!tof_sensor_all[i]->is_measurement_ready()){
       all_tof_sensors_data_ready = false;
-  
+      break;
     }
   }
+  
+
+  //if data is ready publish ros message
+  if(all_tof_sensors_data_ready){
+    send_stair_warning(sensor1, sensor2, sensor3, sensor4);
+    all_tof_sensors_data_ready = false;
+  }
+  
   
   //ultrasonic sensors for collision warning
   //send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);

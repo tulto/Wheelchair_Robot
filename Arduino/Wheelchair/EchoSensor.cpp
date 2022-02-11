@@ -70,7 +70,7 @@ bool EchoSensor::get_echo_dist_warning(short int minDist)
 {
  
   short int measured_dist = get_distance_in_mm();
-  bool is_warning_needed=(measured_dist <= minDist && last_measurement <= minDist);
+  bool is_warning_needed=(measured_dist <= minDist || last_measurement <= minDist);
   
   if( is_warning_needed || warning || second_last_warning){
     second_last_warning = warning;
