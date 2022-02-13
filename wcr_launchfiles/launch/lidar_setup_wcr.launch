@@ -4,6 +4,10 @@
 <param name="frame_id" value="laser_frame_front" />
 <remap from="scan" to="/scan_front_lidar" />
 <param name="serial_port" value="/dev/ttyUSB0" />
+<param name="serial_baudrate"     type="int"    value="115200"/>
+<param name="inverted"            type="bool"   value="false"/>
+<param name="angle_compensate"    type="bool"   value="true"/>
+<param name="scan_mode"    type="string"   value="Standard"/>
 </node>
 
 <!--
@@ -11,6 +15,10 @@
 <param name="frame_id" value="laser_frame_back" />
 <remap from="scan" to="/scan_back_lidar" />
 <param name="serial_port" value="/dev/ttyUSB1" />
+<param name="serial_baudrate"     type="int"    value="115200"/>
+<param name="inverted"            type="bool"   value="false"/>
+<param name="angle_compensate"    type="bool"   value="true"/>
+<param name="scan_mode"    type="string"   value="Standard"/>
 </node>
 -->
 
