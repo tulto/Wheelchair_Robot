@@ -24,42 +24,25 @@ void EchoSensor::setup_pins()
 }
 
 
-int EchoSensor::get_distance_in_mm()
+short EchoSensor::get_distance_in_mm()
 {
   //calculate the max_time_for_measurement: t=(distance*2)/(343.5*10e⁻6)
-  unsigned int max_time_for_measurement = 4366; //this time equals a distance (from the sensor) of about 0.75 meter
+  //unsigned int max_time_for_measurement = 4366; //this time equals a distance (from the sensor) of about 0.75 meter
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
 
-  unsigned long int measurement_start_time = micros();
-  
-  while(!digitalRead(echoPin)){
-    if((micros() - measurement_start_time) > 550){
-      tof_time = -10;
-      break;
-    }
-  }
 
-  measurement_start_time = micros();
-  
-  while(digitalRead(echoPin)){
-    //Serial.print("in");
-    tof_time = (micros()-measurement_start_time);
-    
-    if(tof_time < 0){
-      tof_time = (4294967295 - measurement_start_time + micros());
-    }
-    
-    if(tof_time > max_time_for_measurement){
-      break;
-    }
-  }
+  tof_time = pulseIn(echoPin, HIGH, 4366); //4366 microseconds: this time equals a distance (from the sensor) of about 0.75 meter
   
   //calculate distance, reminder: time needs to be divided by two because soundwave goes from sensor to object back to sensor
   //velocity of sound about 342,2 m/s or 0,3432 mm/microsecond
+  //first check if measurement was within the time limit of 4366 microseconds (if not tof_time == 0)
+  if(tof_time == 0){
+    tof_time = 4366;
+  }
   distance_mm = ((tof_time/2)*0.3432);
   
   return distance_mm;
@@ -70,15 +53,14 @@ bool EchoSensor::get_echo_dist_warning(short int minDist)
 {
  
   short int measured_dist = get_distance_in_mm();
-  bool is_warning_needed=(measured_dist <= minDist || last_measurement <= minDist);
+  bool is_warning_needed=(measured_dist <= minDist && last_measurement <= minDist);
   
-  if( is_warning_needed || warning || second_last_warning){
-    second_last_warning = warning;
+  if( is_warning_needed || warning){
     warning=false;
     if(is_warning_needed){
       warning = true;
     }
-
+    
     last_measurement = measured_dist;
     return true;
   }
