@@ -82,10 +82,10 @@ void initTOFirSetupPins() {
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(370, 560);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(370, 560);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(370, 560);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(370, 560);
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning_continuous(360, 560);
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning_continuous(360, 560);
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning_continuous(360, 560);
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning_continuous(360, 560);
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);
@@ -186,6 +186,12 @@ void setup() {
   
   //setup sensors and i2c addresses of the different sensors
   initTOFirSetupPins();
+  delay(2);
+  //starting continuous measurement for all tof-ir-stair-warning-sensors
+  for(int i = 0; i < tof_sensor_all.size(); i++){
+    tof_sensor_all[i]->start_continuous_measurement(60);
+    delay(2);
+  }
   //advertise stair_warning_pub ros publisher
   nh.advertise(stair_warning_pub);
   nh.negotiateTopics();
@@ -227,7 +233,7 @@ void loop() {
   //reset send_collision_warn_was_changed to notice if the value has been changed in this iteration
   bool send_collision_warn_was_changed = false;
   //variable for checking if all tof_sensors have a message ready
-  bool all_tof_sensors_data_ready = true;
+  //bool all_tof_sensors_data_ready = true;
   //variable to pass the sensed collision warnings to the movement filter to stop the movement in one direction (needed because one whole
 
   
@@ -248,12 +254,14 @@ void loop() {
     collision_warn_msg.echo_dir[2] = echo_sensor_4.get_echo_dist_warning(370);
     collision_warn_msg.echo_dir[1] = echo_sensor_3.get_echo_dist_warning(370);
   }
-  
+
   //tof-ir sensors for stair warning   
-  //start all tof_sensor measurements
+  //start all tof_sensor measurements (only needed when single and not continious measurement is set)
+  /*
   for(int i = 0; i < tof_sensor_all.size(); i++){
     tof_sensor_all[i]->start_single_measurement();
   }
+  
   
   //check if measurement is ready 
   for(int i = 0; i<tof_sensor_all.size(); i++){
@@ -263,13 +271,16 @@ void loop() {
     }
   }
   
-
+  all_tof_sensors_data_ready=true; //for testing purposes 
+  
   //if data is ready publish ros message
   if(all_tof_sensors_data_ready){
     send_stair_warning(sensor1, sensor2, sensor3, sensor4);
     all_tof_sensors_data_ready = false;
-  }
-  
+  } */
+
+  //check the distance on all ir-tof-sensors and send ros Message;
+  send_stair_warning(sensor1, sensor2, sensor3, sensor4);
   
   //ultrasonic sensors for collision warning
   //send_collision_warning(echo_sensor_1, echo_sensor_2, echo_sensor_3, echo_sensor_4, echo_sensor_5, echo_sensor_6);
