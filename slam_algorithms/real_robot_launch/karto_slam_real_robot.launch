@@ -15,15 +15,15 @@
     <param name="base_frame" value="$(arg base_frame)"/>
     <param name="odom_frame" value="$(arg odom_frame)"/>
     <param name="map_update_interval" value="2.5"/>
-    <param name="resolution" value="0.025"/>
+    <param name="resolution" value="0.05"/>
     <param name="maxRange" value="8.0"/>
     <param name="map" value="map_karto"/>
     <param name="transform_publisher_period" value="0.05" />
     <param name="use_scan_barycenter" value="true" />
     <param name="use_scan_matching" value="true" />
-    <param name="minimum_travel_distance" value="0.28" />
-    <param name="minimum_travel_heading" value="deg2rad(7)" />
-    <param name="scan_buffer_size" value="40" />
+    <param name="minimum_travel_distance" value="0.4" />
+    <param name="minimum_travel_heading" value="deg2rad(90)" />
+    <param name="scan_buffer_size" value="100" />
     <param name="scan_bufffer_maximum_scan_distance" value="8" />
     <param name="link_match_minimum_response_fine" value="0.87" />
     <param name="link_scan_maximum_distance" value="4" />
@@ -44,7 +44,7 @@
     <param name="fine_search_angle_offset" value="deg2rad(0.2)" />
     <param name="coarse_search_angle_offset" value="deg2rad(20.0)" />
     <param name="coarse_angle_resolution" value="deg2rad(2.0)" />
-    <param name="minimum_angle_penalty" value="0.92" />
+    <param name="minimum_angle_penalty" value="0.9" />
     <param name="minimum_distance_penalty" value="0.5" />
     <param name="use_response_expansion" value="false" />
 

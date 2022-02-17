@@ -22,10 +22,10 @@ base_link_frame: base_link  # Defaults to "base_link" if unspecified
 world_frame: odom           # Defaults to the value of odom_frame if unspecified
 
 
-# AMCL Odometry
-odom0: /amcl/odometry2
+# Encoder Odometry
+odom0: /odom/data
 # values is x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az. Note that not some message types
-odom0_config: [true,  true,  false,
+odom0_config: [true, true, false,
                false, false, true,
                false, false, false,
                false, false, false,
@@ -34,26 +34,10 @@ odom0_config: [true,  true,  false,
 odom0_nodelay: false
 odom0_queue_size: 2
 odom0_nodelay: false
-odom0_differential: false
+odom0_differential: true
 odom0_relative: false
-
-
-# Encoder Odometry
-odom1: /odom/data
-# values is x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az. Note that not some message types
-odom1_config: [true, true, false,
-               false, false, true,
-               false, false, false,
-               false, false, false,
-               false, false, false]
-
-odom1_nodelay: false
-odom1_queue_size: 2
-odom1_nodelay: false
-odom1_differential: true
-odom1_relative: false
-#odom1_pose_rejection_threshold: 5
-#odom1_twist_rejection_threshold: 1
+#odom0_pose_rejection_threshold: 5
+#odom0_twist_rejection_threshold: 1
 
 
 # BNO055 IMU Data
@@ -61,11 +45,11 @@ imu0: /imu/data
 imu0_config: [false, false, false,
               false, false, false,
               false, false, false,
-              true, true, true,
+              false, false, true,
               true,  true,  true]
 imu0_nodelay: false
 imu0_differential: false
-imu0_relative: true
+imu0_relative: false
 imu0_queue_size: 5
 #imu0_pose_rejection_threshold: 0.08                 # Note the difference in parameter names
 #imu0_twist_rejection_threshold: 0.08                #
