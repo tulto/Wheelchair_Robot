@@ -148,7 +148,7 @@ int y_movement = A2;
 int t_movement = A3;
 int button = 7;
 int start = millis();
-int timer = 100000;
+int timer = 1000;
 
 services_and_messages::Joystick joy_msg;
 ros::Publisher joystick("/movement/joystick", &joy_msg);
