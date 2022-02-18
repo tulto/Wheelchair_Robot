@@ -11,6 +11,7 @@ class TOFLaserDistanzSensor
     VL53L0X tof_sensor = VL53L0X();
     byte i2c_address;
     byte xshut_pin;
+    uint16_t measured_dist = 0;
     short last_measurement = -1;
     bool measurement_in_progress = false;
     
@@ -31,10 +32,11 @@ class TOFLaserDistanzSensor
     void start_single_measurement();
     void start_continuous_measurement(uint32_t period_for_measuring = 0);
     bool is_measurement_ready();
-    int get_distance_mm();
-    int get_continuous_distance_mm();
+    uint16_t get_distance_mm();
+    uint16_t get_continuous_distance_mm();
     bool get_distance_warning(short minDist, short maxDist);
     bool get_distance_warning_continuous(short minDist, short maxDist);
+    uint16_t get_measured_dist();
   
 };
 

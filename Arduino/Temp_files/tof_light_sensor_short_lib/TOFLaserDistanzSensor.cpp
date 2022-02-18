@@ -40,28 +40,31 @@ void TOFLaserDistanzSensor::set_i2c_address(std::vector<TOFLaserDistanzSensor*> 
   for(int i = 0; i < sensorsToShutDown.size(); i++)
   {
     sensorsToShutDown[i]->shutdown_sensor();
-    delay(2);
+    delay(3);
   }
 
   start_sensor();
-  delay(10);
+  delay(3);
 
+  tof_sensor.setAddress(0x29);
+  delay(3);
+  
   tof_sensor.setTimeout(50); //set time out after which a distance reading will be aborted in ms
   
   if (!tof_sensor.init())
   {
     Serial.println("Failed to initialize sensor!");
-    while (1) {}
+    //while (1) {}
   }
   
   tof_sensor.setAddress(i2c_address);
   
-  delay(5);
+  delay(3);
   
   tof_sensor.setMeasurementTimingBudget(20000); //reduce timing budget to 20ms because high accuracy is
                                                 //not needed in our application but runtime is very important
 
-  delay(5);
+  delay(3);
   
 }
 
@@ -100,19 +103,19 @@ bool TOFLaserDistanzSensor::is_measurement_ready()
 }
 
 
-int TOFLaserDistanzSensor::get_distance_mm()
+uint16_t TOFLaserDistanzSensor::get_distance_mm()
 {
   measurement_in_progress = false;
   return (tof_sensor.readSingleRangeReadyMeasurementMillimeters());
 }
 
-int TOFLaserDistanzSensor::get_continuous_distance_mm(){
+uint16_t TOFLaserDistanzSensor::get_continuous_distance_mm(){
   return(tof_sensor.readRangeContinuousMillimeters());
 }
 
 bool TOFLaserDistanzSensor::get_distance_warning(short minDist, short maxDist)
 {
-  short measured_dist = get_distance_mm();
+  measured_dist = get_distance_mm();
   if(measured_dist >= maxDist || measured_dist <= minDist || last_measurement >= maxDist || last_measurement <= minDist ){
     /*if(measured_dist >= 1000){
       return false;
@@ -128,7 +131,7 @@ bool TOFLaserDistanzSensor::get_distance_warning(short minDist, short maxDist)
 
 bool TOFLaserDistanzSensor::get_distance_warning_continuous(short minDist, short maxDist)
 {
-  short measured_dist = get_continuous_distance_mm();
+  measured_dist = get_continuous_distance_mm();
   if(measured_dist >= maxDist || measured_dist <= minDist || last_measurement >= maxDist || last_measurement <= minDist ){
     /*if(measured_dist >= 1000){
       return false;
@@ -140,4 +143,8 @@ bool TOFLaserDistanzSensor::get_distance_warning_continuous(short minDist, short
     last_measurement = measured_dist;
     return false;
   }
+}
+
+uint16_t TOFLaserDistanzSensor::get_measured_dist(){
+  return measured_dist;
 }
