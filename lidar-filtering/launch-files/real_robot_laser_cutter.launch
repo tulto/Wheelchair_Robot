@@ -9,7 +9,7 @@
       <remap from="scan_filtered" to="/front_scan" />
 </node>
 
-<!--
+
 <node pkg="frame_setup_tf" type="back_laser_tf" name="back_laser_tf_publisher">
 </node> -
 
@@ -18,7 +18,7 @@
       <remap from="scan" to="/scan_back_lidar" />
       <remap from="scan_filtered" to="/back_scan" />
 </node>
--->
+
 
 
 </launch>
