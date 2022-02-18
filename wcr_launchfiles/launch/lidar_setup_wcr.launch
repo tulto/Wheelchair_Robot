@@ -25,7 +25,7 @@
 
 <include file="$(find lidar-filtering)/launch-files/real_robot_laser_cutter.launch"/>
 
-<arg name="node_start_delay" default="1.0" />  
+<arg name="node_start_delay_again" default="1.0" />  
 
 <include file="$(find lidar-filtering)/launch-files/real_wcr_lidar_merging.launch"/>
 
