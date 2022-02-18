@@ -10,7 +10,8 @@
 <param name="scan_mode"    type="string"   value="Standard"/>
 </node>
 
-<!--
+<arg name="node_start_delay" default="2.0" />  
+
 <node pkg="rplidar_ros" type="rplidarNode" name="rplidar_back">
 <param name="frame_id" value="laser_frame_back" />
 <remap from="scan" to="/scan_back_lidar" />
@@ -20,8 +21,12 @@
 <param name="angle_compensate"    type="bool"   value="true"/>
 <param name="scan_mode"    type="string"   value="Standard"/>
 </node>
--->
+
 
 <include file="$(find lidar-filtering)/launch-files/real_robot_laser_cutter.launch"/>
+
+<arg name="node_start_delay" default="1.0" />  
+
+<include file="$(find lidar-filtering)/launch-files/real_wcr_lidar_merging.launch"/>
 
 </launch>
