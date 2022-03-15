@@ -22,7 +22,7 @@ sudo apt-get install ros-noetic-slam-gmapping
 The last used SLAM-Algorithm is (Google-)Cartographer. The installation of Cartographer is a little bit more complicated. 
 You can look up how to install cartographer on: https://google-cartographer.readthedocs.io/en/latest/ .
 
-###Preliminary work
+### Preliminary work
 Before you can use the Algorithms which use two-lidar sensors it is necessary that you start a merger which merges two lidar-scans into one lidar-scan.
 This can be started with:
 ```
