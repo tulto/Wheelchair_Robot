@@ -48,9 +48,11 @@ roslaunch slam_algorihtms hector_slam_wcr_two_lidar.launch
 Hector-SLAM-launch file for the real WCR-robot.
 ```
 roslaunch slam_algorihtms hector_slam_real_robot.launch
-
+```
 
 ### Param
 All SLAM-Algorithms have different parameters which can be changed in order to get a (hopefully) better result of the generated map.
 These SLAM-parameters can be changed through the according launch file for Hector-, Gmapping-, and Karto-slam.
 For Cartorapher you need to change the .lua files in the config folder.
+
+More infomration about the changeable parameters of each algorithm can be found on the corresponding wiki.ros.org page | See links abouve.
