@@ -1,4 +1,4 @@
-## Odometry
+## SLAM-Algorithms
 
 ### Installation
 In order to use all of the four different SLAM-Algorithms the following packages need to be installed.
