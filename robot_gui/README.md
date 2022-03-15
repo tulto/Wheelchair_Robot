@@ -1,4 +1,4 @@
-## SLAM-Algorithms
+## Robot-GUI
 
 ### Installation
 This is a simple GUI programmed with python and the kivymd library.
