@@ -3,7 +3,7 @@ robot_base_frame: base_link
 obstacle_range: 3.0
 raytrace_range: 3.5
 
-footprint: [[-0.52, -0.37], [-0.52, 0.37], [0.52, 0.37], [0.52, -0.37]]
+footprint: [[-0.80, -0.37], [-0.80, 0.37], [0.66, 0.37], [0.66, -0.37]]
 #robot_radius: 0.17
 
 inflation_radius: 1.0
