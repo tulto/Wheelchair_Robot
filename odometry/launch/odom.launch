@@ -10,6 +10,8 @@
     <rosparam param="pose_covariance">[0.1,0,0,0,0,0,  0,0.1,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0.1] </rosparam>
     <rosparam param="twist_covariance">[0.2,0,0,0,0,0,  0,0.2,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0.2] </rosparam>
   </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="imu_link_broadcaster" args="-0.37 0 0 0 0 0 1 base_link imu_link 100" />
   
   <?Setting imu odom together from multiple topics (->arduino can send faster)?>
   <node pkg="odometry" type="imu_data.py" name="odometry_imu_node" >

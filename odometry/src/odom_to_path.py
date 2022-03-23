@@ -115,9 +115,9 @@ def callback_3(data):
 
     pub_3.publish(path3)
 
-    xAnt2 = pose2.pose.orientation.x
-    yAnt2 = pose2.pose.position.y
-    return path2
+    xAnt2 = pose3.pose.orientation.x
+    yAnt2 = pose3.pose.position.y
+    return path3
 
 if __name__ == '__main__':
     # Initializing global variables
@@ -157,7 +157,7 @@ if __name__ == '__main__':
 
     pub = rospy.Publisher('/path', Path, queue_size=1)
     pub_2 = rospy.Publisher('/path_encoder', Path, queue_size=1)
-    pub_3 = rospy.Publisher('/path_imu', Path, queue_size=1)
+    pub_3 = rospy.Publisher('/path_hector', Path, queue_size=1)
 
     path = Path()
     msg = Odometry()
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     # Subscription to the required odom topic (edit accordingly)
     msg = rospy.Subscriber('/odometry/filtered', Odometry, callback)
     msg2 = rospy.Subscriber('/odom/data', Odometry, callback_2)
-    msg3 = rospy.Subscriber('/odometry/imu', Odometry, callback_3)
+    msg3 = rospy.Subscriber('/odom/hector', Odometry, callback_3)
     rate = rospy.Rate(5)  # 30hz
 
     try:
