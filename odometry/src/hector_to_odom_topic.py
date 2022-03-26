@@ -39,8 +39,8 @@ def callback_hector_pose(hec_pose):
                 last_timestamp = hec_pose.header.stamp
                 
                 #fill the odom_msg for publishing the odom from hector topic
-                odom_msg.header.stamp = rospy.Time.now()                        #timestamp for the published msg
-                odom_msg.pose.pose = Pose(hec_pose.pose.pose.position, hec_pose.pose.pose.orientation)
+                odom_msg.header.stamp = hec_pose.header.stamp                       #timestamp for the published msg
+                odom_msg.pose.pose = hec_pose.pose.pose
                 
                 #checking if the pose msg should use a static covariance msg or the one passed from hector mapping
                 if use_static_pose_covariance:
@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
         #get parameters from rosparam server
         node_name = rospy.get_name()
-        parent_frame = rospy.get_param(node_name + "/parent_frame", "odom_hector")
+        parent_frame = rospy.get_param(node_name + "/parent_frame", "odom")
         child_frame = rospy.get_param(node_name + "/child_frame", "base_link")
         odom_topic_name = rospy.get_param(node_name + "/odom_topic_name", "odom/hector")
         
@@ -74,8 +74,8 @@ if __name__ == '__main__':
         
         #only change the static covariance value for the main axis so
         #you don't have to give a whole covariance matrix with 36 values
-        static_pose_covariance_val = rospy.get_param(node_name + "/static_pose_covariance_val", 0.07)
-        static_twist_covariance_val = rospy.get_param(node_name + "/static_twist_covariance_val", 0.14)
+        static_pose_covariance_val = rospy.get_param(node_name + "/static_pose_covariance_val", 0.2)
+        static_twist_covariance_val = rospy.get_param(node_name + "/static_twist_covariance_val", 0.4)
         
         #if needed you can change the whole static_covariance matrix through rosparam
         #if not needed it defaults to the values seen below
