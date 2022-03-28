@@ -7,7 +7,7 @@
   
   <?Calculating Odom from Encoder data?>
   <node pkg="odometry" type="odometry_encoder.py" name="odometry_encoder_node" >
-    <rosparam param="pose_covariance">[0.1,0,0,0,0,0,  0,0.1,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0.2] </rosparam>
+    <rosparam param="pose_covariance">[4.0,0,0,0,0,0,  0,4.0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,5.0] </rosparam>
     <rosparam param="twist_covariance">[0.2,0,0,0,0,0,  0,0.2,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0,  0,0,0,0,0,0.2] </rosparam>
   </node>
 
@@ -15,9 +15,9 @@
   
   <?Setting imu odom together from multiple topics (->arduino can send faster)?>
   <node pkg="odometry" type="imu_data.py" name="odometry_imu_node" >
-    <rosparam param="orientation_covariance">[0.1,0.,0.,  0.,0.1,0.,  0.,0.,0.1]</rosparam>
-    <rosparam param="gyro_covariance">[0.5,0.,0.,  0.,0.5,0.,  0.,0.,0.5]</rosparam>
-    <rosparam param="accel_covariance">[0.5,0.,0.,  0.,0.5,0.,  0.,0.,0.5]</rosparam>
+    <rosparam param="orientation_covariance">[11.0,0.,0.,  0.,11.0,0.,  0.,0.,4.5]</rosparam>
+    <rosparam param="gyro_covariance">[80.0,0.,0.,  0.,80.0,0.,  0.,0.,80.0]</rosparam>
+    <rosparam param="accel_covariance">[80.0,0.,0.,  0.,80.0,0.,  0.,0.,80.0]</rosparam>
   </node>
   
   <?Geting movement rigth between analog Joystick to Velocity?>
