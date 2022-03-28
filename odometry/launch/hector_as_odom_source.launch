@@ -5,7 +5,7 @@
 <launch>
   <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
   <arg name="base_frame" default="base_link"/>
-  <arg name="odom_frame" default="robot_base_link"/>
+  <arg name="odom_frame" default="odom_hector_frame"/>
   <arg name="pub_map_odom_transform" default="false"/>
   <arg name="scan_subscriber_queue_size" default="50"/>
   <arg name="scan_topic" default="/scan_wcr_ranged"/>
@@ -15,7 +15,7 @@
     
     <!-- Frame names -->
     <remap from="map" to="map_hector" />
-    <param name="map_frame" value="odom_hector" />
+    <param name="map_frame" value="map_hector_frame" />
     <param name="base_frame" value="$(arg base_frame)" />
     <param name="odom_frame" value="$(arg odom_frame)" />
     
@@ -58,7 +58,7 @@
   </node>
 
   <node pkg="odometry" type="hector_to_odom_topic.py" name="hector_to_odom_topic_publisher" > 
-  <param name="use_static_pose_covariance" value="true" />
+  <param name="use_static_pose_covariance" value="false" />
   <param name="static_pose_covariance_val" value="0.2" />
   </node>
     

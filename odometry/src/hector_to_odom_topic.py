@@ -39,7 +39,7 @@ def callback_hector_pose(hec_pose):
                 last_timestamp = hec_pose.header.stamp
                 
                 #fill the odom_msg for publishing the odom from hector topic
-                odom_msg.header.stamp = hec_pose.header.stamp                       #timestamp for the published msg
+                odom_msg.header.stamp = rospy.Time.now()  #timestamp for the published msg
                 odom_msg.pose.pose = hec_pose.pose.pose
                 
                 #checking if the pose msg should use a static covariance msg or the one passed from hector mapping
