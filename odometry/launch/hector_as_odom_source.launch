@@ -58,8 +58,8 @@
   </node>
 
   <node pkg="odometry" type="hector_to_odom_topic.py" name="hector_to_odom_topic_publisher" > 
-  <param name="use_static_pose_covariance" value="false" />
-  <param name="static_pose_covariance_val" value="0.2" />
+  <param name="use_static_pose_covariance" value="true" />
+  <param name="static_pose_covariance_val" value="4.0" />
   </node>
     
   <!--<node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100"/>-->
