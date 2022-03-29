@@ -52,6 +52,12 @@ def callback_hector_pose(hec_pose):
                                 
                 #publish odom from hector topic 
                 odom_pub.publish(odom_msg)
+
+                #define sleep_rate 
+                rate = rospy.Rate(sleep_rate)
+                #sleep
+                rate.sleep()
+
         
         
 
@@ -68,7 +74,8 @@ if __name__ == '__main__':
         parent_frame = rospy.get_param(node_name + "/parent_frame", "odom")
         child_frame = rospy.get_param(node_name + "/child_frame", "base_link")
         odom_topic_name = rospy.get_param(node_name + "/odom_topic_name", "odom/hector")
-        
+        sleep_rate = rospy.get_param(node_name + "/sleep_rate", 4)
+
         #decide if you want to use static pose covariance
         use_static_pose_covariance = rospy.get_param(node_name + "/use_static_pose_covariance", False)
         
@@ -110,7 +117,7 @@ if __name__ == '__main__':
         last_rotat = 0.0                        #save last rotation in euler
                         
         #subscribe to hector poseupdate
-        rospy.Subscriber("poseupdate", PoseWithCovarianceStamped, callback_hector_pose, queue_size = 25)
+        rospy.Subscriber("poseupdate", PoseWithCovarianceStamped, callback_hector_pose, queue_size = 1)
         
         rospy.spin()
                              
