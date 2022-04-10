@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-
-    <node pkg="navigation" type="my_planner" name="my_planner" >
-        <rosparam file="$(find navigation)/launch/my_planner.yaml" command="load"/>
-    </node>
-</launch>
