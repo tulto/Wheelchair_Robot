@@ -4,7 +4,7 @@
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
-  <arg name="map_file" default="$(find navigation)/maps/simulation/gmapping_default_param_nursing_home.yaml"/>
+  <arg name="map_file" default="$(find navigation)/maps/labor/hector_labor.yaml"/>
 
 
   <!-- Map server -->
@@ -43,6 +43,8 @@
     <remap from="cmd_vel" to="/cmd_vel"/>
     <remap from="odom" to="odom"/>
   </node>
+
+  <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
 
 
 </launch>
