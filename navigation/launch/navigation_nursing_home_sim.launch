@@ -41,7 +41,7 @@
 
   <!-- prevent backwards movement if not necessary -->
   <node pkg="navigation" type="my_planner" name="my_planner" >
-        <rosparam file="$(find navigation)/launch/my_planner.yaml" command="load"/>
+        <rosparam file="$(find navigation)/param/my_planner.yaml" command="load"/>
   </node>
 
   <!-- Map server -->
