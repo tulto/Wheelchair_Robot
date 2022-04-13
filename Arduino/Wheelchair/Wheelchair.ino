@@ -28,24 +28,36 @@ ros::Publisher collision_warning_pub("/collision_warning_dir", &collision_warn_m
 #define TOF_SENSOR_2_ADDRESS 0x33
 #define TOF_SENSOR_3_ADDRESS 0x35
 #define TOF_SENSOR_4_ADDRESS 0x37
+#define TOF_SENSOR_5_ADDRESS 0x39
+#define TOF_SENSOR_6_ADDRESS 0x41
+#define TOF_SENSOR_7_ADDRESS 0x42
+#define TOF_SENSOR_8_ADDRESS 0x44
 
 // define the xshut pins for the different sensors
 #define XSHT_SENSOR_1 2 //front tof sensor
 #define XSHT_SENSOR_2 4 //left tof sensor
 #define XSHT_SENSOR_3 5 //right tof sensor
 #define XSHT_SENSOR_4 3 //back tof sensor
+#define XSHT_SENSOR_5 33 //left front tof sensor
+#define XSHT_SENSOR_6 53 //right front tof sensor
+#define XSHT_SENSOR_7 35 //right back tof sensor
+#define XSHT_SENSOR_8 51 //left backtof sensor
 
 //implementing different TOFLaserDistanzSensor objects
-TOFLaserDistanzSensor sensor1(TOF_SENSOR_1_ADDRESS, XSHT_SENSOR_1);
-TOFLaserDistanzSensor sensor2(TOF_SENSOR_2_ADDRESS, XSHT_SENSOR_2);
-TOFLaserDistanzSensor sensor3(TOF_SENSOR_3_ADDRESS, XSHT_SENSOR_3);
-TOFLaserDistanzSensor sensor4(TOF_SENSOR_4_ADDRESS, XSHT_SENSOR_4);
+TOFLaserDistanzSensor sensor1(TOF_SENSOR_1_ADDRESS, XSHT_SENSOR_1);  //front
+TOFLaserDistanzSensor sensor2(TOF_SENSOR_2_ADDRESS, XSHT_SENSOR_2);  //left
+TOFLaserDistanzSensor sensor3(TOF_SENSOR_3_ADDRESS, XSHT_SENSOR_3);  //right
+TOFLaserDistanzSensor sensor4(TOF_SENSOR_4_ADDRESS, XSHT_SENSOR_4);  //back
+TOFLaserDistanzSensor sensor5(TOF_SENSOR_5_ADDRESS, XSHT_SENSOR_5);  //left front
+TOFLaserDistanzSensor sensor6(TOF_SENSOR_6_ADDRESS, XSHT_SENSOR_6);  //right front
+TOFLaserDistanzSensor sensor7(TOF_SENSOR_7_ADDRESS, XSHT_SENSOR_7);  //right back
+TOFLaserDistanzSensor sensor8(TOF_SENSOR_8_ADDRESS, XSHT_SENSOR_8);  //left back
 
 //variable to check if the tof_sensors had an issue
 bool tof_dead = false;
 
 //vector of pointers to TOFLaserDistanzSensor objects
-std::vector<TOFLaserDistanzSensor*> tof_sensor_all = {&sensor4, &sensor3, &sensor2, &sensor1};
+std::vector<TOFLaserDistanzSensor*> tof_sensor_all = {&sensor8, &sensor7, &sensor6, &sensor5, &sensor4, &sensor3, &sensor2, &sensor1};
 
 //function for init all tof-light-sensors with different i2c addresses (use this function in setup()
 void initTOFirSetupPins() {
@@ -73,18 +85,33 @@ void initTOFirSetupPins() {
   tof_sensor_all.pop_back();
   sensor4.set_i2c_address(tof_sensor_all);
   tof_sensor_all.pop_back();
+  sensor5.set_i2c_address(tof_sensor_all);
+  tof_sensor_all.pop_back();
+  sensor6.set_i2c_address(tof_sensor_all);
+  tof_sensor_all.pop_back();
+  sensor7.set_i2c_address(tof_sensor_all);
+  tof_sensor_all.pop_back();
+  sensor8.set_i2c_address(tof_sensor_all);
+  tof_sensor_all.pop_back();
+  
   
 
-  tof_sensor_all = {&sensor4, &sensor3, &sensor2, &sensor1};
+  tof_sensor_all = {&sensor8, &sensor7, &sensor6, &sensor5, &sensor4, &sensor3, &sensor2, &sensor1};
 }
 
 //function for generating the stair_warn_msg with corresponding direction of the warning
-void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back){
+void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back, TOFLaserDistanzSensor &left_front, TOFLaserDistanzSensor &right_front, TOFLaserDistanzSensor &right_back, TOFLaserDistanzSensor &left_back){
 
-  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(360, 560);
-  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(360, 560);
-  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(360, 560);
-  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(360, 560);
+  bool left_front_val = left_front.get_distance_warning(180, 540);
+  bool right_front_val = right_front.get_distance_warning(180, 540);
+  bool right_back_val = right_back.get_distance_warning(180, 540);
+  bool left_back_val = left_back.get_distance_warning(180, 540);
+  
+  stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(250, 560) || left_front_val || right_front_val;
+  stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(250, 560) || left_front_val || left_back_val;
+  stair_warn_msg.stair_warning_dir[2] = right.get_distance_warning(250, 560) || right_front_val || right_back_val;
+  stair_warn_msg.stair_warning_dir[3] = back.get_distance_warning(250, 560) || left_back_val || right_back_val;
+
 
   //publish stair_warn_msg to ros
   stair_warning_pub.publish(&stair_warn_msg);
@@ -127,8 +154,6 @@ EchoSensor echo_sensor_6 = EchoSensor(TRIG_PIN_BACK, ECHO_SENSOR_6_PIN);
 //put references (pointer to the objets) into a pointer vector for easier use
 //std::vector<EchoSensor*> echo_all = {&echo_sensor_1, &echo_sensor_2, &echo_sensor_3, &echo_sensor_4, &echo_sensor_5, &echo_sensor_6};
 
-//function for generating the collisono_warn_msg with corresponding direction of the warning
-
 // Joystick
 int x_movement = A1;
 int y_movement = A2;
@@ -170,7 +195,7 @@ void setup() {
   Serial.println("All tof-ir-sensors shut down..");
   delay(10);
   Serial.println("Starting all tof-ir-sensors...");
-  
+  delay(5);
   //setup sensors and i2c addresses of the different sensors
   initTOFirSetupPins();
   delay(2);
@@ -182,10 +207,7 @@ void setup() {
 
   
  //Echo-Sensors
- //setup all pins for the ultrasonic sensors
-  /*for (int i = 0; i < echo_all.size(); i++) {
-    echo_all[i]->setup_pins();
-  }*/
+ 
   echo_sensor_1.setup_pins();
   echo_sensor_2.setup_pins();
   echo_sensor_3.setup_pins();
@@ -226,12 +248,12 @@ void loop() {
   
   //searching for possible collisions on the front side of the robot
   if(send_collision_warn){
-    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(490);
+    collision_warn_msg.echo_dir[0] = echo_sensor_1.get_echo_dist_warning(390);
   }
   //searching for possible collisions on the right-front and left-back
   if(!send_collision_warn){
-    collision_warn_msg.echo_dir[2] = echo_sensor_4.get_echo_dist_warning(370);
-    collision_warn_msg.echo_dir[1] = echo_sensor_3.get_echo_dist_warning(370);
+    collision_warn_msg.echo_dir[2] = echo_sensor_4.get_echo_dist_warning(250);
+    collision_warn_msg.echo_dir[1] = echo_sensor_3.get_echo_dist_warning(250);
   }
 
 
@@ -252,7 +274,7 @@ void loop() {
   
   //if data is ready publish ros stair_warn_dir message
   if(all_tof_sensors_data_ready){
-    send_stair_warning(sensor1, sensor2, sensor3, sensor4);
+    send_stair_warning(sensor1, sensor2, sensor3, sensor4, sensor5, sensor6, sensor7, sensor8);
     for(int i = 0; i < tof_sensor_all.size(); i++){
       if((tof_sensor_all[i]->get_measured_dist() == 0)){
         tof_dead = true;
@@ -304,13 +326,13 @@ void loop() {
 
   //searching for possible collisions on the left-front and right-back
   if(send_collision_warn){
-    collision_warn_msg.echo_dir[1] = (collision_warn_msg.echo_dir[1] || echo_sensor_2.get_echo_dist_warning(370));
-    collision_warn_msg.echo_dir[2] = (collision_warn_msg.echo_dir[2] || echo_sensor_5.get_echo_dist_warning(370));
+    collision_warn_msg.echo_dir[1] = (echo_sensor_2.get_echo_dist_warning(250) || collision_warn_msg.echo_dir[1]);
+    collision_warn_msg.echo_dir[2] = (echo_sensor_5.get_echo_dist_warning(250) || collision_warn_msg.echo_dir[2]);
   }
   
   //searching for possible collisions on the back side of the robot
   if(!send_collision_warn){
-    collision_warn_msg.echo_dir[3] = echo_sensor_6.get_echo_dist_warning(490);
+    collision_warn_msg.echo_dir[3] = echo_sensor_6.get_echo_dist_warning(405);
   }
 
 
@@ -344,8 +366,6 @@ void loop() {
     delay(2);
     tof_dead=false;
   }
-
-
   
   nh.spinOnce(); 
 }

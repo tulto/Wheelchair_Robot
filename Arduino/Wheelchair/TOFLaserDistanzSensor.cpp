@@ -44,7 +44,7 @@ void TOFLaserDistanzSensor::set_i2c_address(std::vector<TOFLaserDistanzSensor*> 
   }
 
   start_sensor();
-  delay(3);
+  delay(5);
 
   tof_sensor.setAddress(0x29);
   delay(3);
