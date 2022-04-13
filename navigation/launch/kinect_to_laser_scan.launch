@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<launch>
+
+    <include file="$(find freenect_launch)/launch/freenect.launch"/>
+
+    
+    <node pkg="tf" type="static_transform_publisher" name="camera_link_broadcaster" args="0 -0.3 0.4 0 0 0 1 base_link camera_link 100" />
+  
+
+    <param name="/camera/driver/depth_registration" type="bool" value="true" />
+
+    <!-- Depth Image to Laser Scan Node -->
+    <node name="depthimage_to_laserscan" pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" args="">
+
+    <remap from="image"       to="/camera/depth_registered/image"/> <!-- change here for your camera depth topic name. Default: "/camera/depth/image_raw" -->
+
+    <remap from="camera_info" to="/camera/depth_registered/camera_info"/> 
+    <!-- the remap for camera_info by default uses the same path as the one given to the image topic. Default: "<path_to_image_topic>/camera_info>" -->
+
+    <!-- PARAMETERS: -->
+    <!-- These are the default values. --> 
+    <param name="scan_height"     type="int"    value="200"/> <!-- default: 1 pixel. Number of pixel rows used to generate laser scan. -->
+    <param name="scan_time"       type="double" value="0.033"/> <!-- default:0.033, 30 FPS . Time between scans. -->
+    <param name="range_min"       type="double" value="0.45"/> <!--default:0.45m. Ranges less than this are considered -Inf. -->
+    <param name="range_max"       type="double" value="10.0"/> <!--default: 10m. Ranges less than this are considered +Inf. -->
+    <param name="output_frame_id" type="str"    value="base_link"/> <!--default: camera_depth_frame. Frame id of the laser scan. -->
+	
+    <remap from="scan" to="kinect_scan"/>
+  </node>
+
+  <node pkg="ira_laser_tools" name="laserscan_multi_merger_kinect" type="laserscan_multi_merger">
+    <param name="destination_frame" value="base_link"/>
+    <param name="cloud_destination_topic" value="/merged_cloud"/>
+    <param name="scan_destination_topic" value="/kinect_merged"/>
+    <param name="laserscan_topics" value ="/kinect_scan /scan_merged" /> 
+    <param name="angle_min" value="-3.141592653589793"/>
+    <param name="angle_max" value="3.141592653589793"/>
+    <param name="angle_increment" value="0.0058"/>
+    <param name="scan_time" value="0.0333333"/>
+    <param name="range_min" value="0.30"/>
+    <param name="range_max" value="50.0"/>
+    <param name="output_frame_id" value="base_link"/>
+  </node>
+
+<!--rotate the image (not used)-->
+<!--
+  <remap from="image" to="/camera/depth_registered/image" />
+  <node pkg="image_rotate" name="kinect_image_rotate" type="image_rotate">
+    <param name="target_frame_id" value="camera_link"/>
+    <param name="output_frame_id" value="camera_link"/>
+  </node>
+-->
+
+<!--Point cloud to laserscan (can't be used if we want max of multiple datapoint in vertical axis)-->
+<!--
+  <node pkg="pointcloud_to_laserscan" name="pointcloud_to_laserscan_kinect" type="pointcloud_to_laserscan_node">
+    <param name="min_heigt" value="0.0"/>
+    <param name="max_height" value="1.0"/>
+    <param name="angle_min" value="-1.5707"/>
+    <param name="angle_max" value="1.5707"/>
+    <param name="angle_increment" value="0.0058"/>
+    <param name="queue_size" value="4"/>
+    <param name="range_min" value="0.3"/>
+    <param name="range_max" value="4"/>
+    <param name="target_frame" value="base_link"/>
+    <param name="transform_tolerance" value="0.01"/>
+    <remap from="cloud_in" to="/camera/depth_registered/points"/>
+    <remap from="scan" to="kinect_scan"/>
+  </node>
+-->
+
+</launch>

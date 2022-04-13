@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<launch>
+  <rosparam name="use_sim_time" value="true"/>
+  <arg name="use_sim_time" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="headless" default="false" />
+
+
+
+  <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
+  <arg name="base_frame" default="base_link"/>
+  <arg name="odom_frame" default="odom"/>
+  <arg name="pub_map_odom_transform" default="true"/>
+  <arg name="scan_subscriber_queue_size" default="5"/>
+  <arg name="scan_topic" default="/scan_merged_ranged"/>
+  <arg name="map_size" default="2048"/>
+  
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    
+    <!-- Frame names -->
+    <remap from="map" to="map" />
+    <param name="base_frame" value="$(arg base_frame)" />
+    <param name="odom_frame" value="$(arg odom_frame)" />
+    
+    <!-- Tf use -->
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" value="false"/>
+    <param name="pub_map_odom_transform" value="$(arg pub_map_odom_transform)"/>
+    
+    <!-- Map size / start point -->
+    <param name="map_resolution" value="0.05"/>
+    <param name="map_size" value="$(arg map_size)"/>
+    <param name="map_start_x" value="0.5"/>
+    <param name="map_start_y" value="0.5" />
+    <param name="map_multi_res_levels" value="3" />
+    
+    <!-- Map update parameters -->
+    <param name="update_factor_free" value="0.45"/>
+    <param name="update_factor_occupied" value="0.95" />    
+    <param name="map_update_distance_thresh" value="0.3"/>
+    <param name="map_update_angle_thresh" value="0.03" />
+    <param name="laser_z_min_value" value = "-1.0" />
+    <param name="laser_z_max_value" value = "1.0" />
+
+    <!--Laserscanner parameters-->
+    <param name="laser_max_dist" value="8.0" />
+    
+    <!-- Advertising config --> 
+    <param name="advertise_map_service" value="true"/>
+    
+    <param name="scan_subscriber_queue_size" value="$(arg scan_subscriber_queue_size)"/>
+    <param name="scan_topic" value="$(arg scan_topic)"/>
+    
+    <!-- Debug parameters -->
+    <!--
+      <param name="output_timing" value="false"/>
+      <param name="pub_drawings" value="true"/>
+      <param name="pub_debug_output" value="true"/>
+    -->
+    <param name="tf_map_scanmatch_transform_frame_name" value="$(arg tf_map_scanmatch_transform_frame_name)" />
+  </node>
+
+
+  <include file="$(find lidar-filtering)/launch-files/front_lidar_angle_cutter.launch" />
+
+  <include file="$(find lidar-filtering)/launch-files/back_lidar_angle_cutter.launch" />
+
+  <include file="$(find lidar-filtering)/launch-files/merging_lidar_laser.launch" />
+
+
+  
+
+
+
+
+
+
+
+  <rosparam command="load"
+            file="$(find simulation-wcr_description)/config/joints.yaml"
+            ns="wcr_joint_state_controller" />
+
+  <node name="wcr_controller_spawner" pkg="controller_manager" type="spawner"
+    args="wcr_joint_state_controller
+          --shutdown-timeout 1"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name  ="world_name" value="$(find simulation-wcr_gazebo)/worlds/nursingHome.world" />
+    <arg name="debug" value="0" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="use_sim_time" value="$(arg use_sim_time)" />
+    <arg name="headless" value="$(arg headless)" />
+    <!-- <arg name="world_name" value="$(arg world_name)" /> -->
+    <arg name="paused" value="false"/>
+  </include>
+
+  <!-- Load robot description -->
+  <include file="$(find simulation-wcr_gazebo)/launch/nursing_home_wcr_simulation_description.launch" />
+
+  <!-- Spawn the robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -model wheelchair-robot-fhws -param robot_description -x 0.0 -y 0.0 -z 0.0" />
+
+
+
+   
+  <include file="$(find navigation)/launch/amcl_sim.launch"/>
+
+  <!-- prevent backwards movement if not necessary -->
+  <node pkg="navigation" type="my_planner" name="my_planner" >
+        <rosparam file="$(find navigation)/launch/my_planner.yaml" command="load"/>
+  </node>
+
+    <!-- move base Pathplaning -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  
+    #recovery behavior
+    <rosparam file="$(find navigation)/param/recovery_behaviors.yaml" command="load" />
+    
+    # Global planner
+    # carrot_planner/CarrotPlanner global_planner/GlobalPlanner navfn/NavfnROS
+    <param name="base_global_planner" value="global_planner/GlobalPlanner" />  
+    
+    # Local planner
+    #base_local_planner/TrajectoryPlannerROS dwa_local_planner/DWAPlannerROS teb_local_planner/TebLocalPlannerROS
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /> 
+    
+    # Costmap
+    <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find navigation)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navigation)/param/global_costmap_params.yaml" command="load" />
+
+    <param name="local_costmap/global_frame" type="string" value="map" />
+    
+    # Movebase
+    <rosparam file="$(find navigation)/param/move_base_params.yaml" command="load" />
+    
+    # global planer parameter
+    <rosparam file="$(find navigation)/param/global_planner/global_global_planner_params.yaml" command="load"/>
+    
+    # local planer parameter
+    <rosparam file="$(find navigation)/param/local_planner/dwa_local_planner_params_wheelchair.yaml" command="load" />
+    
+    <remap from="cmd_vel" to="/cmd_vel"/>
+    <remap from="odom" to="odom"/>
+  </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
+
+</launch>

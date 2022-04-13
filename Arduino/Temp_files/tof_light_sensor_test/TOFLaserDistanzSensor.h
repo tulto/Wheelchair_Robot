@@ -11,9 +11,9 @@ class TOFLaserDistanzSensor
   private:
     //declaring private variables
     VL53L0X_RangingMeasurementData_t measurements;
-    short int i2c_address;
-    short int xshut_pin;
-    short int last_measurement = -1;
+    byte i2c_address;
+    byte xshut_pin;
+    short last_measurement = -1;
     bool measurement_in_progress = false;
     Adafruit_VL53L0X_short tof_sensor = Adafruit_VL53L0X_short();
 
@@ -34,7 +34,7 @@ class TOFLaserDistanzSensor
     void start_single_measurement();
     bool is_measurement_ready();
     int get_distance_mm();
-    bool get_distance_warning(int minDist, int maxDist);
+    bool get_distance_warning(short minDist, short maxDist);
   
 };
 
