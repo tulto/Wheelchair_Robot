@@ -45,8 +45,8 @@ def callback_receive_encoder_data(msg):
 
         # calculating absolute position based on starting point
         global pos
-        absolute_a = np.array([[math.cos(pos[2][0] + rel_mov[2][0] / 2), math.sin(pos[2][0] + rel_mov[2][0] / 2), 0],
-                            [math.sin(pos[2][0] + rel_mov[2][0] / 2), math.cos(pos[2][0] + rel_mov[2][0] / 2), 0],
+        absolute_a = np.array([[math.cos(pos[2][0] + rel_mov[2][0] / 2), math.sin(-pos[2][0] - rel_mov[2][0] / 2), 0],
+                            [math.sin(pos[2][0] + rel_mov[2][0] / 2), math.cos(-pos[2][0] - rel_mov[2][0] / 2), 0],
                             [0, 0, 1]])
         position = pos + np.dot(absolute_a, rel_mov)
         # position only between 0 and 2pi
