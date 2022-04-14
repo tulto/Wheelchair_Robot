@@ -93,7 +93,7 @@ void IMU::publish_imu_data(ros::NodeHandle& nh){
   // sending header to get timing right
   head_msg.seq = seq;
   head_msg.stamp = nh.now();
-  head_msg.frame_id = "base_link";
+  head_msg.frame_id = "imu_link";
   imu_head.publish( &head_msg );
   seq++;
 }

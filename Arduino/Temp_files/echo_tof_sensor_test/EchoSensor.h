@@ -7,10 +7,10 @@ class EchoSensor
 {
   private:
   //declare needed variables
-  short int distance_mm = 0;
-  int tof_time = 0;
-  short int last_measurement = -1;
-  short int trigPin, echoPin;
+  short distance_mm = 0;
+  short tof_time = 0;
+  short last_measurement = -1;
+  byte trigPin, echoPin;
   bool warning = false;
 
   public:
@@ -20,7 +20,7 @@ class EchoSensor
 
   //declare functions for class EchoSensor
   void setup_pins();
-  short int get_distance_in_mm();
+  short get_distance_in_mm();
   bool get_echo_dist_warning(short int minDist);
   
 };

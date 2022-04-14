@@ -8,7 +8,7 @@ TOFLaserDistanzSensor::TOFLaserDistanzSensor(short int i2cAddress, short int xsh
 }
 
 
-//implementing the deconstructor
+//implementing the destructor
 TOFLaserDistanzSensor::~TOFLaserDistanzSensor()
 {
   
@@ -40,32 +40,46 @@ void TOFLaserDistanzSensor::set_i2c_address(std::vector<TOFLaserDistanzSensor*> 
   for(int i = 0; i < sensorsToShutDown.size(); i++)
   {
     sensorsToShutDown[i]->shutdown_sensor();
+    delay(3);
   }
 
   start_sensor();
-  delay(10);
+  delay(5);
+
+  tof_sensor.setAddress(0x29);
+  delay(3);
   
-  if(!tof_sensor.begin(i2c_address)) {
-    Serial.println(("Failed to boot first VL53L0X"));
-    //while(1);
+  tof_sensor.setTimeout(50); //set time out after which a distance reading will be aborted in ms
+  
+  if (!tof_sensor.init())
+  {
+    Serial.println("Failed to initialize sensor!");
+    //while (1) {}
   }
   
-  delay(10);
+  tof_sensor.setAddress(i2c_address);
+  
+  delay(3);
+  
+  tof_sensor.setMeasurementTimingBudget(20000); //reduce timing budget to 20ms because high accuracy is
+                                                //not needed in our application but runtime is very important
+
+  delay(3);
   
 }
 
 
-int TOFLaserDistanzSensor::distance_measurement_mm_whole()
+uint16_t TOFLaserDistanzSensor::distance_measurement_mm_whole()
 {
-  tof_sensor.rangingTest(&measurements, false);
+  uint16_t distance = tof_sensor.readRangeSingleMillimeters();
 
-  if(measurements.RangeStatus != 4) //if measurement is not out of range
+  if(!tof_sensor.timeoutOccurred()) //if a timeout occured give back 0 (
   {
-    return measurements.RangeMilliMeter;
+    return distance;
   }
   else
   {
-    return -1;
+    return 0;
   }
 }
 
@@ -74,37 +88,63 @@ void TOFLaserDistanzSensor::start_single_measurement()
 {
   if(!measurement_in_progress){
     measurement_in_progress = true;
-    tof_sensor.startRange();
+    tof_sensor.startRangeSingleMillimeters();
   }
 }
 
 
+void TOFLaserDistanzSensor::start_continuous_measurement(uint32_t period_for_measuring = 0){
+  tof_sensor.startContinuous(period_for_measuring);
+}
+
 bool TOFLaserDistanzSensor::is_measurement_ready()
 {
-  return (tof_sensor.isRangeComplete());
+  return (tof_sensor.isSingleRangeMeasurementReady());
 }
 
 
-int TOFLaserDistanzSensor::get_distance_mm()
+uint16_t TOFLaserDistanzSensor::get_distance_mm()
 {
   measurement_in_progress = false;
-  return (tof_sensor.readRangeResult());
+  return (tof_sensor.readSingleRangeReadyMeasurementMillimeters());
 }
 
-bool TOFLaserDistanzSensor::get_distance_warning(int minDist, int maxDist)
+uint16_t TOFLaserDistanzSensor::get_continuous_distance_mm(){
+  return(tof_sensor.readRangeContinuousMillimeters());
+}
+
+bool TOFLaserDistanzSensor::get_distance_warning(short minDist, short maxDist)
 {
-  short int measured_dist = get_distance_mm();
-  if(measured_dist >= maxDist || measured_dist <= minDist || last_measurement >= maxDist || last_measurement <= minDist || second_last_measurement >= maxDist || second_last_measurement <= minDist ){
+  measured_dist = get_distance_mm();
+  if(measured_dist >= maxDist || measured_dist <= minDist || last_measurement >= maxDist || last_measurement <= minDist ){
     /*if(measured_dist >= 1000){
       return false;
     }*/
-    second_last_measurement = last_measurement;
     last_measurement = measured_dist;
     return true;
   }
   else{
-    second_last_measurement = last_measurement;
     last_measurement = measured_dist;
     return false;
   }
+}
+
+bool TOFLaserDistanzSensor::get_distance_warning_continuous(short minDist, short maxDist)
+{
+  measured_dist = get_continuous_distance_mm();
+  if(measured_dist >= maxDist || measured_dist <= minDist || last_measurement >= maxDist || last_measurement <= minDist ){
+    /*if(measured_dist >= 1000){
+      return false;
+    }*/
+    last_measurement = measured_dist;
+    return true;
+  }
+  else{
+    last_measurement = measured_dist;
+    return false;
+  }
+}
+
+uint16_t TOFLaserDistanzSensor::get_measured_dist(){
+  return measured_dist;
 }

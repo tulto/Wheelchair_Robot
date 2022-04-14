@@ -58,7 +58,8 @@ def imu_head(msg):
     msg_imu.angular_velocity_covariance = rospy.get_param('odometry_imu_node/accel_covariance')
     msg_imu.linear_acceleration = msg_accel
     msg_imu.linear_acceleration_covariance = rospy.get_param('odometry_imu_node/gyro_covariance')
-    pub.publish(msg_imu)  # publishing data to /imu/data
+    if (msg_imu.orientation.w + msg_imu.orientation.z != 0): 
+        pub.publish(msg_imu)  # publishing data to /imu/data
 
 
 if __name__ == '__main__':
