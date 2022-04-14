@@ -82,7 +82,7 @@ def callback_receive_encoder_data(msg):
     msg_odom.twist.twist.linear.y = rel_mov[1][0] / (msg.time / 1000)
     msg_odom.twist.twist.angular.z = rel_mov[2][0] / (msg.time / 1000)
     msg_odom.twist.covariance = rospy.get_param('/odometry_encoder_node/twist_covariance')
-    pub_vel.publish(msg_odom)
+    pub_odom.publish(msg_odom)
 
 
 if __name__ == '__main__':
@@ -91,5 +91,5 @@ if __name__ == '__main__':
 
     sub = rospy.Subscriber("/encoder", Encoder, callback_receive_encoder_data)  # subscribe to /encoder data
     pub_pos = rospy.Publisher("/odom/position", Position, queue_size=10)
-    pub_vel = rospy.Publisher("/odom/data", Odometry, queue_size=10)
+    pub_odom = rospy.Publisher("/odom/data", Odometry, queue_size=10)
     rospy.spin()

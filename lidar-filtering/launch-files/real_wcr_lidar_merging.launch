@@ -8,9 +8,9 @@
 	<param name="scan_destination_topic" value="/scan_wcr"/>
 	<param name="laserscan_topics" value ="/front_scan /back_scan" /> <!-- LIST OF THE LASER SCAN TOPICS TO SUBSCRIBE -->
 	<!---->
-	<param name="angle_min" value="-3.14159265359"/>
-	<param name="angle_max" value="3.14159265359"/>
-	<param name="angle_increment" value="0.01573796326795"/> <!--Value for correctly used 401 measured values: 0.01570776326795, for 400 measured values: 0.01573796326795-->
+	<param name="angle_min" value="-3.1241390705108643"/>
+	<param name="angle_max" value="3.1415927410125732"/>
+	<param name="angle_increment" value="0.01745324238474369"/> <!--Value for correctly used 401 measured values: 0.01570776326795, for 400 measured values: 0.01573796326795-->
 	<param name="scan_time" value="0.0"/>
 	<param name="time_increment" value="0.0"/>
 	<param name="range_min" value="0.15"/>
