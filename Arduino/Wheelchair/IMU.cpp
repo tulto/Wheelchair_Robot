@@ -96,6 +96,10 @@ void IMU::publish_imu_data(ros::NodeHandle& nh){
   head_msg.frame_id = "imu_link";
   imu_head.publish( &head_msg );
   seq++;
+
+  if (orient_msg.x == 0 && orient_msg.y == 0 && orient_msg.z == 0 && orient_msg.w == 0){
+    bno.begin();
+  }
 }
 
 //publish if IMU is fully Calibrated (best Case is 3 3 3)
