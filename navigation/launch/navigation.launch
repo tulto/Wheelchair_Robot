@@ -4,7 +4,7 @@
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
-  <arg name="map_file" default="$(find navigation)/maps/labor/hector_labor.yaml"/>
+  <arg name="map_file" default="$(find navigation)/maps/masch/masch_karto_kind_of_loop_closure.yaml"/>
 
 
   <!-- Map server -->
