@@ -308,6 +308,11 @@ void loop() {
     drive.set_sent_movement();
     //drive.filter_movement();
   }
+
+  // overwrites the movement filter
+  if (joy.pressed_button(2000)){
+    drive.set_movement(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity());
+  }
   
   //Set movement is executed
   drive.movement();

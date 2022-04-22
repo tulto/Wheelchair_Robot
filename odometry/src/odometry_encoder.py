@@ -45,8 +45,8 @@ def callback_receive_encoder_data(msg):
 
         # calculating absolute position based on starting point
         global pos
-        absolute_a = np.array([[math.cos(pos[2][0] + rel_mov[2][0] / 2), math.sin(pos[2][0] + rel_mov[2][0] / 2), 0],
-                            [math.sin(pos[2][0] + rel_mov[2][0] / 2), math.cos(pos[2][0] + rel_mov[2][0] / 2), 0],
+        absolute_a = np.array([[math.cos(pos[2][0] + rel_mov[2][0] / 2), math.sin(-pos[2][0] - rel_mov[2][0] / 2), 0],
+                            [math.sin(pos[2][0] + rel_mov[2][0] / 2), math.cos(-pos[2][0] - rel_mov[2][0] / 2), 0],
                             [0, 0, 1]])
         position = pos + np.dot(absolute_a, rel_mov)
         # position only between 0 and 2pi
@@ -81,7 +81,7 @@ def callback_receive_encoder_data(msg):
         msg_odom.twist.twist.linear.y = rel_mov[1][0] / (msg.time / 1000)
         msg_odom.twist.twist.angular.z = rel_mov[2][0] / (msg.time / 1000)
         msg_odom.twist.covariance = rospy.get_param('/odometry_encoder_node/twist_covariance')
-        pub_vel.publish(msg_odom)
+        pub_odom.publish(msg_odom)
 
 
 if __name__ == '__main__':
@@ -90,5 +90,5 @@ if __name__ == '__main__':
 
     sub = rospy.Subscriber("/encoder", Encoder, callback_receive_encoder_data)  # subscribe to /encoder data
     pub_pos = rospy.Publisher("/odom/position", Position, queue_size=10)
-    pub_vel = rospy.Publisher("/odom/data", Odometry, queue_size=10)
+    pub_odom = rospy.Publisher("/odom/data", Odometry, queue_size=10)
     rospy.spin()

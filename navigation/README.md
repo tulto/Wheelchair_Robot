@@ -57,6 +57,8 @@ local_planner:
 - trajectory_local_planner (Dynamic Window Approach)
 - tep_local_planner (Time Elastic Band)
 
+The best planners for the Raspberry Pi 4 where `global_planner` because it can use A* and is more flexible than navfn. And for the local planner `dwa_local_planner` because of omnidirektional driving and the low power requirement (controll loop can be achieved).
+
 ## Kinect
 A Kinect is to be used for the detection of chairs, tables and objects that cannot be detected with the 2D lidars. The 3D point cloud of the Kinect's depth sensor is translated into a 2D laser scan, which is used for the costmaps of the navigation in a merged form together with the lidars.
 ### Installation

@@ -11,6 +11,7 @@ class Joystick
     int x_axis, y_axis, t_axis, button; //save Button states
     short int zero = 0;
     int offset = 512;
+    long int timer = 0;
     
     float x, y, t;
     bool b;
@@ -29,6 +30,8 @@ class Joystick
     float x_velocity();
     float y_velocity();
     float t_velocity();
+    bool pressed_button(int duration = 2000);
+    bool get_button();
     void deadzone();
     
   

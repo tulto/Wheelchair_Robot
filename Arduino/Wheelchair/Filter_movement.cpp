@@ -25,11 +25,14 @@ float* Filter_movement::blocking_path(float x, float y, float t){
 
   if (sensors[0] == true && x>0){ //front blockiert 
     x=0;
-  }else if (sensors[1] == true && y>0){ //links blockiert
+  }
+  if (sensors[1] == true && y>0){ //links blockiert
     y=0;
-  }else if (sensors[2] == true && y<0){ //rechts blockiert
+  }
+  if (sensors[2] == true && y<0){ //rechts blockiert
     y=0;
-  }else if (sensors[3] == true && x<0){ //hinten blockiert
+  }
+  if (sensors[3] == true && x<0){ //hinten blockiert
     x=0;
   }
 

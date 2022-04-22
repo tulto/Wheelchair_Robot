@@ -9,7 +9,7 @@ void Joystick::init(ros::NodeHandle& nh) {
 
   if (! nh.getParam("~threshold", &threshold)) { 
         //default values
-        threshold = 50;
+        threshold = 75;
   }
 }
 
@@ -24,6 +24,7 @@ float Joystick::calculate(int analogue, float range){
   return vel;
 }
 
+
 bool Joystick::movement(){
   if (x_velocity() != 0 || y_velocity() != 0  || t_velocity() != 0 || zero == 0){
     zero = 0;
@@ -36,6 +37,21 @@ bool Joystick::movement(){
   }
 }
 
+bool Joystick::pressed_button(int time){
+  if (digitalRead(button) == 1){
+    timer = millis();
+    return 0;
+  }else if (millis()-timer > time){
+    return 1;
+  }else{
+    return 0;
+  }
+
+}
+
+bool Joystick::get_button(){
+  return digitalRead(button);
+}
 
 
 float Joystick::x_velocity(){
