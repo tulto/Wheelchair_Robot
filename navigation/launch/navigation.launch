@@ -4,13 +4,13 @@
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
-  <arg name="map_file" default="$(find navigation)/maps/masch/masch_karto_kind_of_loop_closure.yaml"/>
+  <arg name="map_file" default="$(find navigation)/maps/FHWS-first-floor/fhws_two_lidar_loop_08_karto_kind_of_loop_with_bigger_buffer_perfekt_map.yaml"/>
 
 
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
    
-  <include file="$(find navigation)/launch/amcl_sim.launch"/>
+  <include file="$(find amcl_localization)/launch/amcl_launch.launch"/>
 
   <!-- prevent backwards movement if not necessary -->
   <node pkg="navigation" type="my_planner" name="my_planner" >

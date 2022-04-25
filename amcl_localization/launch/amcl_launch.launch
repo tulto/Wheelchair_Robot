@@ -7,7 +7,7 @@
 
   <!-- initiate some variables -->
   <arg name="use_map_topic" default="true"/>
-  <arg name="scan_topic" default="/scan_merged_ranged" />
+  <arg name="scan_topic" default="/scan_wcr_ranged" />
   <arg name="odom_frame_name" default="odom" />
   <arg name="base_frame_name" default="base_link" />
 
