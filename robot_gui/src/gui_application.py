@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     gui_function_handler = GUIApp()
 
-    sub = rospy.Subscriber("/echo_sensor", Echosensors, callback_subscriber_echo_warning)
+    sub = rospy.Subscriber("/collision_warning_dir", Echosensors, callback_subscriber_echo_warning)
 
     gui_function_handler.run()
 
