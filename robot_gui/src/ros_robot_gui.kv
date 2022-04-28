@@ -36,6 +36,7 @@ FloatLayout:
         md_bg_color: 0, 0, 1, 1
         size_hint: 0.23, 0.18
         pos_hint: {"center_x": 0.13, "center_y": 0.8}
+        on_press: app.pub_nav_goal_aufenthaltsraum(*args) 
         
 
     MDFillRoundFlatButton:
@@ -45,6 +46,7 @@ FloatLayout:
         md_bg_color: 0, 0, 1, 1
         size_hint: 0.23, 0.18
         pos_hint: {"center_x": 0.4, "center_y": 0.8}
+        on_press: app.pub_nav_goal_cafe(*args) 
 
     MDFillRoundFlatButton:
         id: Gruppenraum_button
@@ -53,6 +55,7 @@ FloatLayout:
         md_bg_color: 0, 0, 1, 1
         size_hint: 0.23, 0.18
         pos_hint: {"center_x": 0.13, "center_y": 0.55}
+        on_press: app.pub_nav_goal_gruppenraum(*args) 
         
     MDFillRoundFlatButton:
         id: Ruheraum_button
@@ -61,6 +64,7 @@ FloatLayout:
         md_bg_color: 0, 0, 1, 1
         size_hint: 0.23, 0.18
         pos_hint: {"center_x": 0.4, "center_y": 0.55}
+        on_press: app.pub_nav_goal_ruheraum(*args) 
 
 
     MDFillRoundFlatButton:
@@ -70,7 +74,7 @@ FloatLayout:
         md_bg_color: 0, 0, 1, 1
         size_hint: 0.23, 0.18
         pos_hint: {"center_x": 0.13, "center_y": 0.3}
-
+        on_press: app.pub_nav_goal_schlafzimmer(*args) 
 
     MDFillRoundFlatButton:
         id: Speisesaal_button
@@ -81,7 +85,7 @@ FloatLayout:
         line_color: 1,1,0,1
         size_hint: 0.23, 0.18
         pos_hint: {"center_x": 0.4, "center_y": 0.3}
-
+        on_press: app.pub_nav_goal_speisesaal(*args) 
    
 
 
@@ -280,9 +284,8 @@ FloatLayout:
 
 
     MDCard:
-        id:linker_melder
+        id:links_melder
         size_hint: 0.036, 0.083
-        text: "L"
         pos_hint: {"center_x": .74, "center_y": .355}
         md_bg_color: 0,0.9,0.25, 1
         radius: [25, 3, 3, 25]
