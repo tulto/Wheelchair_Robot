@@ -19,8 +19,10 @@ class GUIApp(MDApp):
 
         super().__init__(**kwargs)
         self.screen=Builder.load_file('ros_robot_gui.kv')
-        pub = rospy.Publisher("/goal_nav", String, queue_size=25)
-        msg = String()
+        self.pub = rospy.Publisher("/goal_nav", String, queue_size=25)
+        self.cancel_pub =rospy.Publisher("/cancel_nav", String, queue_size=25)
+        self.msg = String()
+        
         #if we had a second .kv file we would add it like this:
         #self.screen=Builder.load_file('/home/wheelchair-robot_catkin/src/wheelchair_robot/robot_gui/ros_robot_gui2.kv')
 
@@ -85,24 +87,33 @@ class GUIApp(MDApp):
 
 
     def pub_nav_goal_aufenthaltsraum(self, *args):
-        self.msg = "Aufenthaltsraum"
+        self.msg.data = "Aufenthaltsraum"
         self.pub.publish(self.msg)
         
 
     def pub_nav_goal_cafe(self, *args):
-        pass
+        self.msg.data = "Cafe"
+        self.pub.publish(self.msg)
 
     def pub_nav_goal_gruppenraum(self, *args):
-        pass
+        self.msg.data = "Gruppenraum"
+        self.pub.publish(self.msg)
 
     def pub_nav_goal_ruheraum(self, *args):
-        pass
+        self.msg.data = "Ruheraum"
+        self.pub.publish(self.msg)
     
     def pub_nav_goal_schlafzimmer(self, *args):
-        pass
+        self.msg.data = "Schlafzimmer"
+        self.pub.publish(self.msg)
     
     def pub_nav_goal_speisesaal(self, *args):
-        pass
+        self.msg.data = "Speisesaal"
+        self.pub.publish(self.msg)
+
+    def pub_nav_cancel(self, *args):
+        self.msg.data = "cancel_nav"
+        self.cancel_pub.publish(self.msg)
 
         
 
