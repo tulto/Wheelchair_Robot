@@ -85,22 +85,23 @@ class GUIApp(MDApp):
 
 
     def pub_nav_goal_aufenthaltsraum(self, *args):
-        self.msg.data = "Aufenthaltsraum"
+        self.msg = "Aufenthaltsraum"
         self.pub.publish(self.msg)
+        
 
-    def pub_nav_goal_(self, *args):
+    def pub_nav_goal_cafe(self, *args):
         pass
 
-    def pub_nav_goal_(self, *args):
+    def pub_nav_goal_gruppenraum(self, *args):
         pass
 
-    def pub_nav_goal_(self, *args):
+    def pub_nav_goal_ruheraum(self, *args):
         pass
     
-    def pub_nav_goal_(self, *args):
+    def pub_nav_goal_schlafzimmer(self, *args):
         pass
     
-    def pub_nav_goal_(self, *args):
+    def pub_nav_goal_speisesaal(self, *args):
         pass
 
         
