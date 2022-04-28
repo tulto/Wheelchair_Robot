@@ -11,11 +11,13 @@ FloatLayout:
 
         MDToolbar:
             title: "Autonomer Rollstuhl-Roboter"
+            md_bg_color: 0.915,0.459,0.02, 0.92
+            
             canvas:
                 Rectangle:
-                    source: 'fhws_2.png'
-                    pos: (((self.parent.parent.size[0])/2)+((self.parent.parent.size[0])/5), self.pos[1])
-                    size: (220, 60)
+                    source: 'Logo.png'
+                    pos: (((self.parent.parent.size[0])-160), self.pos[1])
+                    size: (160, 60)
             #Image:
             #    source: "fhws_2.png"
             #    size_hint: 1.7, 1.0
@@ -23,163 +25,280 @@ FloatLayout:
                 #pos_hint: {"center_x": .75, "center_y": self.pos[1]}
 
 
-    Image:
-        source: "Ultrasound_up.jpg"
-        size_hint: 0.25, 0.25
-        pos_hint: {"center_x": .35, "center_y": 0.6}
+    
 
 
-    MDCard:
-        id: front_sensor
-        orientation: "vertical"
-        padding: "8dp"
-        size_hint: 0.15, 0.15
-        size: "140dp", "90dp"
-        pos_hint: {"center_x": .35, "center_y": .82}
-        md_bg_color: 0, 1, 0, 1
-
-        MDLabel:
-            text: "Front"
-            theme_text_color: "Primary"
-            size_hint_y: None
-            height: self.texture_size[1]
+    MDFillRoundFlatButton:
+        id: Aufenthaltsraum_button
+        text: "Aufenthaltsraum"
         
-        MDSeparator:
-            height: "1dp"
-
-        MDLabel:
-            id: front_sensor_label
-            text: "Frei"
-
-
-    MDCard:
-        id: back_sensor
-        orientation: "vertical"
-        padding: "8dp"
-        size_hint: 0.15, 0.15
-        size: "140dp", "90dp"
-        pos_hint: {"center_x": .35, "center_y": .38}
-        md_bg_color: 0, 1, 0, 1
-
-        MDLabel:
-            text: "Heck"
-            theme_text_color: "Primary"
-            size_hint_y: None
-            height: self.texture_size[1]
-        
-        MDSeparator:
-            height: "1dp"
-
-        MDLabel:
-            id: back_sensor_label
-            text: "Frei"
-
-
-    MDCard:
-        id: left_sensor
-        orientation: "vertical"
-        padding: "8dp"
-        size_hint: 0.15, 0.15
-        size: "140dp", "90dp"
-        pos_hint: {"center_x": .17, "center_y": .6}
-        md_bg_color: 0, 1, 0, 1
-
-        MDLabel:
-            text: "Links"
-            theme_text_color: "Primary"
-            size_hint_y: None
-            height: self.texture_size[1]
-        
-        MDSeparator:
-            height: "1dp"
-
-        MDLabel:
-            id: left_sensor_label
-            text: "Frei"
-
-
-    MDCard:
-        id: right_sensor
-        orientation: "vertical"
-        padding: "8dp"
-        size_hint: 0.15, 0.15
-        size: "140dp", "90dp"
-        pos_hint: {"center_x": .53, "center_y": .6}
-        md_bg_color: 0, 1, 0, 1
-
-        MDLabel:
-            text: "Rechts"
-            theme_text_color: "Primary"
-            size_hint_y: None
-            height: self.texture_size[1]
-        
-        MDSeparator:
-            height: "1dp"
-
-        MDLabel:
-            id: right_sensor_label
-            text: "Frei"
-
-
-    MDRaisedButton:
-        id: restart_button
-        text: "Neustarten"
+        font_size: 23
         md_bg_color: 0, 0, 1, 1
-        size_hint: 0.2, 0.25
-        pos_hint: {"center_x": 0.8, "center_y": 0.8}
+        size_hint: 0.23, 0.18
+        pos_hint: {"center_x": 0.13, "center_y": 0.8}
+        
+
+    MDFillRoundFlatButton:
+        id: Cafe_button
+        text: "Cafe"
+        font_size: 23
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.23, 0.18
+        pos_hint: {"center_x": 0.4, "center_y": 0.8}
+
+    MDFillRoundFlatButton:
+        id: Gruppenraum_button
+        text: "Gruppenraum"
+        font_size: 23
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.23, 0.18
+        pos_hint: {"center_x": 0.13, "center_y": 0.55}
+        
+    MDFillRoundFlatButton:
+        id: Ruheraum_button
+        text: "Ruheraum"
+        font_size: 23
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.23, 0.18
+        pos_hint: {"center_x": 0.4, "center_y": 0.55}
+
+
+    MDFillRoundFlatButton:
+        id: Schlafzimmer_button
+        text: "Schlafzimmer"
+        font_size: 23
+        md_bg_color: 0, 0, 1, 1
+        size_hint: 0.23, 0.18
+        pos_hint: {"center_x": 0.13, "center_y": 0.3}
+
+
+    MDFillRoundFlatButton:
+        id: Speisesaal_button
+        text: "Speisesaal"
+        font_size: 23
+        md_bg_color: 0, 0, 1, 1 
+        line_width: 5
+        line_color: 1,1,0,1
+        size_hint: 0.23, 0.18
+        pos_hint: {"center_x": 0.4, "center_y": 0.3}
+
+   
+
+
+    #MDCard:
+     #   id: back_sensor
+      #  orientation: "vertical"
+       # padding: "8dp"
+        #size_hint: 0.15, 0.15
+        #size: "140dp", "90dp"
+        #pos_hint: {"center_x": .35, "center_y": .38}
+        #md_bg_color: 0, 1, 0, 1
+
+        #MDLabel:
+         #   text: "Heck"
+          #  theme_text_color: "Primary"
+           # size_hint_y: None
+           # height: self.texture_size[1]
+        
+       # MDSeparator:
+        #    height: "1dp"
+
+        #MDLabel:
+         #   id: back_sensor_label
+          #  text: "Frei"
+
+    MDFillRoundFlatButton:
+        id: Navi_abbruch
+        text:"NAVIGATION\nABBRECHEN"
+        font_size: 47
+        text_color: 0,0,0.01,1
+        md_bg_color: 1,1,0,1
+        size_hint: 0.35, 0.27
+        pos_hint: {"center_x": 0.75, "center_y": 0.7}
+
+
+    MDFillRoundFlatIconButton:
+        id: restart_button
+        icon: "power"
+        text: "NEUSTART"
+        font_size: 15
+        md_bg_color: 0.75, 0, 0, 1
+        size_hint: 0.17, 0.08
+        pos_hint: {"center_x": 0.91, "center_y": 0.95}
         on_press: app.show_alert_dialog()
         #app is an instace of the app objet (MDApp) 
         #from the gui_app_class we created that inherited from MDApp
 
     #button for requesting a vertain echo-sensor-error
 
-    MDCard:
-        size_hint: 0.33, 0.39
+    #MDCard:
+     #   size_hint: 0.33, 0.39
+      #  pos_hint: {"center_x": .8, "center_y": .355}
+       # md_bg_color: 1, 1, 0, 1
+        #radius: [15, 15, 15, 15]
+
+
+    #MDLabel:
+     #   text: "Sensor Warnung aktivieren:"
+      #  theme_text_color: "Custom"
+       # text_color: 0, 0, 0, 1
+       # halign: "center"
+       # pos_hint: {"center_x": 0.8, "center_y": 0.52}
+
+    #MDRaisedButton:
+     #   id: front_warning
+      #  text: "Front"
+       # md_bg_color: 0, 0, 1, 1
+       # size_hint: 0.13, 0.14
+       # pos_hint: {"center_x": 0.8, "center_y": 0.41}
+       # on_press: app.request_echo_warning_front(*args) 
+
+    
+    #MDRaisedButton:
+     #   id: back_warning
+      #  text: "Heck"
+       ## md_bg_color: 0, 0, 1, 1
+        #size_hint: 0.13, 0.14
+        #pos_hint: {"center_x": 0.8, "center_y": 0.25}
+        #on_press: app.request_echo_warning_back(*args)
+
+
+   
+
+    Image:
+        id:welle_oben
+        source: "Ultrasound_up.jpg"
+        size_hint: 0.1, 0.1
+        pos_hint: {"center_x": .8, "center_y": 0.475}    
+
+    Image:
+        id:box
+        source: "wheelyrolly.jpg"
+        size_hint: 0.14, 0.12
         pos_hint: {"center_x": .8, "center_y": .355}
-        md_bg_color: 1, 1, 0, 1
-        radius: [15, 15, 15, 15]
+        
+
+
+
+
+    MDCard:
+        id:vorne_melder
+        size_hint: 0.05, 0.06
+        pos_hint: {"center_x": .8, "center_y": .455}
+        md_bg_color: 0,0.9,0.25, 1
+        radius: [25, 25, 3, 3]
+
+    MDLabel:
+        id:buchstabe_V
+        size_hint: 0.036, 0.083
+        text: "V"
+        font_size: 25
+        pos_hint: {"center_x": .807, "center_y": .455}
+
+    Image:
+        id: wellen_unten
+        source: "unten.jpg"
+        rotate: 0.5
+        size_hint: 0.1, 0.1
+        pos_hint: {"center_x": .8, "center_y": 0.235}
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: 180
+                origin: self.center
+        canvas.after:
+            PopMatrix
+
+
+    MDCard:
+        id:hinten_melder
+        size_hint: 0.05, 0.06
+        pos_hint: {"center_x": .8, "center_y": .255}
+        md_bg_color: 0,0.9,0.25, 1
+        radius: [3, 3, 25, 25]
 
 
     MDLabel:
-        text: "Sensor Warnung aktivieren:"
-        theme_text_color: "Custom"
-        text_color: 0, 0, 0, 1
-        halign: "center"
-        pos_hint: {"center_x": 0.8, "center_y": 0.52}
+        id:buchstabe_H
+        size_hint: 0.036, 0.083
+        text: "H"
+        font_size: 25
+        pos_hint: {"center_x": .807, "center_y": .258}
 
-    MDRaisedButton:
-        id: front_warning
-        text: "Front"
-        md_bg_color: 0, 0, 1, 1
-        size_hint: 0.13, 0.14
-        pos_hint: {"center_x": 0.8, "center_y": 0.41}
-        on_press: app.request_echo_warning_front(*args) 
 
     
-    MDRaisedButton:
-        id: back_warning
-        text: "Heck"
-        md_bg_color: 0, 0, 1, 1
-        size_hint: 0.13, 0.14
-        pos_hint: {"center_x": 0.8, "center_y": 0.25}
-        on_press: app.request_echo_warning_back(*args)
+    Image:
+        id:wellen_rechts
+        source: "unten.jpg"
+        rotate: 0.5
+        size_hint: 0.1, 0.1
+        pos_hint: {"center_x": .875, "center_y": 0.355}
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: 270
+                origin: self.center
+        canvas.after:
+            PopMatrix
 
 
-    MDRaisedButton:
-        id: left_warning
-        text: "Links"
-        md_bg_color: 0, 0, 1, 1
-        size_hint: 0.08, 0.3
-        pos_hint: {"center_x": 0.685, "center_y": 0.33}
-        on_press: app.request_echo_warning_left(*args)
+    MDCard:
+        id:rechts_melder
+        size_hint: 0.036, 0.083
+        pos_hint: {"center_x": .86, "center_y": .355}
+        md_bg_color: 0,0.9,0.25, 1
+        radius: [3, 25, 25, 3]
+    
+    MDLabel:
+        id:buchstabe_R
+        size_hint: 0.036, 0.083
+        text: "R"
+        font_size: 25
+        pos_hint: {"center_x": .865, "center_y": .355}
 
 
-    MDRaisedButton:
-        id: right_warning
-        text: "Rechts"
-        md_bg_color: 0, 0, 1, 1
-        size_hint: 0.08, 0.3
-        pos_hint: {"center_x": 0.915, "center_y": 0.33}
-        on_press: app.request_echo_warning_right(*args)
+    
 
+
+
+
+
+
+    Image:
+        id: welle_links
+        source: "unten.jpg"
+        rotate: 0.5
+        size_hint: 0.1, 0.1
+        pos_hint: {"center_x": .725, "center_y": 0.355}
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: 90
+                origin: self.center
+        canvas.after:
+            PopMatrix
+
+
+    MDCard:
+        id:linker_melder
+        size_hint: 0.036, 0.083
+        text: "L"
+        pos_hint: {"center_x": .74, "center_y": .355}
+        md_bg_color: 0,0.9,0.25, 1
+        radius: [25, 3, 3, 25]
+
+
+    MDLabel:
+        id:buchstabe_L
+        size_hint: 0.036, 0.083
+        text: "L"
+        font_size: 25
+        pos_hint: {"center_x": .75, "center_y": .355}
+        
+
+
+
+
+
+   
     
