@@ -7,15 +7,15 @@ from gui_app_class import GUIApp #import GUIApp class for the gui elements (butt
 from services_and_messages.msg import Echosensors
 from services_and_messages.msg import TOF_sensor
 
-bool_list = [True, True, True, True]
-bool_list_col = [True, True, True, True]
-bool_list_stair = [True, True, True, True]
+bool_list = []
+#bool_list_col = []
+#bool_list_stair = []
 
 def echo_warning_direction(boolean_array):
     return 0
 
 def callback_subscriber_echo_warning(msg_bool_list):
-    
+    global bool_list_col
     bool_list_col=msg_bool_list.echo_dir
     bool_list[0] = (bool_list_col[0] or bool_list_stair[0])
     bool_list[1] = (bool_list_col[1] or bool_list_stair[1])
@@ -24,12 +24,13 @@ def callback_subscriber_echo_warning(msg_bool_list):
     gui_function_handler.change_colour_on_sensor_labels(bool_list)
 
 def callback_subscriber_stair_warning(msg_bool_list):
-    
+    global bool_list_stair
     bool_list_stair=msg_bool_list.stair_warning_dir
     bool_list[0] = (bool_list_col[0] or bool_list_stair[0])
     bool_list[1] = (bool_list_col[1] or bool_list_stair[1])
     bool_list[2] = (bool_list_col[2] or bool_list_stair[2])
     bool_list[3] = (bool_list_col[3] or bool_list_stair[3])
+    gui_function_handler.change_colour_on_sensor_labels(bool_list)
     
 
 if __name__ == '__main__':
