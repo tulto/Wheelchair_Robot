@@ -1,0 +1,14 @@
+<launch>
+  <!-- Arguments -->
+
+ <!-- this node can set a goal depending on the param which you can predefine and if you send something inside of topic "/cancle_nav" you can cancle the navigation-->
+ <node pkg="robot_gui" type="nav_layer.py" name="navigation_goal_stop_node" >
+    # set all parameters of possible locations with param name as identifier [x , y , z , o_x , o_y , o_z , o_w]
+    <rosparam param="origin">[0,0,0,0,0,0,1] </rosparam>
+    <rosparam param="kueche">[-5,1.2,0,0,0,-1,0] </rosparam>
+    <rosparam param="wohnzimmer">[0,-3.7,0,0,0,0.71,0.70] </rosparam>
+    <rosparam param="schlafzimmer">[3.22,1.8,0,0,0,0,1] </rosparam>
+    <rosparam param="gruppenraum">[24,9,0,0,0,-0.745,0.667] </rosparam>
+  </node>
+
+</launch>
