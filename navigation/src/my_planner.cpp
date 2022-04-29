@@ -2,6 +2,7 @@
 #include <ctime>
 #include <ros/ros.h>
 
+#include <services_and_messages/MovementCheck.h>
 #include <std_msgs/String.h>
 #include <std_srvs/Empty.h>
 #include <geometry_msgs/Twist.h>
@@ -21,6 +22,7 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
     long start;
 
     ros::ServiceServer service_locate;
+    ros::ServiceServer check_movement;
     ros::Publisher pub_vel;
 
     geometry_msgs::Twist vel_msg;
@@ -44,6 +46,7 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
     {
         pub_vel = nh->advertise<geometry_msgs::Twist>("/cmd_vel", 10);
         service_locate = nh->advertiseService("/locate_service",&WCRSeperatePlanner::locate_service, this);
+        check_movement = nh->advertiseService("/check_movement",&WCRSeperatePlanner::check_movement_service, this);
     }
 
     void check_rotation(){
@@ -157,6 +160,15 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
                         std_srvs::Empty::Response &res){                    
         locate_state = 1;
         start = clock();
+        return true;
+    }
+    bool check_movement_service(services_and_messages::MovementCheckRequest &req,
+                        services_and_messages::MovementCheckResponse &res){                    
+        if (checkTrajectory(req.x, req.y, req.z)){
+            res.check = true;
+        }else{
+            res.check = false;
+        }
         return true;
     }
 };
