@@ -159,7 +159,7 @@ int x_movement = A1;
 int y_movement = A2;
 int t_movement = A3;
 int button = 7;
-int start = millis();
+unsigned long start = millis();
 int timer = 1000;
 
 services_and_messages::Joystick joy_msg;
@@ -321,8 +321,8 @@ void loop() {
   drive.set_movement(0, 0, 0);
 
   //sending encode values
-  drive.send_encoder_count(timer);
   timer = millis()-start;
+  drive.send_encoder_count(timer);
   start = millis();
   
   //IMU data will be send
