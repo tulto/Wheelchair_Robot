@@ -322,8 +322,9 @@ void loop() {
 
   //sending encode values
   timer = millis()-start;
-  drive.send_encoder_count(timer);
   start = millis();
+  drive.send_encoder_count(timer);
+  
   
   //IMU data will be send
   imu_.publish_imu_data(nh);
