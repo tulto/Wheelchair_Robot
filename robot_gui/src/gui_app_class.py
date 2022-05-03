@@ -22,6 +22,20 @@ class GUIApp(MDApp):
         self.pub = rospy.Publisher("/goal_nav", String, queue_size=25)
         self.cancel_pub =rospy.Publisher("/cancel_nav", String, queue_size=25)
         self.msg = String()
+        self.goal= ""
+        self.gate= True
+        
+    def open_gate(self):
+        self.gate=True
+        self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
+        self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
+        self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
+        self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
+        self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
+        self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
+
+    def close_gate(self):
+        self.gate=False       
         
         #if we had a second .kv file we would add it like this:
         #self.screen=Builder.load_file('/home/wheelchair-robot_catkin/src/wheelchair_robot/robot_gui/ros_robot_gui2.kv')
@@ -35,6 +49,7 @@ class GUIApp(MDApp):
     def restart_pi(self, inst):
         os.system('systemctl reboot -i') #reboots system on button press
 
+    
 
     def closeDialog(self, inst):
         self.dialog.dismiss()
@@ -88,33 +103,90 @@ class GUIApp(MDApp):
 
     def pub_nav_goal_aufenthaltsraum(self, *args):
         self.msg.data = "Aufenthaltsraum"
-        self.pub.publish(self.msg)
+        if self.gate==True:
+            self.close_gate()
+            self.goal=self.msg.data
+            self.pub.publish(self.msg)
+            
         
 
     def pub_nav_goal_cafe(self, *args):
         self.msg.data = "Cafe"
-        self.pub.publish(self.msg)
+        if self.gate==True:
+            self.close_gate()
+            self.goal=self.msg.data
+            self.pub.publish(self.msg)
 
     def pub_nav_goal_gruppenraum(self, *args):
         self.msg.data = "Gruppenraum"
-        self.pub.publish(self.msg)
+        if self.gate==True:
+            self.close_gate()
+            self.goal=self.msg.data
+            self.pub.publish(self.msg)
 
     def pub_nav_goal_ruheraum(self, *args):
         self.msg.data = "Ruheraum"
-        self.pub.publish(self.msg)
+        if self.gate==True:
+            self.close_gate()
+            self.goal=self.msg.data
+            self.pub.publish(self.msg)
     
     def pub_nav_goal_schlafzimmer(self, *args):
         self.msg.data = "Schlafzimmer"
-        self.pub.publish(self.msg)
+        if self.gate==True:
+            self.close_gate()
+            self.goal=self.msg.data
+            self.pub.publish(self.msg)
     
     def pub_nav_goal_speisesaal(self, *args):
         self.msg.data = "Speisesaal"
-        self.pub.publish(self.msg)
+        if self.gate==True:
+            self.close_gate()
+            self.goal=self.msg.data
+            self.pub.publish(self.msg)
 
     def pub_nav_cancel(self, *args):
         self.msg.data = "cancel_nav"
+        self.open_gate()
+        self.goal=self.msg.data
         self.cancel_pub.publish(self.msg)
 
+    def temporary_button_color(self, active, *args):
+        
+        if active==1:
+            
+            if self.goal=="Aufenthaltsraum":
+                self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
+                
+            
+            if self.goal=="Cafe":
+                self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
+
+            
+            if self.goal=="Gruppenraum":
+                self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
+            
+            if self.goal=="Ruheraum":
+                self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
+            
+            if self.goal=="Schlafzimmer":
+                self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
+            
+            if self.goal=="Speisesaal":
+                self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
+                
+        else: 
+            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
+            self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
+            self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
+            self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
+            self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
+            self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
+            
+                
+            
+        
+        
         
 
 
