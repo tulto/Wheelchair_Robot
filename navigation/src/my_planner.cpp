@@ -26,6 +26,7 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
     ros::Publisher pub_vel;
 
     geometry_msgs::Twist vel_msg;
+    geometry_msgs::Twist vel;
 
     char* appendCharToCharArray(char* array, char a)
     {
@@ -49,9 +50,13 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
         check_movement = nh->advertiseService("/check_movement",&WCRSeperatePlanner::check_movement_service, this);
     }
 
+    /**
+     * @brief if a 180° rotation is possible set min_vel_x to 0 else -0.5
+     * 
+     */
     void check_rotation(){
         // check possibility in tuning trajectory 
-        bool traj_state = checkTrajectory(0, 0, 3.14);
+        bool traj_state = checkTrajectory(0, 0, 10);
         
         // if Trajecotry is possible (true) then use velocity 0 else 0.5
         // setting velocities over cml with dynamic_reconfigure
@@ -68,10 +73,14 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
         }
     }
 
+    /**
+     * @brief Check if vehicle can rotate drive forward and backward then no lateral movement necessary
+     * 
+     */
     void allow_lateral_if_necessary(){
         bool traj_state;
         // check possibility in tuning trajectory 
-        if (checkTrajectory(0.3, 0, 0) && checkTrajectory(-0.3, 0, 0) && checkTrajectory(0, 0, 3.14)){
+        if (checkTrajectory(0.3, 0, 0) && checkTrajectory(-0.3, 0, 0) && checkTrajectory(0, 0, 10)){
             traj_state = true;
         }else{
             traj_state = false;
@@ -92,6 +101,11 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
         }
     }
 
+    /**
+     * @brief A possibility to let the vehicle selflocate in form from driving itself throgh the environment
+     * 
+     * @param duration 
+     */
     void locate(int duration = 10000){
         bool check_tra = 0;
 
@@ -125,6 +139,10 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
         }
     }
 
+    /**
+     * @brief Get the out of everywhere object  Score multiple velocities and only use best performing velociies
+     * 
+     */
     void get_out_of_everywhere(){
         double vel[3];
         double score_max=0;
@@ -156,12 +174,29 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
         }
     }
 
+    /**
+     * @brief activate self localization
+     * 
+     * @param req 
+     * @param res 
+     * @return true 
+     * @return false 
+     */
     bool locate_service(std_srvs::Empty::Request &req,
                         std_srvs::Empty::Response &res){                    
         locate_state = 1;
         start = clock();
         return true;
     }
+
+    /**
+     * @brief a service for checking velocities (if valid it returns true)
+     * 
+     * @param req 
+     * @param res 
+     * @return true 
+     * @return false 
+     */
     bool check_movement_service(services_and_messages::MovementCheckRequest &req,
                         services_and_messages::MovementCheckResponse &res){                    
         if (checkTrajectory(req.x, req.y, req.z)){
