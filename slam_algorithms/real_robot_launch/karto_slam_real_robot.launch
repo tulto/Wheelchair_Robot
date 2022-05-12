@@ -34,9 +34,9 @@
     <param name="loop_match_maximum_variance_coarse" value="sqrt(10.0)" />
     <param name="loop_match_minimum_response_coarse" value="0.01" />
     <param name="loop_match_minimum_response_fine" value="0.02" />
-    <param name="correlation_search_space_dimension" value="0.5" />
-    <param name="correlation_search_space_resolution" value="0.05" />
-    <param name="correlation_search_space_smear_deviation" value="0.08" />
+    <param name="correlation_search_space_dimension" value="03." />
+    <param name="correlation_search_space_resolution" value="0.01" />
+    <param name="correlation_search_space_smear_deviation" value="0.03" />
     <param name="loop_search_space_dimension" value="18.0" />
     <param name="loop_search_space_resolution" value="0.1" />
     <param name="loop_search_space_smear_deviation" value="0.1" />
