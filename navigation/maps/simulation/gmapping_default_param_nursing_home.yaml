@@ -1,4 +1,4 @@
-image: /home/timo/catkin_ws/src/wheelchair_robot/navigation/maps/simulation/gmapping_default_param_nursing_home.pgm
+image: gmapping_default_param_nursing_home.pgm
 resolution: 0.050000
 origin: [-35.600000, -26.000000, 0.000000] #-35.600000, -26.000000, 0.000000
 negate: 0

@@ -1,16 +1,16 @@
 recovery_behaviors:
 #  - name: twist_recovery
 #    type: twist_recovery/TwistRecovery
-  - name: go_backwards
-    type: twist_recovery/TwistRecovery
+#  - name: go_backwards
+#    type: twist_recovery/TwistRecovery
   - name: conservative_reset
     type: clear_costmap_recovery/ClearCostmapRecovery
-  - name: rotate_recovery
-    type: rotate_recovery/RotateRecovery
+#  - name: rotate_recovery
+#    type: rotate_recovery/RotateRecovery
   - name: aggressive_reset
     type: clear_costmap_recovery/ClearCostmapRecovery
-  - name: rotate_recovery
-    type: rotate_recovery/RotateRecovery
+#  - name: rotate_recovery
+#    type: rotate_recovery/RotateRecovery
   
 
 recovery_enabled: true

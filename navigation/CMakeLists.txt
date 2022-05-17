@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   dwa_local_planner
   costmap_2d
   rotate_recovery
+  services_and_messages
   tf
 )
 

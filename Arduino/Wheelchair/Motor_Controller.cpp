@@ -80,9 +80,9 @@ void Motor_Controller::set_movement(float x, float y, float turning){
 //Bewegungswerte x,y,t werden in Bewegung umgewandelt, sowie abgefragt ob Echosensoren eine Mauer erkennen 
 void Motor_Controller::movement(){
   //gegebenen motion Werte werden abgefragt um zu sehen ob der Echo Sensor eine Mauer erkennt und x,y oder t auf null gesetzt werden müssen
-  float x = motion[0] * max_speed; //sensor.blocking_path(motion[0], motion[1], motion[2])
-  float y = motion[1] * max_speed;
-  float turning = motion[2] * max_speed;  
+  float x = motion[0] * 851; //sensor.blocking_path(motion[0], motion[1], motion[2])
+  float y = motion[1] * 1000;
+  float turning = motion[2] * 756;  
 
   Motor_Controller::control_front(1, x - turning - y);
   Motor_Controller::control_front(2, x + turning + y);
@@ -92,6 +92,14 @@ void Motor_Controller::movement(){
 
   
   
+}
+
+void Motor_Controller::filter_movement(bool front, bool left, bool right, bool back){
+  Filter_movement filter;
+  filter.set_sensor(front, left, right, back);
+  motion[0] = filter.blocking_path(motion[0], motion[1], motion[2])[0];
+  motion[1] = filter.blocking_path(motion[0], motion[1], motion[2])[1];
+  motion[2] = filter.blocking_path(motion[0], motion[1], motion[2])[2];
 }
 
 

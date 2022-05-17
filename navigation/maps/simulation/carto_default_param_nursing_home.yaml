@@ -1,7 +1,0 @@
-image: carto_default_param_nursing_home.pgm
-resolution: 0.050000 					#34,5m*58,4m
-origin: [-7.611479, -2.110663, 0.000000]
-negate: 0
-occupied_thresh: 0.65
-free_thresh: 0.196
-
