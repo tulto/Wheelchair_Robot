@@ -24,7 +24,9 @@ class GUIApp(MDApp):
         self.msg = String()
         self.goal= ""
         self.gate= True
+        self.reached=False
         
+
     def open_gate(self):
         self.gate=True
         self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
@@ -154,7 +156,7 @@ class GUIApp(MDApp):
     def temporary_button_color(self, active, *args):
         
         if active==1:
-            
+        
             if self.goal=="Aufenthaltsraum":
                 self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
                 
@@ -176,6 +178,8 @@ class GUIApp(MDApp):
                 self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
                 
         else: 
+            self.open_gate()
+            """ 
             self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
             self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
             self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
@@ -183,7 +187,7 @@ class GUIApp(MDApp):
             self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
             self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
             
-                
+                """
             
         
         
