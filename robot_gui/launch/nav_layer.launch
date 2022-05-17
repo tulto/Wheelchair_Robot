@@ -14,10 +14,12 @@
 <!-- simulation
     # set all parameters of possible locations with param name as identifier [x , y , z , o_x , o_y , o_z , o_w]
     <rosparam param="origin">[0,0,0,0,0,0,1] </rosparam>
-    <rosparam param="kueche">[-5,1.2,0,0,0,-1,0] </rosparam>
-    <rosparam param="wohnzimmer">[0,-3.7,0,0,0,0.71,0.70] </rosparam>
-    <rosparam param="schlafzimmer">[3.22,1.8,0,0,0,0,1] </rosparam>
-    <rosparam param="gruppenraum">[24,9,0,0,0,-0.745,0.667] </rosparam>
+    <rosparam param="Cafe">[-5,1.2,0,0,0,-1,0] </rosparam>
+    <rosparam param="Aufenthaltsraum">[0,-3.7,0,0,0,0.71,0.70] </rosparam>
+    <rosparam param="Ruheraum">[3.22,1.8,0,0,0,0,1] </rosparam>
+    <rosparam param="Gruppenraum">[24,9,0,0,0,-0.745,0.667] </rosparam>
+    <rosparam param="Schlafzimmer">[3.22,1.8,0,0,0,0,1] </rosparam>
+    <rosparam param="Speisesaal">[3.22,1.8,0,0,0,0,1] </rosparam>
   </node>
 -->
 </launch>
