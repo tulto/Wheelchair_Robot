@@ -159,7 +159,7 @@ int x_movement = A1;
 int y_movement = A2;
 int t_movement = A3;
 int button = 7;
-int start = millis();
+unsigned long start = millis();
 int timer = 1000;
 
 services_and_messages::Joystick joy_msg;
@@ -294,36 +294,33 @@ void loop() {
     filter.set_sensor(1,1,1,1);
   }
   
-  //filter.set_sensor(0,0,0,0);
-  
+  // overwrites the movement filter
+  if (joy.pressed_button(2000)){
+    filter.set_sensor(0,0,0,0);
+  }
   // query if joystick is used, if yes then it should predefine all movements
   // if there is movement from the joystick then use joystick - velocities else use sent movement from ROS 
   if (joy.movement()){   
-    float vel[3];
-    vel[0] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[0];
-    vel[1] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[1];
-    vel[2] = filter.blocking_path(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity())[2];
-    drive.set_movement(vel[0], vel[1], vel[2]);
+    drive.set_movement(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity());
   }else{
     drive.set_sent_movement();
     //drive.filter_movement();
   }
 
-  // overwrites the movement filter
-  if (joy.pressed_button(2000)){
-    drive.set_movement(-joy.x_velocity(), -joy.y_velocity(), -joy.t_velocity());
-  }
+  
   
   //Set movement is executed
+  drive.filter_movement(filter.get_sensor()[0], filter.get_sensor()[1], filter.get_sensor()[2], filter.get_sensor()[3]);
   drive.movement();
   
   //reset movement
   drive.set_movement(0, 0, 0);
 
   //sending encode values
-  drive.send_encoder_count(timer);
   timer = millis()-start;
   start = millis();
+  drive.send_encoder_count(timer);
+  
   
   //IMU data will be send
   imu_.publish_imu_data(nh);

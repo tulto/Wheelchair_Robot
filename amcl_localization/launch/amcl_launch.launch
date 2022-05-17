@@ -7,7 +7,7 @@
 
   <!-- initiate some variables -->
   <arg name="use_map_topic" default="true"/>
-  <arg name="scan_topic" default="/scan_merged_ranged" />
+  <arg name="scan_topic" default="/scan_wcr_ranged" />
   <arg name="odom_frame_name" default="odom" />
   <arg name="base_frame_name" default="base_link" />
 
@@ -18,11 +18,11 @@
     <param name="first_map_topic" value="true"/> <!-- When set to true, AMCL will only use the first map it subscribes to, rather than updating each time a new one is received. New in navigation 1.4.2 -->
     <param name="selective_resampling" value="true"/> <!-- When set to true, will reduce the resampling rate when not needed and help avoid particle deprivation. The resampling will only happen if the effective number of particles (N_eff = 1/(sum(k_i^2))) is lower than half the current number of particles. Reference: Grisetti, Giorgio, Cyrill Stachniss, and Wolfram Burgard. "Improved techniques for grid mapping with rao-blackwellized particle filters." IEEE transactions on Robotics 23.1 (2007): 34 -->
     <param name="odom_model_type" value="omni"/> <!--  then we use the sample_motion_model_odometry algorithm from Probabilistic Robotics, p136; this model uses the noise parameters odom_alpha1 through odom_alpha4, as defined in the book.  -->
-    <param name="save_pose_rate" value="1"/> <!-- Maximum rate (Hz) at which to store the last estimated pose and covariance to the parameter server, in the variables ~initial_pose_* and ~initial_cov_*. This saved pose will be used on subsequent runs to initialize the filter. -1.0 to disable.  -->
+    <param name="save_pose_rate" value="2"/> <!-- Maximum rate (Hz) at which to store the last estimated pose and covariance to the parameter server, in the variables ~initial_pose_* and ~initial_cov_*. This saved pose will be used on subsequent runs to initialize the filter. -1.0 to disable.  -->
     
     <param name="gui_publish_rate" value="10.0"/> <!-- Maximum rate (Hz) at which scans and paths are published for visualization, -1.0 to disable.  -->
-    <param name="laser_max_beams" value="300"/> <!-- def: 30 How many evenly-spaced beams in each scan to be used when updating the filter.  -->
-    <param name="min_particles" value="800"/> <!-- def: 100 Minimum allowed number of particles. -->
+    <param name="laser_max_beams" value="320"/> <!-- normal 300 def: 30 How many evenly-spaced beams in each scan to be used when updating the filter.  -->
+    <param name="min_particles" value="600"/> <!-- def: 100 Minimum allowed number of particles. Normal 800 -->
     <param name="max_particles" value="10000"/> <!-- def: 5000 Maximum allowed number of particles. --> <!--Before best found was 24000 but didn't work on pi, now 10000 also works on pi!-->
     <param name="kld_err" value="0.02"/> <!-- def: 0.01Maximum error between the true distribution and the estimated distribution. -->
     <param name="kld_z" value="0.99"/> <!-- Upper standard normal quantile for (1 - p), where p is the probability that the error on the estimated distrubition will be less than kld_err -->
@@ -45,7 +45,7 @@
 
     <param name="laser_likelihood_max_dist" value="2.0"/> <!-- Maximum distance to do obstacle inflation on map, for use in likelihood_field model.  -->
     <param name="update_min_d" value="0.25"/> <!-- Translational movement required before performing a filter update.  -->
-    <param name="update_min_a" value="0.2"/> <!-- Rotational movement required before performing a filter update. -->
+    <param name="update_min_a" value="0.4"/> <!-- Rotational movement required before performing a filter update. -->
 
     <param name ="initial_pose_x" value="0.0" /> <!-- Initial pose mean (x), used to initialize filter with Gaussian distribution.   -->
     <param name ="initial_pose_y" value="0.0" /> <!-- Initial pose mean (y), used to initialize filter with Gaussian distribution.  -->
@@ -67,7 +67,7 @@
     <remap from="scan" to="$(arg scan_topic)"/>
   </node>
   
-  <arg name="node_start_delay" default="2.0" />  
+  <arg name="node_start_delay" default="6.0" />  
   <node pkg="rosservice" type="rosservice" name="global_loc" args="call --wait /global_localization" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
 <!-- 
 	    <node pkg="amcl" type="amcl" name="amcl" output="screen">

@@ -6,8 +6,8 @@
   <arg name="headless" default="false" />
   <arg name="map_for_planning" default="map_plan"/>
   <arg name="map_for_amcl" default="map_amcl"/>
-  <arg name="map_file" default="$(find navigation)/maps/labor/hector_labor.yaml"/>
   <arg name="map_file_plan" default="$(find navigation)/maps/labor/plan_map/hector_labor.yaml"/>
+  <arg name="map_file" default="$(find navigation)/maps/labor/hector_labor.yaml"/>
 
 
   <!-- Map server -->
@@ -19,7 +19,7 @@
     <remap from="/map" to="$(arg map_for_planning)"/>
   </node>
    
-  <include file="$(find navigation)/launch/amcl_sim.launch"/>
+  <include file="$(find amcl_localization)/launch/amcl_launch.launch"/>
 
   <!-- move base Pathplaning -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
