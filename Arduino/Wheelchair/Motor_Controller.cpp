@@ -94,6 +94,14 @@ void Motor_Controller::movement(){
   
 }
 
+void Motor_Controller::filter_movement(bool front, bool left, bool right, bool back){
+  Filter_movement filter;
+  filter.set_sensor(front, left, right, back);
+  motion[0] = filter.blocking_path(motion[0], motion[1], motion[2])[0];
+  motion[1] = filter.blocking_path(motion[0], motion[1], motion[2])[1];
+  motion[2] = filter.blocking_path(motion[0], motion[1], motion[2])[2];
+}
+
 
 
 

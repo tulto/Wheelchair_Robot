@@ -4,6 +4,7 @@
 #include <ros.h>
 #include <geometry_msgs/Twist.h>
 #include <services_and_messages/Encoder.h>
+#include "Filter_movement.h"
 
 
 class Motor_Controller {
@@ -39,6 +40,7 @@ Motor Part
   void control_front(int chanel, int velocity);
   void control_back(int chanel, int velocity);
   void movement();
+  void filter_movement(bool front, bool left, bool right, bool back);
 
 
 
