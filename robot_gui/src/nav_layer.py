@@ -56,7 +56,7 @@ class NavHandler:
         msg_goal.pose.orientation.y = pose[4]
         msg_goal.pose.orientation.z = pose[5]
         msg_goal.pose.orientation.w = pose[6]
-        if (self.cov < self.cov_max):
+        if self.cov < self.cov_max:
             self.pub_goal.publish(msg_goal)
 
     """"    
