@@ -68,6 +68,7 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
 
+  <depend>services_and_messages</depend>
   <depend>base_local_planner</depend>
   <depend>dwa_local_planner</depend>
   <depend>rotate_recovery</depend>

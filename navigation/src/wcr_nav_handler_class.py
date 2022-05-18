@@ -2,9 +2,12 @@
 
 import numpy as np
 import rospy
+import time
 from actionlib_msgs.msg import GoalID
 from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import Twist
 from std_msgs.msg import String
+from std_msgs.msg import Bool
 from geometry_msgs.msg import PoseWithCovarianceStamped
 
 from std_srvs.srv import Empty
@@ -14,15 +17,18 @@ class NavHandler:
     def __init__(self):
         self.sub_stop = rospy.Subscriber("/nav_cancle", String, self.callback_cancel)
         self.pub_stop = rospy.Publisher("/move_base/cancel", GoalID, queue_size=5)
+        self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
 
         self.sub_goal = rospy.Subscriber("/nav_goal", String, self.callback_goal) 
         self.pub_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=5)
 
-        self.sub_locate = rospy.Subscriber("/nav_locate", String, self.callback_locate) 
-        self.pub_locate = rospy.Publisher("/nav_locate_status", String, queue_size=5)
+        #self.sub_locate = rospy.Subscriber("/nav_locate", String, self.callback_locate) 
+        #self.pub_locate = rospy.Publisher("/nav_locate_status", String, queue_size=5)
 
         self.sub_amcl_pose = rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.callback_amcl_pose)
+        self.pub_amcl_status = rospy.Publisher("/amcl_status", Bool, queue_size=5)
         self.cov = 100
+        self.cov_max = 0.1
 
     def callback_goal(self, msg):
         """send a string with matching param equivalent to set goal
@@ -50,16 +56,11 @@ class NavHandler:
         msg_goal.pose.orientation.y = pose[4]
         msg_goal.pose.orientation.z = pose[5]
         msg_goal.pose.orientation.w = pose[6]
-        if (self.cov < 0.1):
+        if (self.cov < self.cov_max):
             self.pub_goal.publish(msg_goal)
 
+    """"    
     def callback_locate(self, msg):
-        """send a string with matching param to make locate movement
-
-        Args:
-            msg (_type_): std_msgs/String
-        """
-
         self.delete_costmap()
         
         msg_goal = PoseStamped()
@@ -76,7 +77,7 @@ class NavHandler:
         msg_goal.pose.orientation.z = 0
         msg_goal.pose.orientation.w = 1
         self.pub_goal.publish(msg_goal)
-
+    """
 
     def callback_cancel(self, msg):
         """simple cancle option of navigation
@@ -90,6 +91,17 @@ class NavHandler:
         msg_stop.id = ""
         self.pub_stop.publish(msg_stop)
 
+        msg_vel = Twist()
+        msg_vel.linear.x = 0
+        msg_vel.linear.y = 0
+        msg_vel.linear.z = 0
+        msg_vel.angular.x = 0
+        msg_vel.angular.y = 0
+        msg_vel.angular.z = 0
+        for x in range (5):
+            self.pub_cmd_vel.publish(msg_vel)
+            time.sleep(50)
+
     def callback_amcl_pose(self, msg):
         """gets covariance of amcl pose to check if already localized
 
@@ -97,6 +109,14 @@ class NavHandler:
             msg (_type_): geometry_msgs/PoseWithCovarianceStamped
         """
         self.cov = np.amax(msg.pose.covariance)
+        if self.cov < self.cov_max :
+            msg_bool = Bool()
+            msg_bool.data = True
+        else:
+            msg_bool.data = False
+
+        self.pub_amcl_status.publish(msg_bool)
+
 
     def delete_costmap(self):
         """delete costmap of move_base
