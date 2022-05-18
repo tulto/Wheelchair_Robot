@@ -4,18 +4,22 @@
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
-  <arg name="map_file" default="$(find navigation)/maps/FHWS-first-floor/fhws_two_lidar_loop_08_karto_kind_of_loop_with_bigger_buffer_perfekt_map.yaml"/>
+  <arg name="map_for_planning" default="map_plan"/>
+  <arg name="map_for_amcl" default="map_amcl"/>
+  <arg name="map_file_plan" default="$(find navigation)/maps/labor/plan_map/hector_labor.yaml"/>
+  <arg name="map_file" default="$(find navigation)/maps/labor/hector_labor.yaml"/>
 
 
   <!-- Map server -->
-  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
+    <remap from="/map" to="/map"/>
+  </node>
+
+  <node pkg="map_server" name="map_server_plan" type="map_server" args="$(arg map_file_plan)">
+    <remap from="/map" to="$(arg map_for_planning)"/>
+  </node>
    
   <include file="$(find amcl_localization)/launch/amcl_launch.launch"/>
-
-  <!-- prevent backwards movement if not necessary -->
-  <node pkg="navigation" type="my_planner" name="my_planner" >
-        <rosparam file="$(find navigation)/param/my_planner.yaml" command="load"/>
-  </node>
 
   <!-- move base Pathplaning -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
@@ -42,6 +46,13 @@
     
     <remap from="cmd_vel" to="/cmd_vel"/>
     <remap from="odom" to="odom"/>
+    <remap from="/map" to="$(arg map_for_planning)"/>
+  </node>
+
+  <!-- prevent backwards movement if not necessary -->
+  <node pkg="navigation" type="my_planner" name="my_planner" >
+        <rosparam file="$(find navigation)/param/my_planner.yaml" command="load"/>
+        <remap from="/map" to="$(arg map_for_planning)"/>
   </node>
 
   <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>

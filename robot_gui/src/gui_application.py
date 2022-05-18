@@ -5,14 +5,27 @@ from kivymd.app import MDApp
 from kivy.lang import Builder
 from gui_app_class import GUIApp #import GUIApp class for the gui elements (button etc.) and their functionalities
 from services_and_messages.msg import Echosensors
-from services_and_messages.srv import WarningEchoTest
-
-def echo_warning_direction(boolean_array):
-    return 0
+from services_and_messages.msg import TOF_sensor
+from compare_list_class import Compare
+from actionlib_msgs.msg import GoalStatusArray
 
 def callback_subscriber_echo_warning(msg_bool_list):
-    gui_function_handler.change_colour_on_sensor_labels(msg_bool_list.echo_dir)
+    
+    compare.give_list_col(msg_bool_list.echo_dir)
+    compare.change_colour(gui_function_handler)
 
+
+def callback_subscriber_stair_warning(msg_bool_list):
+ 
+    compare.give_list_stair(msg_bool_list.stair_warning_dir)
+    compare.change_colour(gui_function_handler)
+
+def callback_subscriber_active(msg_active):
+    #print("helo")
+    #print("test" + str(msg_active.status_list[0].status ))
+    gui_function_handler.temporary_button_color(msg_active.status_list[0].status)
+    
+    
 
 if __name__ == '__main__':
 
@@ -20,7 +33,12 @@ if __name__ == '__main__':
 
     gui_function_handler = GUIApp()
 
-    sub = rospy.Subscriber("/echo_sensor", Echosensors, callback_subscriber_echo_warning)
+    compare = Compare()
+
+    sub_col = rospy.Subscriber("/collision_warning_dir", Echosensors, callback_subscriber_echo_warning)
+    sub_stair = rospy.Subscriber("/stair_warning_dir", TOF_sensor, callback_subscriber_stair_warning)
+    sub_mb= rospy.Subscriber("/move_base/status", GoalStatusArray, callback_subscriber_active)
+    
 
     gui_function_handler.run()
 
