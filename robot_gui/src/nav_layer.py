@@ -15,7 +15,7 @@ from std_srvs.srv import Empty
 
 class NavHandler:
     def __init__(self):
-        self.sub_stop = rospy.Subscriber("/nav_cancle", String, self.callback_cancel)
+        self.sub_stop = rospy.Subscriber("/nav_cancel", String, self.callback_cancel)
         self.pub_stop = rospy.Publisher("/move_base/cancel", GoalID, queue_size=5)
         self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
 
@@ -28,7 +28,7 @@ class NavHandler:
         self.sub_amcl_pose = rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.callback_amcl_pose)
         self.pub_amcl_status = rospy.Publisher("/amcl_status", Bool, queue_size=5)
         self.cov = 100
-        self.cov_max = 0.1
+        self.cov_max = 0.3
 
     def callback_goal(self, msg):
         """send a string with matching param equivalent to set goal
@@ -80,7 +80,7 @@ class NavHandler:
     """
 
     def callback_cancel(self, msg):
-        """simple cancle option of navigation
+        """simple cancel option of navigation
 
         Args:
             msg (_type_): std_msgs/String
@@ -88,7 +88,7 @@ class NavHandler:
         msg_stop = GoalID()
         msg_stop.stamp.nsecs = 0
         msg_stop.stamp.secs = 0
-        msg_stop.id = ""
+        msg_stop.id = msg.data
         self.pub_stop.publish(msg_stop)
 
         # publish cmd_vel 0

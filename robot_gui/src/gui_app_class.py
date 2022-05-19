@@ -20,7 +20,7 @@ class GUIApp(MDApp):
         super().__init__(**kwargs)
         self.screen=Builder.load_file('ros_robot_gui.kv')
         self.pub = rospy.Publisher("/nav_goal", String, queue_size=25)
-        self.cancel_pub =rospy.Publisher("/nav_cancle", String, queue_size=25)
+        self.cancel_pub =rospy.Publisher("/nav_cancel", String, queue_size=25)
         self.msg = String()
         self.goal= ""
         self.gate= True
