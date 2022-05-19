@@ -44,8 +44,6 @@ class NavHandler:
         pose = rospy.get_param(goal)
         
         msg_goal = PoseStamped()
-        msg_goal.header.stamp = rospy.Time()
-        msg_goal.header.stamp = rospy.Time()
         msg_goal.header.frame_id = "map"
         
         msg_goal.pose.position.x = pose[0]
@@ -88,11 +86,13 @@ class NavHandler:
         msg_stop = GoalID()
         msg_stop.stamp.nsecs = 0
         msg_stop.stamp.secs = 0
-        msg_stop.id = msg.data
-        self.pub_stop.publish(msg_stop)
+        msg_stop.id = ""
+        for i in range(10):
+            self.pub_stop.publish(msg_stop)
+            rospy.sleep(0.05)
 
         # publish cmd_vel 0
-        time.sleep(100)
+        #time.sleep(100) comment this line because it seems to have a problem with ros
         msg_vel = Twist()
         msg_vel.linear.x = 0
         msg_vel.linear.y = 0
@@ -100,7 +100,9 @@ class NavHandler:
         msg_vel.angular.x = 0
         msg_vel.angular.y = 0
         msg_vel.angular.z = 0
-        self.pub_cmd_vel.publish(msg_vel)
+        for i in range(20):
+            self.pub_cmd_vel.publish(msg_vel)
+            rospy.sleep(0.025)
 
     def callback_amcl_pose(self, msg):
         """gets covariance of amcl pose to check if already localized
