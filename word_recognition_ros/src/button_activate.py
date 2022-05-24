@@ -35,16 +35,16 @@ def callback_subscriber_active(msg_active):
     else:
         if (button_was_pushed):
             print("Starting recording..")
-            rec =rec(int(duration*sample_rate),samplerate=sample_rate, channels=1, blocking=False)
+            record = rec(int(duration*sample_rate),samplerate=sample_rate, channels=1, blocking=False)
             wait()
             print("Recording finished..")
 
             from librosa.feature import mfcc
             from tflite_runtime.interpreter import Interpreter
 
-            rec = np.squeeze(rec)
+            record = np.squeeze(record)
 
-            rec = butter_lowpass_filter(data=rec,cutoff=10000, fs=sample_rate)
+            record = butter_lowpass_filter(data=record,cutoff=10000, fs=sample_rate)
 
             model_path = '4_layer_globalpool.tflite'
 
@@ -62,10 +62,10 @@ def callback_subscriber_active(msg_active):
 
             for i in range(1, steps_to_make+1):
                 if i==1:
-                    window = rec[:int(sample_rate * rec_duration)]
+                    window = record[:int(sample_rate * rec_duration)]
 
                 else:
-                    window=rec[int(i*sec_slide*sample_rate):int((sample_rate*(rec_duration+i*sec_slide)))]
+                    window=record[int(i*sec_slide*sample_rate):int((sample_rate*(rec_duration+i*sec_slide)))]
 
                 window_mfcc=mfcc(y=window, sr=sample_rate, n_mfcc=20, n_fft=512)
 
