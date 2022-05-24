@@ -87,7 +87,9 @@ def callback_subscriber_active(msg_active):
 
             list =["Aufenthaltsraum", "Cafe", "Gruppenraum", "Ruheraum", "Schlafzimmer", "Speisesaal"]
             print(list[number_index])
-                    
+            msg = String()
+            msg.data = list[number_index]
+            goal_pub.publish(msg)
 
 
         button_was_pushed = False
