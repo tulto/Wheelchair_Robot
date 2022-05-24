@@ -83,13 +83,20 @@ def callback_subscriber_active(msg_active):
                 output_data= np.around(output_data[0], 2)
 
                 if np.amax(output_data) > word_threshold:
+                    global number_index
                     number_index = np.argmax(output_data)
 
-            list =["Aufenthaltsraum", "Cafe", "Gruppenraum", "Ruheraum", "Schlafzimmer", "Speisesaal"]
-            print(list[number_index])
-            msg = String()
-            msg.data = list[number_index]
-            goal_pub.publish(msg)
+                
+
+            if number_index < 10: 
+                list =["Aufenthaltsraum", "Cafe", "Gruppenraum", "Ruheraum", "Schlafzimmer", "Speisesaal"]
+                #print(list[number_index])
+                msg = String()
+                msg.data = list[number_index]
+                goal_pub.publish(msg)
+                number_index = 10 
+            else: 
+                pass
 
 
         button_was_pushed = False
@@ -116,8 +123,10 @@ if __name__ == '__main__':
     global sec_slide
     sec_slide=0.1
     global word_threshold
-    word_treshhold=0.5
+    word_threshold=0.5
     global number_index 
+    number_index= 10
+     
     
     
 
