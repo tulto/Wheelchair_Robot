@@ -64,6 +64,7 @@ find_package(catkin REQUIRED COMPONENTS
  add_service_files(
    FILES
    WarningEchoTest.srv
+   MovementCheck.srv
    #   Service1.srv
 #   Service2.srv
  )

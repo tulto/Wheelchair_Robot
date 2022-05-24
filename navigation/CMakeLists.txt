@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
   rotate_recovery
   services_and_messages
   tf
+  actionlib_msgs
 )
 
 find_package(Eigen3 REQUIRED)
