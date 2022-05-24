@@ -25,11 +25,11 @@
     <param name="kld_err" value="0.015"/> <!-- def: 0.01Maximum error between the true distribution and the estimated distribution. -->
     <param name="kld_z" value="0.985"/> <!-- Upper standard normal quantile for (1 - p), where p is the probability that the error on the estimated distrubition will be less than kld_err -->
 
-    <param name="odom_alpha1" value="0.03"/> <!-- Specifies the expected noise in odometry's rotation estimate from the rotational component of the robot's motion. -->
-    <param name="odom_alpha2" value="0.04"/> <!-- Specifies the expected noise in odometry's rotation estimate from translational component of the robot's motion.  -->
+    <param name="odom_alpha1" value="0.09"/> <!-- Specifies the expected noise in odometry's rotation estimate from the rotational component of the robot's motion. -->
+    <param name="odom_alpha2" value="0.08"/> <!-- Specifies the expected noise in odometry's rotation estimate from translational component of the robot's motion.  -->
     <param name="odom_alpha3" value="0.15"/> <!-- Specifies the expected noise in odometry's translation estimate from the translational component of the robot's motion.  -->
-    <param name="odom_alpha4" value="0.05"/> <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion. -->
-    <param name="odom_alpha5" value="0.03"/> <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion. -->
+    <param name="odom_alpha4" value="0.07"/> <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion. -->
+    <param name="odom_alpha5" value="0.06"/> <!-- Specifies the expected noise in odometry's translation estimate from the rotational component of the robot's motion. -->
 
     <param name="laser_z_hit" value="0.78"/> <!-- Mixture weight for the z_hit part of the model.  -->
     <param name="laser_z_short" value="0.06"/> <!-- Mixture weight for the z_short part of the model.  -->
