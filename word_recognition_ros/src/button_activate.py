@@ -19,6 +19,7 @@ def ZScore(data):
     return data_ZScore
 
 def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_threshold=0.5,number_index= 10):
+    
     print("Starting recording..")
     record = rec(int(duration*sample_rate),samplerate=sample_rate, channels=1, blocking=False)
     wait()
@@ -46,6 +47,7 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
 
 
     for i in range(1, steps_to_make+1):
+        
         if i==1:
             window = record[:int(sample_rate * rec_duration)]
 
@@ -96,7 +98,9 @@ def callback_subscriber_active(msg_active):
     global button_was_pushed
     
     if len(msg_active.status_list) == 0:
-        recording()
+        if (button_was_pushed):
+            recording()
+        
 
     elif msg_active.status_list[0].status == 1:
         button_was_pushed = False
@@ -122,19 +126,6 @@ if __name__ == '__main__':
 
     global button_was_pushed
     button_was_pushed = False
-    #global sample_rate
-    sample_rate=22050
-    #global duration
-    duration= 6
-
-    #global rec_duration
-    rec_duration=1.5
-    #global sec_slide
-    sec_slide=0.1
-    #global word_threshold
-    word_threshold=0.5
-    #global number_index 
-    number_index= 10
      
     
     
