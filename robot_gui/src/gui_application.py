@@ -29,7 +29,8 @@ def callback_subscriber_active(msg_active):
     gui_function_handler.temporary_button_color(msg_active.status_list[0].status)
 
 def callback_goal(msg):
-    gui_function_handler.voice_button_change(msg.data)
+    gui_function_handler.set_goal(msg.data)
+    
     
     
 

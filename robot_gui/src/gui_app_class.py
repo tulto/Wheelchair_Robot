@@ -25,6 +25,10 @@ class GUIApp(MDApp):
         self.goal= ""
         self.gate= True
         self.reached=False
+
+    def set_goal(self, msg):
+        self.goal = msg
+        self.close_gate()
         
 
     def open_gate(self):
@@ -107,50 +111,43 @@ class GUIApp(MDApp):
         self.msg.data = "Aufenthaltsraum"
         if self.gate==True:
             self.close_gate()
-            self.goal=self.msg.data
             self.pub.publish(self.msg)
             
-        
 
     def pub_nav_goal_cafe(self, *args):
         self.msg.data = "Cafe"
         if self.gate==True:
             self.close_gate()
-            self.goal=self.msg.data
             self.pub.publish(self.msg)
 
     def pub_nav_goal_gruppenraum(self, *args):
         self.msg.data = "Gruppenraum"
         if self.gate==True:
             self.close_gate()
-            self.goal=self.msg.data
             self.pub.publish(self.msg)
 
     def pub_nav_goal_ruheraum(self, *args):
         self.msg.data = "Ruheraum"
         if self.gate==True:
             self.close_gate()
-            self.goal=self.msg.data
             self.pub.publish(self.msg)
     
     def pub_nav_goal_schlafzimmer(self, *args):
         self.msg.data = "Schlafzimmer"
         if self.gate==True:
             self.close_gate()
-            self.goal=self.msg.data
             self.pub.publish(self.msg)
     
     def pub_nav_goal_speisesaal(self, *args):
         self.msg.data = "Speisesaal"
         if self.gate==True:
             self.close_gate()
-            self.goal=self.msg.data
+            
             self.pub.publish(self.msg)
 
     def pub_nav_cancel(self, *args):
         self.msg.data = "cancel_nav"
         self.open_gate()
-        self.goal=self.msg.data
         self.cancel_pub.publish(self.msg)
 
     def temporary_button_color(self, active, *args):
@@ -159,24 +156,61 @@ class GUIApp(MDApp):
         
             if self.goal=="Aufenthaltsraum":
                 self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
-                
+                #self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
+                    
             
             if self.goal=="Cafe":
                 self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
+                self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
+                #self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
             
             if self.goal=="Gruppenraum":
                 self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
+                self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
+                #self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
             
             if self.goal=="Ruheraum":
                 self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
+                self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
+                #self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
             
             if self.goal=="Schlafzimmer":
                 self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
+                self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
+                #self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
             
             if self.goal=="Speisesaal":
                 self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
-                
+                self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
+                self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
+                #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
+
+
         else: 
             self.open_gate()
             """ 
@@ -188,35 +222,7 @@ class GUIApp(MDApp):
             self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
             
                 """
-    def voice_button_change(self, nav_goal):
 
-        if nav_goal=="Aufenthaltsraum":
-            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
-            self.close_gate()  
-            
-        if nav_goal=="Cafe":
-            self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
-            self.close_gate() 
-
-        
-        if nav_goal=="Gruppenraum":
-            self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
-            self.close_gate() 
-        
-        if nav_goal=="Ruheraum":
-            self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
-            self.close_gate() 
-        
-        if nav_goal=="Schlafzimmer":
-            self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
-            self.close_gate() 
-        
-        if nav_goal=="Speisesaal":
-            self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
-            self.close_gate() 
-
-        else:
-            self.open_gate()
 
         
 
