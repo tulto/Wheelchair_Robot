@@ -55,9 +55,8 @@
         <remap from="/map" to="$(arg map_for_planning)"/>
   </node>
 
-  reset_cmd_vel_on_destination
   <!-- send cmd vel 0 values to make sure the robot stopped on the destination-->
-  <node pkg="navigation" type="reset_cmd_vel_on_destination" name="reset_cmd_vel_on_destination_node" >
+  <node pkg="navigation" type="reset_cmd_vel_on_destination.py" name="reset_cmd_vel_on_destination_node" >
   </node>
 
   <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
