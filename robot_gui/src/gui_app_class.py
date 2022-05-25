@@ -188,9 +188,36 @@ class GUIApp(MDApp):
             self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
             
                 """
+    def voice_button_change(self, nav_goal):
+
+        if nav_goal=="Aufenthaltsraum":
+            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
+            self.close_gate()  
             
+        if nav_goal=="Cafe":
+            self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
+            self.close_gate() 
+
         
+        if nav_goal=="Gruppenraum":
+            self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
+            self.close_gate() 
         
+        if nav_goal=="Ruheraum":
+            self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
+            self.close_gate() 
+        
+        if nav_goal=="Schlafzimmer":
+            self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
+            self.close_gate() 
+        
+        if nav_goal=="Speisesaal":
+            self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
+            self.close_gate() 
+
+        else:
+            self.open_gate()
+
         
 
 

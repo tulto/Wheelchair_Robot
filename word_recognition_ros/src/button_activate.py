@@ -28,10 +28,15 @@ def butter_lowpass_filter(data, cutoff, fs, order=5):
 
 def callback_subscriber_active(msg_active):
     global button_was_pushed
+    
+    if len(msg_active.status_list) == 0:
+        pass
 
     if msg_active.status_list[0].status == 1:
         button_was_pushed = False
         print("Recognition is not possible at this moment. Navigation is active!!!")
+    
+
     else:
         if (button_was_pushed):
             print("Starting recording..")
