@@ -1,65 +1,10 @@
 <?xml version="1.0"?>
 <launch>
-  <rosparam name="use_sim_time" value="true"/>
-  <arg name="use_sim_time" default="true" />
-  <arg name="gui" default="true" />
-  <arg name="headless" default="false" />
-  <arg name="map_for_planning" default="map_plan"/>
-  <arg name="map_for_amcl" default="map_amcl"/>
-  <arg name="map_file_plan" default="$(find navigation)/maps/masch/fhws_masch.yaml"/>
-  <arg name="map_file" default="$(find navigation)/maps/masch/fhws_masch.yaml"/>
-
-
-  <!-- Map server -->
-  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
-    <remap from="/map" to="/map"/>
-  </node>
-
-  <node pkg="map_server" name="map_server_plan" type="map_server" args="$(arg map_file_plan)">
-    <remap from="/map" to="$(arg map_for_planning)"/>
-  </node>
-   
-  <include file="$(find amcl_localization)/launch/amcl_launch.launch"/>
-
-  <!-- move base Pathplaning -->
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    # Global planner
-    <param name="base_global_planner" value="global_planner/GlobalPlanner" />  
-    
-    # Local planner
-    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /> 
-    
-    # Costmap
-    <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find navigation)/param/costmap_common_params_wheelchair.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find navigation)/param/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find navigation)/param/global_costmap_params.yaml" command="load" />
-    
-    # Movebase
-    <rosparam file="$(find navigation)/param/move_base_params.yaml" command="load" />
-    
-    # global planer parameter
-    <rosparam file="$(find navigation)/param/global_planner/global_global_planner_params.yaml" command="load"/>
-    
-    # local planer parameter
-    <rosparam file="$(find navigation)/param/local_planner/dwa_local_planner_params_wheelchair.yaml" command="load" />
-    
-    <remap from="cmd_vel" to="/cmd_vel"/>
-    <remap from="odom" to="odom"/>
-    <remap from="/map" to="$(arg map_for_planning)"/>
-  </node>
-
-  <!-- prevent backwards movement if not necessary -->
-  <node pkg="navigation" type="my_planner" name="my_planner" >
-        <rosparam file="$(find navigation)/param/my_planner.yaml" command="load"/>
-        <remap from="/map" to="$(arg map_for_planning)"/>
-  </node>
-
-  <!-- send cmd vel 0 values to make sure the robot stopped on the destination-->
-  <node pkg="navigation" type="reset_cmd_vel_on_destination.py" name="reset_cmd_vel_on_destination_node" >
-  </node>
-
-  <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
-
-
+  <include file="$(find navigation)/launch/navigation.launch">
+    <arg name="rviz" default="true" /> <!--switch on and off rviz-->
+    <arg name="two_maps" default="false"/> <!--decide if you also want to use a second map (planing map) false -> for map_plan uses regualar map_file NOT map_file_plan-->
+    <arg name="map_for_planning" default="map_plan"/> <!--name of planning map (can be the same is two_maps = false)-->
+    <arg name="map_file_plan" default="$(find navigation)/maps/masch/fhws_masch.yaml"/>
+    <arg name="map_file" default="$(find navigation)/maps/masch/fhws_masch.yaml"/>
+  </include>
 </launch>
