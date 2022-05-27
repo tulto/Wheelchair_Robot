@@ -102,10 +102,10 @@ void initTOFirSetupPins() {
 //function for generating the stair_warn_msg with corresponding direction of the warning
 void send_stair_warning(TOFLaserDistanzSensor &front, TOFLaserDistanzSensor &left, TOFLaserDistanzSensor &right, TOFLaserDistanzSensor &back, TOFLaserDistanzSensor &left_front, TOFLaserDistanzSensor &right_front, TOFLaserDistanzSensor &right_back, TOFLaserDistanzSensor &left_back){
 
-  bool left_front_val = left_front.get_distance_warning(180, 565);
-  bool right_front_val = right_front.get_distance_warning(180, 565);
-  bool right_back_val = right_back.get_distance_warning(180, 565);
-  bool left_back_val = left_back.get_distance_warning(180, 565);
+  bool left_front_val = left_front.get_distance_warning(200, 565);
+  bool right_front_val = right_front.get_distance_warning(200, 565);
+  bool right_back_val = right_back.get_distance_warning(200, 565);
+  bool left_back_val = left_back.get_distance_warning(200, 565);
   
   stair_warn_msg.stair_warning_dir[0] = front.get_distance_warning(250, 595) || left_front_val || right_front_val;
   stair_warn_msg.stair_warning_dir[1] = left.get_distance_warning(250, 595) || left_front_val || left_back_val;
