@@ -3,12 +3,26 @@
 
  <!-- this node can set a goal depending on the param which you can predefine and if you send something inside of topic "/cancle_nav" you can cancle the navigation-->
  <node pkg="robot_gui" type="nav_layer.py" name="navigation_goal_stop_node" >
+    # labor points
     # set all parameters of possible locations with param name as identifier [x , y , z , o_x , o_y , o_z , o_w]
     <rosparam param="origin">[0,0,0,0,0,0,1] </rosparam>
-    <rosparam param="kueche">[-5,1.2,0,0,0,-1,0] </rosparam>
-    <rosparam param="wohnzimmer">[0,-3.7,0,0,0,0.71,0.70] </rosparam>
-    <rosparam param="schlafzimmer">[3.22,1.8,0,0,0,0,1] </rosparam>
-    <rosparam param="gruppenraum">[24,9,0,0,0,-0.745,0.667] </rosparam>
+    <rosparam param="Cafe">[1.2,3.1,0,0,0,-0.796,0.605] </rosparam>
+    <rosparam param="Aufenthaltsraum">[-1.83,0,0,0,0,1,0] </rosparam>
+    <rosparam param="Ruheraum">[0.38,-2.3,0,0,0,-0.7122,0.702] </rosparam>
+    <rosparam param="Gruppenraum">[1.2,3.1,0,0,0,-0.796,0.605] </rosparam>
+    <rosparam param="Schlafzimmer">[24,9,0,0,0,-0.745,0.667] </rosparam>
+    <rosparam param="Speisesaal">[0,0,0,0,0,1,0] </rosparam>
   </node>
-
+    
+<!-- simulation
+    # set all parameters of possible locations with param name as identifier [x , y , z , o_x , o_y , o_z , o_w]
+    <rosparam param="origin">[0,0,0,0,0,0,1] </rosparam>
+    <rosparam param="Cafe">[-5,1.2,0,0,0,-1,0] </rosparam>
+    <rosparam param="Aufenthaltsraum">[0,-3.7,0,0,0,0.71,0.70] </rosparam>
+    <rosparam param="Ruheraum">[3.22,1.8,0,0,0,0,1] </rosparam>
+    <rosparam param="Gruppenraum">[24,9,0,0,0,-0.745,0.667] </rosparam>
+    <rosparam param="Schlafzimmer">[3.22,1.8,0,0,0,0,1] </rosparam>
+    <rosparam param="Speisesaal">[3.22,1.8,0,0,0,0,1] </rosparam>
+  </node>
+-->
 </launch>

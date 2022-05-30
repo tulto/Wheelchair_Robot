@@ -15,7 +15,7 @@ from std_srvs.srv import Empty
 
 class NavHandler:
     def __init__(self):
-        self.sub_stop = rospy.Subscriber("/nav_cancle", String, self.callback_cancel)
+        self.sub_stop = rospy.Subscriber("/nav_cancel", String, self.callback_cancel)
         self.pub_stop = rospy.Publisher("/move_base/cancel", GoalID, queue_size=5)
         self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
 
@@ -28,7 +28,7 @@ class NavHandler:
         self.sub_amcl_pose = rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.callback_amcl_pose)
         self.pub_amcl_status = rospy.Publisher("/amcl_status", Bool, queue_size=5)
         self.cov = 100
-        self.cov_max = 0.1
+        self.cov_max = 0.3
 
     def callback_goal(self, msg):
         """send a string with matching param equivalent to set goal
@@ -44,8 +44,6 @@ class NavHandler:
         pose = rospy.get_param(goal)
         
         msg_goal = PoseStamped()
-        msg_goal.header.stamp = rospy.Time()
-        msg_goal.header.stamp = rospy.Time()
         msg_goal.header.frame_id = "map"
         
         msg_goal.pose.position.x = pose[0]
@@ -56,7 +54,7 @@ class NavHandler:
         msg_goal.pose.orientation.y = pose[4]
         msg_goal.pose.orientation.z = pose[5]
         msg_goal.pose.orientation.w = pose[6]
-        if (self.cov < self.cov_max):
+        if self.cov < self.cov_max:
             self.pub_goal.publish(msg_goal)
 
     """"    
@@ -80,7 +78,7 @@ class NavHandler:
     """
 
     def callback_cancel(self, msg):
-        """simple cancle option of navigation
+        """simple cancel option of navigation
 
         Args:
             msg (_type_): std_msgs/String
@@ -89,8 +87,12 @@ class NavHandler:
         msg_stop.stamp.nsecs = 0
         msg_stop.stamp.secs = 0
         msg_stop.id = ""
-        self.pub_stop.publish(msg_stop)
+        for i in range(10):
+            self.pub_stop.publish(msg_stop)
+            rospy.sleep(0.05)
 
+        # publish cmd_vel 0
+        #time.sleep(100) comment this line because it seems to have a problem with ros
         msg_vel = Twist()
         msg_vel.linear.x = 0
         msg_vel.linear.y = 0
@@ -98,9 +100,9 @@ class NavHandler:
         msg_vel.angular.x = 0
         msg_vel.angular.y = 0
         msg_vel.angular.z = 0
-        for x in range (5):
+        for i in range(20):
             self.pub_cmd_vel.publish(msg_vel)
-            time.sleep(50)
+            rospy.sleep(0.025)
 
     def callback_amcl_pose(self, msg):
         """gets covariance of amcl pose to check if already localized
@@ -109,8 +111,8 @@ class NavHandler:
             msg (_type_): geometry_msgs/PoseWithCovarianceStamped
         """
         self.cov = np.amax(msg.pose.covariance)
+        msg_bool = Bool()
         if self.cov < self.cov_max :
-            msg_bool = Bool()
             msg_bool.data = True
         else:
             msg_bool.data = False
