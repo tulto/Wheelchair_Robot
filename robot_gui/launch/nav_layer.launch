@@ -6,12 +6,12 @@
     # labor points
     # set all parameters of possible locations with param name as identifier [x , y , z , o_x , o_y , o_z , o_w]
     <rosparam param="origin">[0,0,0,0,0,0,1] </rosparam>
-    <rosparam param="Cafe">[1.2,3.1,0,0,0,-0.796,0.605] </rosparam>
-    <rosparam param="Aufenthaltsraum">[-1.83,0,0,0,0,1,0] </rosparam>
-    <rosparam param="Ruheraum">[0.38,-2.3,0,0,0,-0.7122,0.702] </rosparam>
-    <rosparam param="Gruppenraum">[1.2,3.1,0,0,0,-0.796,0.605] </rosparam>
-    <rosparam param="Schlafzimmer">[24,9,0,0,0,-0.745,0.667] </rosparam>
-    <rosparam param="Speisesaal">[0,0,0,0,0,1,0] </rosparam>
+    <rosparam param="Cafe">[-17.7,0.46,0,0,0,-0.65,0.76] </rosparam>
+    <rosparam param="Aufenthaltsraum">[-0.47,-0.2,0,0,0,0,1] </rosparam>
+    <rosparam param="Ruheraum">[-23.43,22.13,0,0,0,-1,0] </rosparam>
+    <rosparam param="Gruppenraum">[-24.76, 28.2,0,0,0,0,1] </rosparam>
+    <rosparam param="Schlafzimmer">[-18.57, 34.27,0,0,0,-0.77,0.64] </rosparam>
+    <rosparam param="Speisesaal">[-24,32.23,0,0,0,0.77,0.64] </rosparam>
   </node>
     
 <!-- simulation
