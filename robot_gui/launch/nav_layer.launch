@@ -7,11 +7,11 @@
     # set all parameters of possible locations with param name as identifier [x , y , z , o_x , o_y , o_z , o_w]
     <rosparam param="origin">[0,0,0,0,0,0,1] </rosparam>
     <rosparam param="Cafe">[-17.7,0.46,0,0,0,-0.65,0.76] </rosparam>
-    <rosparam param="Aufenthaltsraum">[-0.47,-0.2,0,0,0,0,1] </rosparam>
+    <rosparam param="Aufenthaltsraum">[-25.1,29.1.23,0,0,0,0.76,0.65] </rosparam>
     <rosparam param="Ruheraum">[-23.43,22.13,0,0,0,-1,0] </rosparam>
     <rosparam param="Gruppenraum">[-24.76, 28.2,0,0,0,0,1] </rosparam>
-    <rosparam param="Schlafzimmer">[-18.57, 34.27,0,0,0,-0.77,0.64] </rosparam>
-    <rosparam param="Speisesaal">[-24,32.23,0,0,0,0.77,0.64] </rosparam>
+    <rosparam param="Schlafzimmer">[-18.57, 34.27,0,0,0,0.77,0.64] </rosparam>
+    <rosparam param="Speisesaal">[--23.95,32.25,0,0,0,0.99,0.05] </rosparam>
   </node>
     
 <!-- simulation
