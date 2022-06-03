@@ -54,12 +54,12 @@ def callback_hector_pose(hec_pose):
 
                 #calculate duration
                 duration = (((rospy.Time.now()).to_sec()) - last_time_call) 
-                print(duration) #just for testing delete later
+                #print(duration) #just for testing delete later
                 #publish odom from hector topic 
                 if(serial_connection_dead and (duration >= sleep_time)):
                         last_time_call = (rospy.Time.now()).to_sec()
                         odom_pub.publish(odom_msg)
-                        print("now here") #just for testing delete later
+                        #print("now here") #just for testing delete later
 
                 #define sleep_rate 
                 #rate = rospy.Rate(sleep_rate)
@@ -96,7 +96,7 @@ def callback_encoder(msg):
 
 if __name__ == '__main__':
         #initiate ROS node
-        rospy.init_node("hector_to_odom_topic_publisher")
+        rospy.init_node("hector_to_odom_back_up_publisher")
         global serial_connection_dead, check_serial_connection_status
         serial_connection_dead = False
         check_serial_connection_status = True
