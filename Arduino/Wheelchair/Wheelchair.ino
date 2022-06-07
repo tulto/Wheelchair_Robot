@@ -172,7 +172,6 @@ Joystick joy(A1,A2,A3);
 Filter_movement filter;
 
 void setup() {
- Serial.begin(57600);  
  Serial1.begin(115200);      // Roboteq SDC2130 COM (Must be 115200)
  Serial2.begin(115200);      // Roboteq SDC2130 COM (Must be 115200) 
 
