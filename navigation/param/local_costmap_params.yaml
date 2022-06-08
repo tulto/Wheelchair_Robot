@@ -1,6 +1,9 @@
 local_costmap:
   global_frame: odom
   robot_base_frame: base_link
+
+  obstacle_range: 2.0
+  raytrace_range: 2.2
   
   inflation_radius: 0.1
   cost_scaling_factor: 3.0
@@ -15,31 +18,3 @@ local_costmap:
   height: 3
   resolution: 0.05
 
-  plugins: 
-    - {name: static_layer , type: "costmap_2d::StaticLayer"}
-    - {name: kinect_layer , type: "costmap_2d::VoxelLayer"}
-    - {name: obstacle_layer , type: "costmap_2d::ObstacleLayer"}
-    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
-
-  kinect_layer:
-    obstacle_range: 2
-    raytrace_range: 2.5
-    inflation_radius: 0.1
-    origin_x: 0
-    origin_y: 0
-
-    map_type: costmap
-    observation_sources: lidar_scan_sensor
-    lidar_scan_sensor: {sensor_frame: base_link , data_type: LaserScan, topic: kinect_scan, marking: true, clearing: true}
-    #lidar_scan_sensor: {sensor_frame: base_link , data_type: PointCloud2, topic: /camera/depth_registered/points, marking: true, clearing: true}
-
-  obstacle_layer:
-    obstacle_range: 2
-    raytrace_range: 2.5
-    inflation_radius: 0.1
-    origin_x: 0
-    origin_y: 0
-
-    map_type: costmap
-    observation_sources: laser_scan_sensor
-    laser_scan_sensor: {sensor_frame: base_link , data_type: LaserScan, topic: scan_wcr_no_inf, marking: true, clearing: true}
