@@ -29,4 +29,6 @@
 
 <include file="$(find lidar-filtering)/launch-files/real_wcr_lidar_merging.launch"/>
 
+<node pkg="lidar-filtering" type="lidar_average_window.py" name="moving_average_laser_scans_node" />
+
 </launch>

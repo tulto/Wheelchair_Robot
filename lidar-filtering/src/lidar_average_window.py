@@ -7,7 +7,6 @@ from sensor_msgs.msg import LaserScan
 
 
 def laser_callback(msg):
-	#print(len(msg.ranges))
 
 	global new_laser_msg, last_measurements
 	
@@ -34,14 +33,9 @@ def laser_callback(msg):
 			factor = 0
 
 			for a in range(window_size):
-				#print("begin")
-				#print(last_measurements[0][i])
-				#print(last_measurements[a][i])
-				#print(abs(last_measurements[0][i] - last_measurements[a][i]))
 				if(abs(last_measurements[0][i] - last_measurements[a][i]) <= max_allowed_difference ):
 					sum += last_measurements[a][i]
 					factor += 1
-					#print("sum added")
 
 			if(factor ==  0):
 				new_laser_msg.ranges.append(float('inf'))
@@ -51,7 +45,6 @@ def laser_callback(msg):
 		pub.publish(new_laser_msg)
 	
 	else:
-		print("now here yes")
 		last_scan_msg_size = msg.ranges
 		for l in range(window_size):
 			last_measurements[l] = last_scan_msg_size
@@ -64,7 +57,7 @@ if __name__ == '__main__':
 	node_name = rospy.get_name()
 	window_size = rospy.get_param(node_name + "/window_size", 3)
 	max_allowed_difference = rospy.get_param(node_name + "/max_allowed_difference", 0.1)
-	laser_topic_to_publish = rospy.get_param(node_name + "/laser_topic_to_publish", "/scan_wcr_lowpass")
+	laser_topic_to_publish = rospy.get_param(node_name + "/laser_topic_to_publish", "/scan_wcr_averaged")
 	laser_topic_to_subscribe = rospy.get_param(node_name + "/laser_topic_to_subscribe", "/scan_wcr_ranged")
 	
 	global new_laser_msg, last_measurements
