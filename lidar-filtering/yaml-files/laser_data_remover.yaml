@@ -8,6 +8,7 @@ scan_filter_chain:
     lower_replacement_value: -.inf
     upper_replacement_value: .inf
 
+
 - type: laser_filters/LaserArrayFilter
   name: laser_median_filter
   params:
@@ -16,10 +17,8 @@ scan_filter_chain:
         type: filters/MultiChannelMedianFilterFloat
         params:
           number_of_observations: 3
-          unused: 10
     intensity_filter_chain:
       - name: median_5
         type: filters/MultiChannelMedianFilterFloat
         params:
           number_of_observations: 3
-          unused: 10
