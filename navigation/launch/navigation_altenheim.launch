@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find navigation)/launch/navigation.launch">
+    <arg name="rviz" default="true" /> <!--switch on and off rviz-->
+    <arg name="two_maps" default="true"/> <!--decide if you also want to use a second map (planing map) false -> for map_plan uses regualar map_file NOT map_file_plan-->
+    <arg name="map_for_planning" default="map_plan"/> <!--name of planning map (can be the same is two_maps = false)-->
+    <arg name="map_file_plan" default="$(find navigation)/maps/altenheim/Altenheim_Bag_4_Karto_1_edit.yaml"/>
+    <arg name="map_file" default="$(find navigation)/maps/altenheim/Altenheim_Bag_4_Karto_1.yaml"/>
+  </include>
+</launch>

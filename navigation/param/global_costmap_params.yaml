@@ -8,6 +8,7 @@ global_costmap:
   update_frequency: 10.0
   publish_frequency: 10.0
   transform_tolerance: 0.5
+  footprint_padding: 0.05
 
   static_map: true
  
