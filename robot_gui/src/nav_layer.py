@@ -2,7 +2,9 @@
 
 import numpy as np
 import rospy
-import time
+import csv, sys
+
+import tf2_ros
 from actionlib_msgs.msg import GoalID
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Twist
@@ -19,8 +21,13 @@ class NavHandler:
         self.pub_stop = rospy.Publisher("/move_base/cancel", GoalID, queue_size=5)
         self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
 
-        self.sub_goal = rospy.Subscriber("/nav_goal", String, self.callback_goal) 
+        self.sub_goal = rospy.Subscriber("/nav_goal", String, self.callback_goal)
         self.pub_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=5)
+
+        self.header = ['name', 'x', 'y', 'z', 'u_x', 'u_y', 'u_z', 'u_w']
+        self.tfBuffer = tf2_ros.Buffer()
+        self.listener = tf2_ros.TransformListener(self.tfBuffer)
+        self.sub_goal = rospy.Subscriber("/nav_save_position", String, self.callback_save_pos) 
 
         #self.sub_locate = rospy.Subscriber("/nav_locate", String, self.callback_locate) 
         #self.pub_locate = rospy.Publisher("/nav_locate_status", String, queue_size=5)
@@ -57,7 +64,61 @@ class NavHandler:
         if self.cov < self.cov_max:
             self.pub_goal.publish(msg_goal)
 
-    """"    
+    def callback_save_pos(self, msg):
+        if self.tfBuffer.can_transform('base_link', 'map', rospy.Time(0)):
+            trans = self.tfBuffer.lookup_transform('base_link', 'map', rospy.Time(0))
+            x = trans.transform.translation.x
+            y = trans.transform.translation.y
+            z = trans.transform.translation.z
+
+            q_x = trans.transform.rotation.x
+            q_y = trans.transform.rotation.y
+            q_z = trans.transform.rotation.z
+            q_w = trans.transform.rotation.w
+
+            data = [msg.data, x, y, 0, 0, 0, q_z, q_w]
+
+            path = '/home/timo/catkin_ws/src/wheelchair_robot/robot_gui/src/positions.csv'
+
+            with open(path, 'r+') as in_file:
+                reader = csv.reader(in_file)
+                rows = [row for row in csv.reader(in_file) if msg.data not in row]
+                in_file.seek(0)
+                in_file.truncate()
+                writer = csv.writer(in_file)
+                writer.writerows(rows)
+                #in_file.close()
+
+            with open(path, 'a') as append:
+                appender = csv.writer(append)
+                appender.writerow(data)
+                #append.close()
+
+    """
+            lines = list()
+            with open(path, 'r') as read_file:
+                reader = csv.reader(read_file)
+                for row in read_file:
+                    if(row[0] != msg.data):
+                        lines.append(row)
+                read_file.close()
+
+            print(lines)
+
+
+            with open(path, 'w') as write_file:
+                writer = csv.writer(write_file)
+                writer.writerows(lines)
+                write_file.close()
+
+
+            with open(path, 'a+') as append:
+                appender = csv.writer(append)
+                appender.writerow(data)
+                append.close()
+
+    """
+    """
     def callback_locate(self, msg):
         self.delete_costmap()
         
