@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
+import imp
 import numpy as np
 import rospy
-import time
+import csv, sys
+
+import tf2_ros
+import tf
 from actionlib_msgs.msg import GoalID
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Twist
@@ -19,8 +23,16 @@ class NavHandler:
         self.pub_stop = rospy.Publisher("/move_base/cancel", GoalID, queue_size=5)
         self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
 
-        self.sub_goal = rospy.Subscriber("/nav_goal", String, self.callback_goal) 
+        self.sub_goal = rospy.Subscriber("/nav_goal", String, self.callback_goal)
         self.pub_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=5)
+
+        #self.listener = tf.TransformListener()
+        self.pose_msg = PoseWithCovarianceStamped()
+        self.header = ['name', 'x', 'y', 'z', 'u_x', 'u_y', 'u_z', 'u_w']
+        self.path = 'positions.csv'
+        self.tfBuffer = tf2_ros.Buffer()
+        self.listener = tf2_ros.TransformListener(self.tfBuffer)
+        self.sub_goal = rospy.Subscriber("/nav_save_position", String, self.callback_save_pos) 
 
         #self.sub_locate = rospy.Subscriber("/nav_locate", String, self.callback_locate) 
         #self.pub_locate = rospy.Publisher("/nav_locate_status", String, queue_size=5)
@@ -38,26 +50,90 @@ class NavHandler:
         """
 
         self.delete_costmap()
-        goal = "/navigation_goal_stop_node/" 
-        goal += msg.data
-
-        pose = rospy.get_param(goal)
         
         msg_goal = PoseStamped()
         msg_goal.header.frame_id = "map"
-        
-        msg_goal.pose.position.x = pose[0]
-        msg_goal.pose.position.y = pose[1]
-        msg_goal.pose.position.z = pose[2]
 
-        msg_goal.pose.orientation.x = pose[3]
-        msg_goal.pose.orientation.y = pose[4]
-        msg_goal.pose.orientation.z = pose[5]
-        msg_goal.pose.orientation.w = pose[6]
+        with open(self.path, 'r+') as in_file:
+            reader = csv.reader(in_file)
+            for row in reader:
+                if msg.data == row[0]:
+                    print(row)
+                    msg_goal.pose.position.x = float(row[1])
+                    msg_goal.pose.position.y = float(row[2])
+                    msg_goal.pose.position.z = float(row[3])
+
+                    msg_goal.pose.orientation.x = float(row[4])
+                    msg_goal.pose.orientation.y = float(row[5])
+                    msg_goal.pose.orientation.z = float(row[6])
+                    msg_goal.pose.orientation.w = float(row[7])
+            in_file.close()
+                
         if self.cov < self.cov_max:
             self.pub_goal.publish(msg_goal)
 
-    """"    
+    def callback_save_pos(self, msg):
+        # if msg.data is delete the deleat all inside of file and only wirte the header
+        if msg.data == "delete":
+            with open(self.path, 'w') as file:
+                    deleter = csv.writer(file)
+                    deleter.writerow(self.header)
+                    file.close()
+
+        else:
+            x = self.pose_msg.pose.pose.position.x
+            y = self.pose_msg.pose.pose.position.y
+            z = self.pose_msg.pose.pose.position.z
+
+            q_x = self.pose_msg.pose.pose.orientation.x
+            q_y = self.pose_msg.pose.pose.orientation.y
+            q_z = self.pose_msg.pose.pose.orientation.z
+            q_w = self.pose_msg.pose.pose.orientation.w
+
+            data = [msg.data, x, y, 0, 0, 0, q_z, q_w]
+
+            print (data)
+            
+
+            with open(self.path, 'r+') as in_file:
+                reader = csv.reader(in_file)
+                rows = [row for row in csv.reader(in_file) if msg.data not in row]
+                in_file.seek(0)
+                in_file.truncate()
+                writer = csv.writer(in_file)
+                writer.writerows(rows)
+                in_file.close()
+
+            with open(self.path, 'a') as append:
+                appender = csv.writer(append)
+                appender.writerow(data)
+                append.close()
+
+    """
+            lines = list()
+            with open(path, 'r') as read_file:
+                reader = csv.reader(read_file)
+                for row in read_file:
+                    if(row[0] != msg.data):
+                        lines.append(row)
+                read_file.close()
+
+            print(lines)
+
+
+            with open(path, 'w') as write_file:
+                writer = csv.writer(write_file)
+                writer.writerows(lines)
+                write_file.close()
+
+
+            with open(path, 'a+') as append:
+                appender = csv.writer(append)
+                appender.writerow(data)
+                append.close()
+
+    """
+    """
     def callback_locate(self, msg):
         self.delete_costmap()
         
@@ -110,6 +186,7 @@ class NavHandler:
         Args:
             msg (_type_): geometry_msgs/PoseWithCovarianceStamped
         """
+        self.pose_msg = msg
         self.cov = np.amax(msg.pose.covariance)
         msg_bool = Bool()
         if self.cov < self.cov_max :
