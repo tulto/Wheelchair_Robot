@@ -29,7 +29,7 @@ class NavHandler:
         #self.listener = tf.TransformListener()
         self.pose_msg = PoseWithCovarianceStamped()
         self.header = ['name', 'x', 'y', 'z', 'u_x', 'u_y', 'u_z', 'u_w']
-        self.path = '/home/timo/catkin_ws/src/wheelchair_robot/robot_gui/src/positions.csv'
+        self.path = 'positions.csv'
         self.tfBuffer = tf2_ros.Buffer()
         self.listener = tf2_ros.TransformListener(self.tfBuffer)
         self.sub_goal = rospy.Subscriber("/nav_save_position", String, self.callback_save_pos) 
@@ -81,9 +81,6 @@ class NavHandler:
                     file.close()
 
         else:
-            #trans = self.tfBuffer.lookup_transform('map', 'base_link', rospy.Time())
-            #(tran,rot) = self.listener.lookupTransform('/base_link', '/map',  rospy.Time(0))
-
             x = self.pose_msg.pose.pose.position.x
             y = self.pose_msg.pose.pose.position.y
             z = self.pose_msg.pose.pose.position.z
