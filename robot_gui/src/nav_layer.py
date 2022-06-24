@@ -27,6 +27,7 @@ class NavHandler:
         self.pub_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=5)
 
         #self.listener = tf.TransformListener()
+        self.pose_msg = PoseWithCovarianceStamped()
         self.header = ['name', 'x', 'y', 'z', 'u_x', 'u_y', 'u_z', 'u_w']
         self.path = '/home/timo/catkin_ws/src/wheelchair_robot/robot_gui/src/positions.csv'
         self.tfBuffer = tf2_ros.Buffer()
@@ -79,23 +80,18 @@ class NavHandler:
                     deleter.writerow(self.header)
                     file.close()
 
-        elif self.tfBuffer.can_transform('map', 'base_link', rospy.Time(0)):
-            try:
-                trans = self.tfBuffer.lookup_transform('base_link', 'map', rospy.Time(0))
-            except Exception as e:
-                pass
-                self.get_logger('Error')
+        else:
             #trans = self.tfBuffer.lookup_transform('map', 'base_link', rospy.Time())
             #(tran,rot) = self.listener.lookupTransform('/base_link', '/map',  rospy.Time(0))
 
-            x = trans.transform.translation.x
-            y = trans.transform.translation.y
-            z = trans.transform.translation.z
+            x = self.pose_msg.pose.pose.position.x
+            y = self.pose_msg.pose.pose.position.y
+            z = self.pose_msg.pose.pose.position.z
 
-            q_x = trans.transform.rotation.x
-            q_y = trans.transform.rotation.y
-            q_z = trans.transform.rotation.z
-            q_w = trans.transform.rotation.w
+            q_x = self.pose_msg.pose.pose.orientation.x
+            q_y = self.pose_msg.pose.pose.orientation.y
+            q_z = self.pose_msg.pose.pose.orientation.z
+            q_w = self.pose_msg.pose.pose.orientation.w
 
             data = [msg.data, x, y, 0, 0, 0, q_z, q_w]
 
@@ -193,6 +189,7 @@ class NavHandler:
         Args:
             msg (_type_): geometry_msgs/PoseWithCovarianceStamped
         """
+        self.pose_msg = msg
         self.cov = np.amax(msg.pose.covariance)
         msg_bool = Bool()
         if self.cov < self.cov_max :
