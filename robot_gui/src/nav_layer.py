@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+import imp
 import numpy as np
 import rospy
 import csv, sys
 
 import tf2_ros
+import tf
 from actionlib_msgs.msg import GoalID
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Twist
@@ -24,7 +26,9 @@ class NavHandler:
         self.sub_goal = rospy.Subscriber("/nav_goal", String, self.callback_goal)
         self.pub_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=5)
 
+        #self.listener = tf.TransformListener()
         self.header = ['name', 'x', 'y', 'z', 'u_x', 'u_y', 'u_z', 'u_w']
+        self.path = '/home/timo/catkin_ws/src/wheelchair_robot/robot_gui/src/positions.csv'
         self.tfBuffer = tf2_ros.Buffer()
         self.listener = tf2_ros.TransformListener(self.tfBuffer)
         self.sub_goal = rospy.Subscriber("/nav_save_position", String, self.callback_save_pos) 
@@ -45,28 +49,45 @@ class NavHandler:
         """
 
         self.delete_costmap()
-        goal = "/navigation_goal_stop_node/" 
-        goal += msg.data
-
-        pose = rospy.get_param(goal)
         
         msg_goal = PoseStamped()
         msg_goal.header.frame_id = "map"
-        
-        msg_goal.pose.position.x = pose[0]
-        msg_goal.pose.position.y = pose[1]
-        msg_goal.pose.position.z = pose[2]
 
-        msg_goal.pose.orientation.x = pose[3]
-        msg_goal.pose.orientation.y = pose[4]
-        msg_goal.pose.orientation.z = pose[5]
-        msg_goal.pose.orientation.w = pose[6]
+        with open(self.path, 'r+') as in_file:
+            reader = csv.reader(in_file)
+            for row in reader:
+                if msg.data == row[0]:
+                    print(row)
+                    msg_goal.pose.position.x = float(row[1])
+                    msg_goal.pose.position.y = float(row[2])
+                    msg_goal.pose.position.z = float(row[3])
+
+                    msg_goal.pose.orientation.x = float(row[4])
+                    msg_goal.pose.orientation.y = float(row[5])
+                    msg_goal.pose.orientation.z = float(row[6])
+                    msg_goal.pose.orientation.w = float(row[7])
+            in_file.close()
+                
         if self.cov < self.cov_max:
             self.pub_goal.publish(msg_goal)
 
     def callback_save_pos(self, msg):
-        if self.tfBuffer.can_transform('base_link', 'map', rospy.Time(0)):
-            trans = self.tfBuffer.lookup_transform('base_link', 'map', rospy.Time(0))
+        # if msg.data is delete the deleat all inside of file and only wirte the header
+        if msg.data == "delete":
+            with open(self.path, 'w') as file:
+                    deleter = csv.writer(file)
+                    deleter.writerow(self.header)
+                    file.close()
+
+        elif self.tfBuffer.can_transform('map', 'base_link', rospy.Time(0)):
+            try:
+                trans = self.tfBuffer.lookup_transform('base_link', 'map', rospy.Time(0))
+            except Exception as e:
+                pass
+                self.get_logger('Error')
+            #trans = self.tfBuffer.lookup_transform('map', 'base_link', rospy.Time())
+            #(tran,rot) = self.listener.lookupTransform('/base_link', '/map',  rospy.Time(0))
+
             x = trans.transform.translation.x
             y = trans.transform.translation.y
             z = trans.transform.translation.z
@@ -78,21 +99,22 @@ class NavHandler:
 
             data = [msg.data, x, y, 0, 0, 0, q_z, q_w]
 
-            path = '/home/timo/catkin_ws/src/wheelchair_robot/robot_gui/src/positions.csv'
+            print (data)
+            
 
-            with open(path, 'r+') as in_file:
+            with open(self.path, 'r+') as in_file:
                 reader = csv.reader(in_file)
                 rows = [row for row in csv.reader(in_file) if msg.data not in row]
                 in_file.seek(0)
                 in_file.truncate()
                 writer = csv.writer(in_file)
                 writer.writerows(rows)
-                #in_file.close()
+                in_file.close()
 
-            with open(path, 'a') as append:
+            with open(self.path, 'a') as append:
                 appender = csv.writer(append)
                 appender.writerow(data)
-                #append.close()
+                append.close()
 
     """
             lines = list()
