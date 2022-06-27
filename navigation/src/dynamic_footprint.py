@@ -14,7 +14,7 @@ from navigation.cfg import DynamicFootprintConfig
 
 class DynamicFoot:
     def __init__(self):
-        self.sub_stop = rospy.Subscriber("/odometry/filtered", Odometry, self.callback_odom)
+        self.sub_stop = rospy.Subscriber("/odom", Odometry, self.callback_odom)
         self.srv = Server(DynamicFootprintConfig, self.dynamic_param)
         self.client = dynamic_reconfigure.client.Client("/move_base/local_costmap", timeout=30)
         rospy.Timer(rospy.Duration(2), self.callback_dynamic_set)
@@ -39,7 +39,6 @@ class DynamicFoot:
         
         if (rospy.get_param("dynamic_footprint_node/dynamic_footprint")):
             vel = np.sqrt(self.vel_msg.twist.twist.linear.x**2 + self.vel_msg.twist.twist.linear.y**2) 
-            print(vel)
             scaling_vel = rospy.get_param("dynamic_footprint_node/scaling_vel")
             foot = rospy.get_param("move_base/global_costmap/footprint")
             padding_below = rospy.get_param("dynamic_footprint_node/scaling_below")
@@ -53,23 +52,18 @@ class DynamicFoot:
             #self.client.update_configuration({"footprint_padding":padding})
 
             client_movement_check = rospy.ServiceProxy('check_movement', MovementCheck)
-            x1 = client_movement_check(0.2,0,0)
-            x2 = client_movement_check(-0.2,0,0)
-            y1 = client_movement_check(0,0.05,0)
-            y2 = client_movement_check(0,0.1,0)
-            y3 = client_movement_check(0,0.15,0)
+            x1 = client_movement_check(0.3,0,0)
+            x2 = client_movement_check(-0.3,0,0)
+            index = 0
+            for i in range(20, 4, -2):
+                y = client_movement_check(0,i/100,0)
+                if y.check:
+                    index = i
+                    break
 
-            if drive_right & x1.check & x2.check & y3.check & (vel > scaling_vel):
-                self.client.update_configuration({"footprint_padding":padding_below})
-                self.client.update_configuration({"footprint":[[-0.75,-0.37],[-0.75,0.67],[0.7,0.67],[0.7,-0.37]]})
-
-            elif drive_right & x1.check & x2.check & y2.check & (vel > scaling_vel):
-                self.client.update_configuration({"footprint_padding":padding_below})
-                self.client.update_configuration({"footprint":[[-0.75,-0.37],[-0.75,0.57],[0.7,0.57],[0.7,-0.37]]})
-
-            elif drive_right & x1.check & x2.check & y1.check & (vel > scaling_vel):
-                self.client.update_configuration({"footprint_padding":padding_below})
-                self.client.update_configuration({"footprint":[[-0.75,-0.37],[-0.75,0.47],[0.7,0.47],[0.7,-0.37]]})
+            if drive_right & x1.check & x2.check & (index > 0) & (vel > scaling_vel):
+                self.client.update_configuration({"footprint_padding":0.01})
+                self.client.update_configuration({"footprint":[[-0.75,-0.37],[-0.75,(0.37+2*i/100)],[0.7,(0.37+2*i/100)],[0.7,-0.37]]})
 
             elif vel < scaling_vel:
                 self.client.update_configuration({"footprint":foot})
@@ -77,8 +71,6 @@ class DynamicFoot:
             else:
                 self.client.update_configuration({"footprint":foot})
                 self.client.update_configuration({"footprint_padding":padding_above})
-
-            
 
                 
             
