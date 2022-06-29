@@ -12,8 +12,8 @@ local_costmap:
   robot_base_frame: "base_link"
   obstacle_range: 1
   raytrace_range: 3.0
-  footprint: [[-0.75, -0.37], [-0.75, 0.37], [0.70, 0.37], [0.70, -0.37]]
-  footprint_padding: 0.1
+  footprint: [[-0.75, -0.37], [-0.75, 0.41], [0.70, 0.41], [0.70, -0.37]]
+  footprint_padding: 0.01
   inflation_radius: 0.5
   origin_x: 0
   origin_y: 0

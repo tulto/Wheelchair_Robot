@@ -51,19 +51,25 @@ class DynamicFoot:
             #
             #self.client.update_configuration({"footprint_padding":padding})
 
-            client_movement_check = rospy.ServiceProxy('check_movement', MovementCheck)
-            x1 = client_movement_check(0.3,0,0)
-            x2 = client_movement_check(-0.3,0,0)
-            index = 0
-            for i in range(20, 4, -2):
-                y = client_movement_check(0,i/100,0)
-                if y.check:
-                    index = i
-                    break
+            
+            
+           
 
-            if drive_right & x1.check & x2.check & (index > 0) & (vel > scaling_vel):
-                self.client.update_configuration({"footprint_padding":0.01})
-                self.client.update_configuration({"footprint":[[-0.75,-0.37],[-0.75,(0.37+2*i/100)],[0.7,(0.37+2*i/100)],[0.7,-0.37]]})
+            if drive_right:
+                client_movement_check = rospy.ServiceProxy('check_movement', MovementCheck)
+                x1 = client_movement_check(0.3,0,0)
+                x2 = client_movement_check(-0.3,0,0)
+                index = 0
+                
+                for i in range(20, 4, -2):
+                    y = client_movement_check(0,i/100,0)
+                    if y.check:
+                        index = i
+                        break
+
+                if x1.check & x2.check & (index > 0) & (vel > scaling_vel):
+                    self.client.update_configuration({"footprint_padding":0.01})
+                    self.client.update_configuration({"footprint":[[-0.75,-0.37],[-0.75,(0.41+2*i/100)],[0.7,(0.41+2*i/100)],[0.7,-0.37]]})
 
             elif vel < scaling_vel:
                 self.client.update_configuration({"footprint":foot})
