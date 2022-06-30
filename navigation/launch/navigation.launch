@@ -70,7 +70,11 @@
 
    <!-- dynamic Footprint-->
   <node pkg="navigation" type="dynamic_footprint.py" name="dynamic_footprint_node" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " >
+    <param name="scaling_over" value="0.03"/>
+    <param name="scaling_below" value="-0.02" />
+    <param name="scaling_vel" value="0.15"/>
     <param name="drive_right" value="false" />
+    <remap from="/odom" to="/odometry/filtered"/>
   </node>
 
   <!-- nav_layer for gui with nav_goal, nav_cancle, nav_save_position, ...-->
