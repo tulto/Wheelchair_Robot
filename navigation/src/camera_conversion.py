@@ -33,13 +33,12 @@ class image_converter:
       print(e)
 
 
-    cv2.imshow("Image window", cv_image)
-    cv2.waitKey(3)
+    image_mono8 = cv2.convertScaleAbs(cv_image)
+    
+    cv2.imshow("Image window", image_mono8)
+    cv2.waitKey(3)    
 
-    image_msg = cv2.convertScaleAbs(cv_image)
-
-
-    image_msg = self.bridge.cv2_to_imgmsg(image_msg, "passthrough")
+    image_msg = self.bridge.cv2_to_imgmsg(image_mono8, "passthrough")
     image_msg.header = data.header
     image_msg.encoding = "mono8"
 
