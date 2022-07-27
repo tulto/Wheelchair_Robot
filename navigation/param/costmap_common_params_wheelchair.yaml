@@ -12,36 +12,28 @@ cost_scaling_factor: 3.0
 plugins: 
   - {name: static_layer , type: "costmap_2d::StaticLayer"}
  # - {name: kinect_layer , type: "costmap_2d::VoxelLayer"}
-  - {name: kinect_layer , type: "costmap_2d::ObstacleLayer"}
+  #- {name: kinect_layer , type: "costmap_2d::ObstacleLayer"}
  # - {name: 3DPerception, type: 'costmap_depth_camera::DepthCameraObstacleLayer'}
-  - {name: obstacle_layer , type: "costmap_2d::ObstacleLayer"}
+  - {name: lidar_front , type: "costmap_2d::ObstacleLayer"}
+  - {name: lidar_back , type: "costmap_2d::ObstacleLayer"}
   - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
 
-kinect_layer:
-  map_type: costmap
-  observation_sources: lidar_scan_sensor
-  lidar_scan_sensor: {sensor_frame: base_link , data_type: LaserScan, topic: kinect_scan_nan_to_inf, marking: true, clearing: true, inf_is_valid: true}
+#kinect_layer:
+#  map_type: costmap
+#  observation_sources: lidar_scan_sensor
+#  lidar_scan_sensor: {sensor_frame: base_link , data_type: LaserScan, topic: kinect_scan_nan_to_inf, marking: true, clearing: true, inf_is_valid: true}
   #lidar_scan_sensor: {sensor_frame: base_link , data_type: PointCloud2, topic: /camera/depth_registered/points, marking: true, clearing: true, inf_is_valid: true}
 
-obstacle_layer:
+lidar_front:
   map_type: costmap
   observation_sources: laser_scan_sensor
-  laser_scan_sensor: {sensor_frame:  base_link , data_type: LaserScan, topic: scan_wcr_no_inf, marking: true, clearing: true, inf_is_valid: true}
+  laser_scan_sensor: {sensor_frame:  base_link , data_type: LaserScan, topic: front_scan_cut, marking: true, clearing: true, inf_is_valid: true}
 
+lidar_back:
+  map_type: costmap
+  observation_sources: laser_scan_sensor
+  laser_scan_sensor: {sensor_frame:  base_link , data_type: LaserScan, topic: back_scan_cut, marking: true, clearing: true, inf_is_valid: true}
 
-#3DPerception:
-#    use_global_frame_to_mark: true
-#    ec_seg_distance: 0.2
-#    ec_cluster_min_size: 5
-#    size_of_cluster_rejection: 5
-#    voxel_resolution: 0.01
-#    check_radius: 0.1
-#    enable_near_blocked_protection: false
-#    number_points_considered_as_blocked: 5
-#    forced_clearing_distance: 0.1
-#    observation_sources: depth_cam #depth_cam_left
-#    depth_cam: {sensor_frame: camera_link, topic: /camera/depth_registered/points, expected_update_rate: 0.03, FOV_W: 1.0, FOV_V: 0.9, min_detect_distance: 0.15, max_detect_distance: 2.0, min_obstacle_height: 0.08}
-    #depth_cam_left: {sensor_frame: camera_link_left, topic: /camera_left/depth/color/points, expected_update_rate: 0.3, FOV_W: 1.0, FOV_V: 0.9, min_detect_distance: 0.15, max_detect_distance: 2.0, min_obstacle_height: 0.08}
 
 
 
