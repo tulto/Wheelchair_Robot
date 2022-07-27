@@ -7,6 +7,7 @@ import csv, sys
 
 import tf2_ros
 import tf
+import dynamic_reconfigure.client
 from actionlib_msgs.msg import GoalID
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Twist
@@ -41,6 +42,17 @@ class NavHandler:
         self.pub_amcl_status = rospy.Publisher("/amcl_status", Bool, queue_size=5)
         self.cov = 100
         self.cov_max = 0.3
+
+        self.dynamic_static_layer = dynamic_reconfigure.client.Client("/move_base/local_costmap/static_layer", timeout=30)
+        rospy.Timer(rospy.Duration(2), self.callback_dynamic_static_map)
+
+
+    def callback_dynamic_static_map(self, event):
+        if self.cov < self.cov_max:
+            self.dynamic_static_layer.update_configuration({"enabled":True})
+        else:
+            self.dynamic_static_layer.update_configuration({"enabled":False})
+    
 
     def callback_goal(self, msg):
         """send a string with matching param equivalent to set goal
