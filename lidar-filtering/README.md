@@ -1,6 +1,6 @@
 ## LiDAR-Filtering
 
-### Explenation
+### Explanation
 This package contains launch files as well as program which are used to filter, change and/or check the data measured by the LiDAR-Sensors of the wheelchair robot.
 
 ### Installation
