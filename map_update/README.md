@@ -113,5 +113,5 @@ These four costmaps will be started/launch when the robot begins an autonomous n
 
 Having build multiple maps in one day - every time the robot arrives at a destination - we will join these maps into a resulting map for this day. After several days these "maps for the day" will be compared to each other to see if we have a new or removed object in all of them. If this is the case the object will be put into the new resulting map for the initial/base map. For our example this could look like the following.
 
-![updated map](images/updated_inital_map.png "Updated initial map with the mapupdate program")
+![updated map](images/updated_initial_map.png "Updated initial map with the mapupdate program")
 
