@@ -1,6 +1,6 @@
 ## Frame Setup
 
-### Explenation
+### Explanation
 This package contains simple c++ programs to publish transformation needed for the wheelchair robot.
 For example in the 
 ```
