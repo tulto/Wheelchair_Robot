@@ -30,11 +30,11 @@ BUT there also is a launch file which is located in the wcr_launchfiles package,
 The source folder of this package contains two different pyhton programs, which are both dedicated to changing or filtering the LiDAR sensor data.
 
 lidar_average_window.py is a program which implements a moving average filter over the LiDAR-data of consecutive scans.
-´´´
+```
 src/lidar_average_window.py 
-´´´
+```
 
 change_laser_data_max_range.py is a program which changes the maximum "theoretical" range a LiDAR-Sensor can measure.
-´´´
+```
 src/change_laser_data_max_range.py 
-´´´
+```
