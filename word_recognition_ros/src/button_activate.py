@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 from actionlib_msgs.msg import GoalStatusArray
 from sounddevice import rec, wait
 from scipy.signal import butter, lfilter
@@ -35,6 +35,7 @@ def callback_subscriber_active(msg_active):
     else:
         if (button_was_pushed):
             print("Starting recording..")
+            
             record = rec(int(duration*sample_rate),samplerate=sample_rate, channels=1, blocking=False)
             wait()
             print("Recording finished..")
@@ -110,6 +111,7 @@ def timer_callback(event):
 
 if __name__ == '__main__':
     rospy.init_node('speech_recognition_on_button_press', anonymous=False)
+    mic_pub = rospy.Publisher("/mic_status", Bool, queue_size=10)
 
     global button_was_pushed
     button_was_pushed = False
