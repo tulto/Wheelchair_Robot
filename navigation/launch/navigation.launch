@@ -62,9 +62,24 @@
         <remap from="/map" to="$(arg map_for_planning)"/>
   </node>
 
+
   <!-- send cmd vel 0 values to make sure the robot stopped on the destination-->
-  <node pkg="navigation" type="reset_cmd_vel_on_destination.py" name="reset_cmd_vel_on_destination_node" >
+  <node pkg="navigation" type="reset_cmd_vel_on_destination.py" name="reset_cmd_vel_on_destination_node" />
+
+  <arg name="node_start_delay" default="5.0" /> 
+
+   <!-- dynamic Footprint-->
+  <node pkg="navigation" type="dynamic_footprint.py" name="dynamic_footprint_node" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " >
+    <param name="scaling_over" value="0.03"/>
+    <param name="scaling_below" value="-0.02" />
+    <param name="scaling_vel" value="0.15"/>
+    <param name="drive_right" value="false" />
+    <remap from="/odom" to="/odometry/filtered"/>
   </node>
+
+  <!-- nav_layer for gui with nav_goal, nav_cancle, nav_save_position, ...-->
+  <node pkg="robot_gui" type="nav_layer.py" name="nav_layer" />
+
   <group if="$(eval rviz == true)">
     <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
   </group>
