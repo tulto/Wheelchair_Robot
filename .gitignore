@@ -1,4 +1,9 @@
 **.vscode
+<<<<<<< HEAD
+=======
+
+**.idea
+>>>>>>> word_recognition_ros
 
 .vscode/arduino.json
 
