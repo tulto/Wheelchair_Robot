@@ -31,7 +31,11 @@ def callback_subscriber_mic(msg_mic):
 
 def callback_localization(msg_local):
     if not msg_local.data:
-        gui_function_handler.pop_up_localization()
+        gui_function_handler.pop_up_localization(pop=True)
+    else:
+        gui_function_handler.pop_up_localization(pop=False)
+
+
     
 
 if __name__ == '__main__':

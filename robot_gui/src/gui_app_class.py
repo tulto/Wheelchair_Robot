@@ -4,6 +4,8 @@ import rospy
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivymd.uix.button import MDRectangleFlatButton
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivymd.uix.dialog import MDDialog
 from kivy.core.window import Window
 import os
@@ -26,6 +28,7 @@ class GUIApp(MDApp):
         self.goal= ""
         self.gate= True
         self.reached=False
+        self.popup = Popup(title="test",content=Label(text="hello"), auto_dismiss=False)
         
    
 
@@ -78,27 +81,19 @@ class GUIApp(MDApp):
         self.dialog.open()
 
 
-    def pop_up_localization(self):
-        if not self.dialog:
-            self.dialog = MDDialog(
-                size_hint=[0.4, 0.3],
-                title="Linux Betriebssystem Neustarten?",
-                text="Soll mit dem Neustarten des Betriebssystems fortgefahren werden?\n\nACHTUNG:\nFalls Sie den Computer neustarten warten Sie bitte bis dieser wieder hochgefahren ist!",
-                buttons=[
-                    MDRectangleFlatButton(
-                        text="Ja", text_color=self.theme_cls.primary_color, on_press=self.restart_pi
-                    ),
-                    MDRectangleFlatButton(
-                        text="Nein", text_color=self.theme_cls.primary_color, on_release=self.closeDialog
-                    ),
-                ],
-            )
-        self.dialog.set_normal_height()
-        self.dialog.open()
+    def pop_up_localization(self, pop):
 
+        if pop:
+            self.popup.open()
+        else:
+            print("test")
+            self.popup.dismiss(force=True, animation=False)
+
+            
 
     
-    def mic_color_change(self, activate):
+    
+    
         
 
         if activate:
