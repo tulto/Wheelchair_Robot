@@ -35,7 +35,14 @@ def callback_subscriber_active(msg_active):
     else:
         if (button_was_pushed):
             print("Starting recording..")
-            
+
+            #For gui: microphone activ 
+            mic_msg= Bool()
+            mic_msg.data=True
+
+            mic_pub.publish(mic_msg)
+
+
             record = rec(int(duration*sample_rate),samplerate=sample_rate, channels=1, blocking=False)
             wait()
             print("Recording finished..")
@@ -98,10 +105,15 @@ def callback_subscriber_active(msg_active):
                 number_index = 10 
             else: 
                 pass
-
-
+        
+        
+                
         button_was_pushed = False
-    
+
+
+    mic_msg.data = False  
+    rospy.sleep(1)
+    mic_pub.publish(mic_msg)  
     button_was_pushed = False
 
 def timer_callback(event):

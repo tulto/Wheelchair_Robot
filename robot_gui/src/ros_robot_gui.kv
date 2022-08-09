@@ -85,7 +85,7 @@ FloatLayout:
         line_color: 1,1,0,1
         size_hint: 0.23, 0.18
         pos_hint: {"center_x": 0.4, "center_y": 0.3}
-        on_press: app.pub_nav_goal_speisesaal(*args) 
+        on_press: app.pub_nav_goal_speisesaal(*args), 
    
 
 
@@ -299,7 +299,26 @@ FloatLayout:
         pos_hint: {"center_x": .75, "center_y": .355}
         
 
+    MDCard:
+        id:mic_status
+        size_hint: 0.11, 0.1
+        pos_hint: {"center_x": .93, "center_y": .2}
+        md_bg_color: 0.75, 0, 0, 1
+        radius: [3, 3, 3, 3]
+        
 
+        MDLabel:
+            id:mic_text
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            
+            text: "  Mikrofon \n  deaktiviert"
+            
+            
+            
+
+    
+        
 
 
 

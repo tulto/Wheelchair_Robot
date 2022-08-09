@@ -8,6 +8,7 @@ from kivymd.uix.dialog import MDDialog
 from kivy.core.window import Window
 import os
 from std_msgs.msg import String
+()
 
 
 #creating a class used to make/connect the .kv file in order to run/show the gui
@@ -26,6 +27,8 @@ class GUIApp(MDApp):
         self.gate= True
         self.reached=False
         
+   
+
 
     def open_gate(self):
         self.gate=True
@@ -73,8 +76,41 @@ class GUIApp(MDApp):
             )
         self.dialog.set_normal_height()
         self.dialog.open()
+
+
+    def pop_up_localization(self):
+        if not self.dialog:
+            self.dialog = MDDialog(
+                size_hint=[0.4, 0.3],
+                title="Linux Betriebssystem Neustarten?",
+                text="Soll mit dem Neustarten des Betriebssystems fortgefahren werden?\n\nACHTUNG:\nFalls Sie den Computer neustarten warten Sie bitte bis dieser wieder hochgefahren ist!",
+                buttons=[
+                    MDRectangleFlatButton(
+                        text="Ja", text_color=self.theme_cls.primary_color, on_press=self.restart_pi
+                    ),
+                    MDRectangleFlatButton(
+                        text="Nein", text_color=self.theme_cls.primary_color, on_release=self.closeDialog
+                    ),
+                ],
+            )
+        self.dialog.set_normal_height()
+        self.dialog.open()
+
+
     
-    
+    def mic_color_change(self, activate):
+        
+
+        if activate:
+            self.screen.ids.mic_status.md_bg_color=[0,0.9,0.25, 1]
+            self.screen.ids.mic_text.text_color = [0, 0, 0, 1]
+            self.screen.ids.mic_text.text= "  Mikrofon \n  aktiviert"
+
+        else:
+            self.screen.ids.mic_status.md_bg_color=[0.75, 0, 0, 1]
+            self.screen.ids.mic_text.text_color = [1, 1, 1, 1]
+            self.screen.ids.mic_text.text ="  Mikrofon \n  deaktiviert"
+
     def change_colour_on_sensor_labels(self, boolean_list):    #changing the colour of the labels showing in which direction the sensors sent a warning
         #self.screen gives access to the root of the .kv file (so basically to FloatLayout)
         #with the self.screen.ids.<id_name>.text="change text here"
