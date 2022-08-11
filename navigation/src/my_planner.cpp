@@ -110,6 +110,7 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
      * @param duration 
      */
     void locate(int duration = 30){ 
+        //system("rosrun dynamic_reconfigure dynparam set /my_planner/local_costmap/static_layer enabled False");
         bool check_tra = 0;
 
         vel_msg.linear.x = 0.15;
@@ -138,7 +139,7 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
             vel_msg.linear.y = 0;
             vel_msg.angular.z = 0;
             pub_vel.publish(vel_msg);
-            system("rosrun dynamic_reconfigure dynparam set /my_planner/local_costmap/static_layer enabled True");
+            //system("rosrun dynamic_reconfigure dynparam set /my_planner/local_costmap/static_layer enabled True");
             locate_state = 0;
         }
     }

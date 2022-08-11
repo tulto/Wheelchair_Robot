@@ -8,7 +8,7 @@
   <arg name="odom_frame" default="odom"/>
   <arg name="pub_map_odom_transform" default="false"/>
   <arg name="scan_subscriber_queue_size" default="75"/>
-  <arg name="scan_topic" default="/scan_wcr_ranged"/>
+  <arg name="scan_topic" default="/scan_wcr_averaged"/>
   <arg name="map_size" default="4500"/>
   
   <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
@@ -40,7 +40,7 @@
     <param name="laser_z_max_value" value = "1.0" />
 
     <!--Laserscanner parameters-->
-    <param name="laser_max_dist" value="8.0" />
+    <param name="laser_max_dist" value="6.0" />
     
     <!-- Advertising config --> 
     <param name="advertise_map_service" value="true"/>

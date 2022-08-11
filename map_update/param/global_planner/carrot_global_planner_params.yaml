@@ -1,0 +1,3 @@
+carrot_planner:
+  min_dist_from_robot: 0.10
+ 

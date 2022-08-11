@@ -73,6 +73,7 @@
   <depend>dwa_local_planner</depend>
   <depend>rotate_recovery</depend>
   <depend>actionlib_msgs</depend>
+  <depend>dynamic_reconfigure</depend>
 
 
 

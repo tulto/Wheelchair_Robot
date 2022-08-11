@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<!-- now with good parameters from nursing home test-->
+
+<launch>
+  
+ <include file="$(find odometry)/launch/start_only_hector_for_odom.launch"/>
+
+  <node pkg="odometry" type="odometry_hector_back_up.py" name="hector_odom_back_up" > 
+  <param name="use_static_pose_covariance" value="true" />
+  <param name="static_pose_covariance_val" value="0.1" />
+  <param name="sleep_rate" value="5" />
+  <param name="max_msg_receive_time" value="0.320" />
+  </node>
+
+  <node pkg="odometry" type="restart_odom_back_up.py" name="restart_hector_checker" > 
+  </node>
+    
+  <!--<node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100"/>-->
+</launch>
+  

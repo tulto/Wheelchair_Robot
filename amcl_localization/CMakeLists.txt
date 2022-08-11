@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   services_and_messages
   std_msgs
+  std_srvs
   geometry_msgs
   tf
   visualization_msgs
