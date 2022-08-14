@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-import imp
 import numpy as np
 import rospy
+import os
 import csv, sys
 
 import tf2_ros
@@ -85,14 +85,20 @@ class NavHandler:
             self.pub_goal.publish(msg_goal)
 
     def callback_save_pos(self, msg):
-        # if msg.data is delete the deleat all inside of file and only wirte the header
-        if msg.data == "delete":
+        """get position out of amcl_pose msg and saving it with the used msg name in topic \nav_save_position
+
+        Args:
+            msg (_type_): std_msgs/String
+        """        
+        file_there = os.path.exists(self.path) # look if file already exists
+
+        if msg.data == "delete" or file_there == False: # create new file if non exists or delete all 
             with open(self.path, 'w') as file:
                     deleter = csv.writer(file)
                     deleter.writerow(self.header)
                     file.close()
 
-        else:
+        if msg.data != "delete":   # as long as no delete msg is sent create new entry
             x = self.pose_msg.pose.pose.position.x
             y = self.pose_msg.pose.pose.position.y
             z = self.pose_msg.pose.pose.position.z
@@ -103,11 +109,11 @@ class NavHandler:
             q_w = self.pose_msg.pose.pose.orientation.w
 
             data = [msg.data, x, y, 0, 0, 0, q_z, q_w]
+            #print (data)
 
-            print (data)
             
-
-            with open(self.path, 'r+') as in_file:
+            # lock for files with the same name and replace them
+            with open(self.path, 'r+') as in_file:  # delete entry with the same name
                 reader = csv.reader(in_file)
                 rows = [row for row in csv.reader(in_file) if msg.data not in row]
                 in_file.seek(0)
@@ -116,54 +122,12 @@ class NavHandler:
                 writer.writerows(rows)
                 in_file.close()
 
-            with open(self.path, 'a') as append:
+            with open(self.path, 'a') as append:   # append new entry
                 appender = csv.writer(append)
                 appender.writerow(data)
                 append.close()
 
-    """
-            lines = list()
-            with open(path, 'r') as read_file:
-                reader = csv.reader(read_file)
-                for row in read_file:
-                    if(row[0] != msg.data):
-                        lines.append(row)
-                read_file.close()
 
-            print(lines)
-
-
-            with open(path, 'w') as write_file:
-                writer = csv.writer(write_file)
-                writer.writerows(lines)
-                write_file.close()
-
-
-            with open(path, 'a+') as append:
-                appender = csv.writer(append)
-                appender.writerow(data)
-                append.close()
-
-    """
-    """
-    def callback_locate(self, msg):
-        self.delete_costmap()
-        
-        msg_goal = PoseStamped()
-        msg_goal.header.stamp = rospy.Time()
-        msg_goal.header.stamp = rospy.Time()
-        msg_goal.header.frame_id = "base_link"
-        
-        msg_goal.pose.position.x = -0.5
-        msg_goal.pose.position.y = 0
-        msg_goal.pose.position.z = 0
-
-        msg_goal.pose.orientation.x = 0
-        msg_goal.pose.orientation.y = 0
-        msg_goal.pose.orientation.z = 0
-        msg_goal.pose.orientation.w = 1
-        self.pub_goal.publish(msg_goal)
-    """
 
     def callback_cancel(self, msg):
         """simple cancel option of navigation
