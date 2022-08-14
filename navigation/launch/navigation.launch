@@ -5,6 +5,7 @@
   <arg name="map_for_planning" default="map_plan"/>
   <arg name="map_file_plan" default="$(find navigation)/maps/labor/plan_map/hector_labor.yaml"/>
   <arg name="map_file" default="$(find navigation)/maps/labor/hector_labor.yaml"/>
+  <arg name="topic_robot_localization_is_checked" default="robot_localization_is_checked"/>
   
 
   <!-- Map server -->
@@ -78,8 +79,16 @@
   </node>
 
   <!-- nav_layer for gui with nav_goal, nav_cancle, nav_save_position, ...-->
-  <node pkg="robot_gui" type="nav_layer.py" name="nav_layer" />
+  <node pkg="robot_gui" type="nav_layer.py" name="nav_layer" >
+    <param name="/topic_name_is_right_localized" value="$(arg topic_robot_localization_is_checked)"/>
+  </node>
 
+  <!-- seperat check if amcl is localized right -->
+  <node pkg="amcl_localization" type="check_right_localization.py" name="check_right_localization">
+    <param name="/topic_name_is_right_localized" value="$(arg topic_robot_localization_is_checked)"/>
+  </node>
+
+  <!-- open rviz if arg rviz = true -->
   <group if="$(eval rviz == true)">
     <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
   </group>

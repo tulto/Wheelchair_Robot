@@ -20,6 +20,10 @@ from std_srvs.srv import Empty
 
 class NavHandler:
     def __init__(self):
+        node_name = rospy.get_name()
+        topic_name_is_right_localized = rospy.get_param(node_name + "/topic_name_is_right_localized", "/robot_localization_is_checked")
+
+
         self.sub_stop = rospy.Subscriber("/nav_cancel", String, self.callback_cancel)
         self.pub_stop = rospy.Publisher("/move_base/cancel", GoalID, queue_size=5)
         self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
@@ -39,8 +43,10 @@ class NavHandler:
         #self.pub_locate = rospy.Publisher("/nav_locate_status", String, queue_size=5)
 
         self.sub_amcl_pose = rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.callback_amcl_pose)
-        self.pub_amcl_status = rospy.Publisher("/amcl_status", Bool, queue_size=5)
+        self.sub_check_right_localization = rospy.Subscriber(topic_name_is_right_localized, Bool, self.callback_check_right_localization)
+        self.pub_amcl_status = rospy.Publisher("/position_status", Bool, queue_size=5)
         self.cov = 100
+        self.check_right_localization = True
         self.cov_max = 0.3
 
         self.dynamic_static_layer = dynamic_reconfigure.client.Client("/move_base/local_costmap/static_layer", timeout=30)
@@ -81,7 +87,7 @@ class NavHandler:
                     msg_goal.pose.orientation.w = float(row[7])
             in_file.close()
                 
-        if self.cov < self.cov_max:
+        if self.cov < self.cov_max and self.check_right_localization:
             self.pub_goal.publish(msg_goal)
 
     def callback_save_pos(self, msg):
@@ -165,12 +171,20 @@ class NavHandler:
         self.pose_msg = msg
         self.cov = np.amax(msg.pose.covariance)
         msg_bool = Bool()
-        if self.cov < self.cov_max :
+        if self.cov < self.cov_max and self.check_right_localization:
             msg_bool.data = True
         else:
             msg_bool.data = False
 
         self.pub_amcl_status.publish(msg_bool)
+
+    def callback_check_right_localization(self, msg):
+        """check if seperate check for right localization is True and save it as a varible
+
+        Args:
+            msg (_type_): std_msgs/Bool
+        """        
+        self.check_right_localization = msg.data
 
 
     def delete_costmap(self):
