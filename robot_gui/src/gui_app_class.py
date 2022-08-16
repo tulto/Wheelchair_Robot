@@ -147,7 +147,7 @@ class GUIApp(MDApp):
                     
                 ],buttons=[
              MDRectangleFlatButton(
-                        text="ABBRECHEN", text_color=self.theme_cls.primary_color, on_press=self.closeDialog
+                        text="FERTIG", text_color=self.theme_cls.primary_color, on_press=self.closeDialog
                     ),
     ],
             )
