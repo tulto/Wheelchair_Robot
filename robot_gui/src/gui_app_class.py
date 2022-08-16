@@ -158,11 +158,13 @@ class GUIApp(MDApp):
                     
                     
                     
-                ],#buttons=[MDRectangleFlatButton(text="FERTIG", text_color=self.theme_cls.primary_color, on_press=self.closeDialog),],
+                ],
+                #buttons=[MDRectangleFlatButton(text="FERTIG", text_color=self.theme_cls.primary_color, on_press=self.closeDialog),],
             )
+            self.kill_dialog
         self.dialog.set_normal_height()
         self.dialog.open()
-        self.kill_dialog
+        #self.kill_dialog
 
         ##
 
