@@ -25,6 +25,9 @@ from kivy.uix.behaviors import ButtonBehavior
 class ItemConfirm(OneLineAvatarIconListItem):
     divider = None
 
+    global kill 
+    kill = False
+
     def __init__(self, name,  **kwargs):
 	
         super().__init__(**kwargs)
@@ -37,26 +40,32 @@ class ItemConfirm(OneLineAvatarIconListItem):
         if self.name == "Aufenthaltsraum":
             msg_save_pos.data = self.name
             self.pub_save_pos.publish(msg_save_pos)
+            kill = True
 
         if self.name == "Cafe":
             msg_save_pos.data = self.name
             self.pub_save_pos.publish(msg_save_pos)
+            kill = True
 
         if self.name == "Gruppenraum":
             msg_save_pos.data = self.name
             self.pub_save_pos.publish(msg_save_pos)
+            kill = True
 
         if self.name == "Ruheraum":
             msg_save_pos.data = self.name
             self.pub_save_pos.publish(msg_save_pos)
+            kill = True
 
         if self.name == "Schlafzimmer":
             msg_save_pos.data = self.name
             self.pub_save_pos.publish(msg_save_pos)
+            kill = True
 
         if self.name == "Speisesaal":
             msg_save_pos.data = self.name
             self.pub_save_pos.publish(msg_save_pos)
+            kill = True
 
         
         return super().on_press()
@@ -127,6 +136,10 @@ class GUIApp(MDApp):
             print("Service call failed: %s"%e)
 
         
+    def kill_dialog(self):
+        if kill == True:
+            self.closeDialog
+            kill == False
 
     #
     def show_confirmation_dialog(self):
@@ -145,14 +158,11 @@ class GUIApp(MDApp):
                     
                     
                     
-                ],buttons=[
-             MDRectangleFlatButton(
-                        text="FERTIG", text_color=self.theme_cls.primary_color, on_press=self.closeDialog
-                    ),
-    ],
+                ],#buttons=[MDRectangleFlatButton(text="FERTIG", text_color=self.theme_cls.primary_color, on_press=self.closeDialog),],
             )
         self.dialog.set_normal_height()
         self.dialog.open()
+        self.kill_dialog
 
         ##
 
