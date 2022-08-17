@@ -125,7 +125,7 @@ class GUIApp(MDApp):
     
         btn1.bind(on_press = self.new_global_localization)
 
-    def new_global_localization(self):
+    def new_global_localization(self, *args):
 
         rospy.wait_for_service("global_localization", timeout=2.0)
         try:
