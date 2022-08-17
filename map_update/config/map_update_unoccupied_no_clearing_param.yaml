@@ -5,8 +5,9 @@ plugins:
 static_map: 
     map_topic: unoccupied_map
 obstacles:
-    observation_sources: laser_scan_sensor
-    laser_scan_sensor: {sensor_frame: base_link , data_type: LaserScan, topic: scan_wcr_averaged, marking: true, clearing: false}
+    observation_sources: laser_scan_sensor_front laser_scan_sensor_back
+    laser_scan_sensor_front: {sensor_frame: laser_frame_front , data_type: LaserScan, topic: front_scan, marking: true, clearing: false, inf_is_valid: false}
+    laser_scan_sensor_back: {sensor_frame: laser_frame_back , data_type: LaserScan, topic: back_scan, marking: true, clearing: false, inf_is_valid: false}
     track_unknown_space: true
     obstacle_range: 4.0
     raytrace_range: 1.5
@@ -19,6 +20,6 @@ cost_scaling_factor: 3.0
 
 global_frame: map
 robot_base_frame: base_link
-update_frequency: 20.0
-publish_frequency: 10.0
-transform_tolerance: 0.5
+update_frequency: 5.0
+publish_frequency: 3.0
+transform_tolerance: 0.15
