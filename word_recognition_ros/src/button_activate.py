@@ -29,7 +29,10 @@ def butter_lowpass_filter(data, cutoff, fs, order=5):
 def callback_subscriber_active(msg_active):
     global button_was_pushed
 
-    if len(msg_active.status_list[0].status)== 0:
+    
+    mic_msg= Bool()
+
+    if len(msg_active.status_list)== 0:
         pass
 
     else:
@@ -42,7 +45,7 @@ def callback_subscriber_active(msg_active):
                 print("Starting recording..")
 
                 #For gui: microphone activ 
-                mic_msg= Bool()
+                
                 mic_msg.data=True
 
                 mic_pub.publish(mic_msg)
