@@ -84,10 +84,10 @@ def callback_goal_status(goal_msg):
 			unoccupied_costmap_nc = ("unoccupied_costmap_no_clearing")
 
 			if((not search_file(costmap_c)) or (not search_file(costmap_nc)) or (not search_file(unoccupied_costmap_c)) or (not search_file(unoccupied_costmap_nc))):
-				command_costmap_c = "rosrun  map_server map_saver -f {0} map:={1}".format(costmap_c, topic_for_costmap_clearing)
-				command_costmap_nc = "rosrun  map_server map_saver -f {0} map:={1}".format(costmap_nc, topic_for_costmap_no_clearing)
-				command_unoccupied_costmap_c = "rosrun  map_server map_saver -f {0} map:={1}".format(unoccupied_costmap_c, topic_for_unoccupied_costmap_clearing)
-				command_unoccupied_costmap_nc = "rosrun  map_server map_saver -f {0} map:={1}".format(unoccupied_costmap_nc, topic_for_unoccupied_costmap_no_clearing)
+				command_costmap_c = "rosrun  map_server map_saver -f {0} map:={1} __name:=c_saver".format(costmap_c, topic_for_costmap_clearing)
+				command_costmap_nc = "rosrun  map_server map_saver -f {0} map:={1} __name:=nc_saver".format(costmap_nc, topic_for_costmap_no_clearing)
+				command_unoccupied_costmap_c = "rosrun  map_server map_saver -f {0} map:={1} __name:=u_c_saver".format(unoccupied_costmap_c, topic_for_unoccupied_costmap_clearing)
+				command_unoccupied_costmap_nc = "rosrun  map_server map_saver -f {0} map:={1} __name:=u_nc_saver".format(unoccupied_costmap_nc, topic_for_unoccupied_costmap_no_clearing)
 
 				commands = [command_costmap_c, command_costmap_nc, command_unoccupied_costmap_c, command_unoccupied_costmap_nc]	#create a list containing all maps
 
@@ -102,9 +102,9 @@ def callback_goal_status(goal_msg):
 					elif state > 0:
 						rospy.loginfo("Process terminated without error. Map saved!")
 
-					rospy.sleep(0.5);
+					rospy.sleep(1.0);
 				
-				rospy.sleep(1.5)		#give a little time for all maps to be stored
+				rospy.sleep(6.5)		#give a little time for all maps to be stored
 				
 
 			if((search_file(costmap_c)) and (search_file(costmap_nc)) and (search_file(unoccupied_costmap_c)) and (search_file(unoccupied_costmap_nc))):
@@ -121,7 +121,7 @@ def callback_goal_status(goal_msg):
 				elif state > 0:
 					rospy.loginfo("Process terminated without error.")
 
-				rospy.sleep(0.5);	#time to process
+				rospy.sleep(1.0);	#time to process
 
 				end_launchfile();
 				
