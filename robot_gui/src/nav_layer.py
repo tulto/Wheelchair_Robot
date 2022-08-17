@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-import imp
 import numpy as np
 import rospy
+import os
 import csv, sys
 
 import tf2_ros
@@ -20,6 +20,10 @@ from std_srvs.srv import Empty
 
 class NavHandler:
     def __init__(self):
+        node_name = rospy.get_name()
+        topic_name_is_right_localized = rospy.get_param(node_name + "/topic_name_is_right_localized", "/robot_localization_is_checked")
+
+
         self.sub_stop = rospy.Subscriber("/nav_cancel", String, self.callback_cancel)
         self.pub_stop = rospy.Publisher("/move_base/cancel", GoalID, queue_size=5)
         self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=5)
@@ -39,8 +43,10 @@ class NavHandler:
         #self.pub_locate = rospy.Publisher("/nav_locate_status", String, queue_size=5)
 
         self.sub_amcl_pose = rospy.Subscriber("/amcl_pose", PoseWithCovarianceStamped, self.callback_amcl_pose)
-        self.pub_amcl_status = rospy.Publisher("/amcl_status", Bool, queue_size=5)
+        self.sub_check_right_localization = rospy.Subscriber(topic_name_is_right_localized, Bool, self.callback_check_right_localization)
+        self.pub_amcl_status = rospy.Publisher("/position_status", Bool, queue_size=5)
         self.cov = 100
+        self.check_right_localization = True
         self.cov_max = 0.3
 
         self.dynamic_static_layer = dynamic_reconfigure.client.Client("/move_base/local_costmap/static_layer", timeout=30)
@@ -81,18 +87,24 @@ class NavHandler:
                     msg_goal.pose.orientation.w = float(row[7])
             in_file.close()
                 
-        if self.cov < self.cov_max:
+        if self.cov < self.cov_max and self.check_right_localization:
             self.pub_goal.publish(msg_goal)
 
     def callback_save_pos(self, msg):
-        # if msg.data is delete the deleat all inside of file and only wirte the header
-        if msg.data == "delete":
+        """get position out of amcl_pose msg and saving it with the used msg name in topic \nav_save_position
+
+        Args:
+            msg (_type_): std_msgs/String
+        """        
+        file_there = os.path.exists(self.path) # look if file already exists
+
+        if msg.data == "delete" or file_there == False: # create new file if non exists or delete all 
             with open(self.path, 'w') as file:
                     deleter = csv.writer(file)
                     deleter.writerow(self.header)
                     file.close()
 
-        else:
+        if msg.data != "delete":   # as long as no delete msg is sent create new entry
             x = self.pose_msg.pose.pose.position.x
             y = self.pose_msg.pose.pose.position.y
             z = self.pose_msg.pose.pose.position.z
@@ -103,11 +115,11 @@ class NavHandler:
             q_w = self.pose_msg.pose.pose.orientation.w
 
             data = [msg.data, x, y, 0, 0, 0, q_z, q_w]
+            #print (data)
 
-            print (data)
             
-
-            with open(self.path, 'r+') as in_file:
+            # lock for files with the same name and replace them
+            with open(self.path, 'r+') as in_file:  # delete entry with the same name
                 reader = csv.reader(in_file)
                 rows = [row for row in csv.reader(in_file) if msg.data not in row]
                 in_file.seek(0)
@@ -116,54 +128,12 @@ class NavHandler:
                 writer.writerows(rows)
                 in_file.close()
 
-            with open(self.path, 'a') as append:
+            with open(self.path, 'a') as append:   # append new entry
                 appender = csv.writer(append)
                 appender.writerow(data)
                 append.close()
 
-    """
-            lines = list()
-            with open(path, 'r') as read_file:
-                reader = csv.reader(read_file)
-                for row in read_file:
-                    if(row[0] != msg.data):
-                        lines.append(row)
-                read_file.close()
 
-            print(lines)
-
-
-            with open(path, 'w') as write_file:
-                writer = csv.writer(write_file)
-                writer.writerows(lines)
-                write_file.close()
-
-
-            with open(path, 'a+') as append:
-                appender = csv.writer(append)
-                appender.writerow(data)
-                append.close()
-
-    """
-    """
-    def callback_locate(self, msg):
-        self.delete_costmap()
-        
-        msg_goal = PoseStamped()
-        msg_goal.header.stamp = rospy.Time()
-        msg_goal.header.stamp = rospy.Time()
-        msg_goal.header.frame_id = "base_link"
-        
-        msg_goal.pose.position.x = -0.5
-        msg_goal.pose.position.y = 0
-        msg_goal.pose.position.z = 0
-
-        msg_goal.pose.orientation.x = 0
-        msg_goal.pose.orientation.y = 0
-        msg_goal.pose.orientation.z = 0
-        msg_goal.pose.orientation.w = 1
-        self.pub_goal.publish(msg_goal)
-    """
 
     def callback_cancel(self, msg):
         """simple cancel option of navigation
@@ -201,12 +171,20 @@ class NavHandler:
         self.pose_msg = msg
         self.cov = np.amax(msg.pose.covariance)
         msg_bool = Bool()
-        if self.cov < self.cov_max :
+        if self.cov < self.cov_max and self.check_right_localization:
             msg_bool.data = True
         else:
             msg_bool.data = False
 
         self.pub_amcl_status.publish(msg_bool)
+
+    def callback_check_right_localization(self, msg):
+        """check if seperate check for right localization is True and save it as a varible
+
+        Args:
+            msg (_type_): std_msgs/Bool
+        """        
+        self.check_right_localization = msg.data
 
 
     def delete_costmap(self):
