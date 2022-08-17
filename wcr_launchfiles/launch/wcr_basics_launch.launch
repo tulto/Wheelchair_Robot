@@ -1,0 +1,9 @@
+<launch>
+
+<include file="$(find wcr_launchfiles)/launch/lidar_setup_wcr.launch"/>
+
+<arg name="node_start_delay_again" default="1.0" />  
+
+<include file="$(find odometry)/launch/odom.launch"/>
+
+</launch>

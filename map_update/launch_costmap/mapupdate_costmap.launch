@@ -1,0 +1,23 @@
+<launch>
+
+  <node pkg="map_server" name="map_grey_server" type="map_server" args="$(find map_update)/unoccupied_base_map/base_map_without_occupied_cells.yaml">
+    <remap from="map" to="/unoccupied_map"/>
+  </node>
+
+  <node name="update_costmap_clearing" pkg="costmap_2d" type="costmap_2d_node" >
+    <rosparam file="$(find map_update)/config/map_update_costmap_clearing_param.yaml" command="load" ns="costmap"/>
+  </node>
+
+  <node name="update_unoccupied_clearing" pkg="costmap_2d" type="costmap_2d_node" >
+    <rosparam file="$(find map_update)/config/map_update_unoccupied_clearing_param.yaml" command="load" ns="costmap"/>
+  </node>
+
+  <node name="update_unoccupied_no_clearing" pkg="costmap_2d" type="costmap_2d_node" >
+    <rosparam file="$(find map_update)/config/map_update_unoccupied_no_clearing_param.yaml" command="load" ns="costmap"/>
+  </node>
+
+  <node name="update_costmap_no_clearing" pkg="costmap_2d" type="costmap_2d_node" >
+    <rosparam file="$(find map_update)/config/map_update_costmap_no_clearing_param.yaml" command="load" ns="costmap"/>
+  </node>
+
+</launch>

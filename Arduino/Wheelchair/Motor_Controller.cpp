@@ -32,6 +32,7 @@ void Motor_Controller::callback_motion(const geometry_msgs::Twist &msg_motion) {
   x_ = msg_motion.linear.x;
   y_ = msg_motion.linear.y;
   t_ = msg_motion.angular.z;
+  timer = millis();
 }
 
 //controller in front gets commands chanel(1 = left, 2 = right)
@@ -54,9 +55,15 @@ void Motor_Controller::control_back (int chanel, int velocity){
 
 //die über ros geschickten Werte werden für die Bewegung übernommen
 void Motor_Controller::set_sent_movement(){
-  motion[0] = x_;
-  motion[1] = y_;
-  motion[2] = t_;
+  if (millis() - timer < 300){
+    motion[0] = x_;
+    motion[1] = y_;
+    motion[2] = t_;
+  }else{
+    motion[0] = 0;
+    motion[1] = 0;
+    motion[2] = 0;
+  }
 }
 
 float Motor_Controller::get_x(){

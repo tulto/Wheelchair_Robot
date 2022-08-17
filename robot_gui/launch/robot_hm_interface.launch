@@ -1,0 +1,8 @@
+<launch>
+
+	<include file="$(find robot_gui)/launch/nav_layer.launch"/>
+
+  	<node pkg="robot_gui" type="gui_application.py" name="robot_gui_hm_interface_touch" >
+  	</node>
+
+</launch>

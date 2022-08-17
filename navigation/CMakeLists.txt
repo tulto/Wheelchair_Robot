@@ -107,10 +107,12 @@ add_definitions(${EIGEN3_DEFINITIONS})
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
+ generate_dynamic_reconfigure_options(
+  cfg/DynamicFootprint.cfg
 #   cfg/DynReconf1.cfg
 #   cfg/DynReconf2.cfg
-# )
+ )
+
 
 ###################################
 ## catkin specific configuration ##
@@ -156,7 +158,6 @@ include_directories(
 
 add_executable(my_planner src/my_planner.cpp)
 target_link_libraries(my_planner ${catkin_LIBRARIES})
-
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
