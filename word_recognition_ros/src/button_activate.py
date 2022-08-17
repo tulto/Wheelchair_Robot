@@ -119,10 +119,10 @@ def callback_subscriber_active(msg_active):
             button_was_pushed = False
 
 
-    mic_msg.data = False  
-    rospy.sleep(1)
-    mic_pub.publish(mic_msg)  
-    button_was_pushed = False
+        mic_msg.data = False  
+        rospy.sleep(1)
+        mic_pub.publish(mic_msg)  
+        button_was_pushed = False
 
 def timer_callback(event):
     if GPIO.input(11) == GPIO.LOW:
