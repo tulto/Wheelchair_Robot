@@ -143,25 +143,25 @@ class GUIApp(MDApp):
 
     #
     def show_confirmation_dialog(self):
-        if not self.dialog:
-            self.dialog = MDDialog(
-                title="Wählen Sie eine Lokalität aus, welche Sie festlegen wollen:",
-                type="confirmation",
-                items=[
-                    ItemConfirm(text="Aufenthaltsraum", name="Aufenthaltsraum"),
-                    ItemConfirm(text="Café", name="Cafe"),
-                    ItemConfirm(text="Gruppenraum", name="Gruppenraum"),
-                    ItemConfirm(text="Ruheraum", name="Ruheraum"),
-                    ItemConfirm(text="Schlafzimmer", name="Schlafzimmer"),
-                    ItemConfirm(text="Speisesaal", name="Speisesaal"),
-                    
-                    
-                    
-                    
-                ],
-                #buttons=[MDRectangleFlatButton(text="FERTIG", text_color=self.theme_cls.primary_color, on_press=self.closeDialog),],
-            )
-            self.kill_dialog
+        #if not self.dialog:
+        self.dialog = MDDialog(
+            title="Wählen Sie eine Lokalität aus, welche Sie festlegen wollen:",
+            type="confirmation",
+            items=[
+                ItemConfirm(text="Aufenthaltsraum", name="Aufenthaltsraum"),
+                ItemConfirm(text="Café", name="Cafe"),
+                ItemConfirm(text="Gruppenraum", name="Gruppenraum"),
+                ItemConfirm(text="Ruheraum", name="Ruheraum"),
+                ItemConfirm(text="Schlafzimmer", name="Schlafzimmer"),
+                ItemConfirm(text="Speisesaal", name="Speisesaal"),
+                
+                
+                
+                
+            ],
+            #buttons=[MDRectangleFlatButton(text="FERTIG", text_color=self.theme_cls.primary_color, on_press=self.closeDialog),],
+        )
+        self.kill_dialog
         self.dialog.set_normal_height()
         self.dialog.open()
         #self.kill_dialog
@@ -198,20 +198,20 @@ class GUIApp(MDApp):
         self.dialog.dismiss()
 
     def show_alert_dialog(self): #showing pop-up window
-        if not self.dialog:
-            self.dialog = MDDialog(
-                size_hint=[0.4, 0.3],
-                title="Linux Betriebssystem Neustarten?",
-                text="Soll mit dem Neustarten des Betriebssystems fortgefahren werden?\n\nACHTUNG:\nFalls Sie den Computer neustarten warten Sie bitte bis dieser wieder hochgefahren ist!",
-                buttons=[
-                    MDRectangleFlatButton(
-                        text="Ja", text_color=self.theme_cls.primary_color, on_press=self.restart_pi
-                    ),
-                    MDRectangleFlatButton(
-                        text="Nein", text_color=self.theme_cls.primary_color, on_release=self.closeDialog
-                    ),
-                ],
-            )
+        #if not self.dialog:
+        self.dialog = MDDialog(
+            size_hint=[0.4, 0.3],
+            title="Linux Betriebssystem Neustarten?",
+            text="Soll mit dem Neustarten des Betriebssystems fortgefahren werden?\n\nACHTUNG:\nFalls Sie den Computer neustarten warten Sie bitte bis dieser wieder hochgefahren ist!",
+            buttons=[
+                MDRectangleFlatButton(
+                    text="Ja", text_color=self.theme_cls.primary_color, on_press=self.restart_pi
+                ),
+                MDRectangleFlatButton(
+                    text="Nein", text_color=self.theme_cls.primary_color, on_release=self.closeDialog
+                ),
+            ],
+        )
         self.dialog.set_normal_height()
         self.dialog.open()
 
