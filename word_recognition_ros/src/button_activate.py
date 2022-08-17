@@ -33,14 +33,18 @@ def callback_subscriber_active(msg_active):
     mic_msg= Bool()
 
     if len(msg_active.status_list)== 0:
+        print("checked if len == 0")
         pass
 
     else:
+        print("checkt das status list == 1")
 
         if msg_active.status_list[0].status == 1:
             button_was_pushed = False
             print("Recognition is not possible at this moment. Navigation is active!!!")
         else:
+            print("vor button was pushed")
+            
             if (button_was_pushed):
                 print("Starting recording..")
 
