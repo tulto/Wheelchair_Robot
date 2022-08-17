@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 from actionlib_msgs.msg import GoalStatusArray
 from sounddevice import rec, wait
 from scipy.signal import butter, lfilter
@@ -30,7 +30,23 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
 
     record = np.squeeze(record)
 
-    record = butter_lowpass_filter(data=record,cutoff=10000, fs=sample_rate)
+    if msg_active.status_list[0].status == 1:
+        button_was_pushed = False
+        print("Recognition is not possible at this moment. Navigation is active!!!")
+    else:
+        if (button_was_pushed):
+            print("Starting recording..")
+
+            #For gui: microphone activ 
+            mic_msg= Bool()
+            mic_msg.data=True
+
+            mic_pub.publish(mic_msg)
+
+
+            record = rec(int(duration*sample_rate),samplerate=sample_rate, channels=1, blocking=False)
+            wait()
+            print("Recording finished..")
 
     model_path = '4_layer_globalpool.tflite'
 
@@ -89,10 +105,19 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
 def butter_lowpass(cutoff, fs, order=5):
     return butter(order, cutoff, fs=fs, btype='low', analog=False)
 
-def butter_lowpass_filter(data, cutoff, fs, order=5):
-    b, a = butter_lowpass(cutoff, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
+            if number_index < 10: 
+                list =["Aufenthaltsraum", "Cafe", "Gruppenraum", "Ruheraum", "Schlafzimmer", "Speisesaal"]
+                #print(list[number_index])
+                msg = String()
+                msg.data = list[number_index]
+                goal_pub.publish(msg)
+                number_index = 10 
+            else: 
+                pass
+        
+        
+                
+        button_was_pushed = False
 
 def callback_subscriber_active(msg_active):
     global button_was_pushed
@@ -102,18 +127,9 @@ def callback_subscriber_active(msg_active):
             recording()
         
 
-    elif msg_active.status_list[0].status == 1:
-        button_was_pushed = False
-        print("Recognition is not possible at this moment. Navigation is active!!!")
-    
-
-    else:
-        if (button_was_pushed):
-            recording()
-
-
-        button_was_pushed = False
-    
+    mic_msg.data = False  
+    rospy.sleep(1)
+    mic_pub.publish(mic_msg)  
     button_was_pushed = False
 
 def timer_callback(event):
@@ -123,6 +139,7 @@ def timer_callback(event):
 
 if __name__ == '__main__':
     rospy.init_node('speech_recognition_on_button_press', anonymous=False)
+    mic_pub = rospy.Publisher("/mic_status", Bool, queue_size=10)
 
     global button_was_pushed
     button_was_pushed = False

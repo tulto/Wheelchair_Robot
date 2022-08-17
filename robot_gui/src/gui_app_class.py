@@ -1,13 +1,86 @@
 #!/usr/bin/env python3
 
+from curses.textpad import rectangle
+from tkinter import Button
 import rospy
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivymd.uix.button import MDRectangleFlatButton
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivymd.uix.dialog import MDDialog
 from kivy.core.window import Window
 import os
+from kivymd.uix.button import MDFlatButton
+from std_srvs.srv import Empty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from std_msgs.msg import String
+()
+from kivymd.uix.list import OneLineAvatarIconListItem
+from kivy.properties import StringProperty
+from kivy.uix.behaviors import ButtonBehavior
+
+###
+class ItemConfirm(OneLineAvatarIconListItem):
+    divider = None
+
+    global kill 
+    kill = False
+
+    def __init__(self, name,  **kwargs):
+	
+        super().__init__(**kwargs)
+        self.pub_save_pos = rospy.Publisher("/nav_save_position", String, queue_size=25)
+        self.name = name
+
+
+    def on_press(self):
+        msg_save_pos = String()
+        if self.name == "Aufenthaltsraum":
+            msg_save_pos.data = self.name
+            self.pub_save_pos.publish(msg_save_pos)
+            kill = True
+
+        if self.name == "Cafe":
+            msg_save_pos.data = self.name
+            self.pub_save_pos.publish(msg_save_pos)
+            kill = True
+
+        if self.name == "Gruppenraum":
+            msg_save_pos.data = self.name
+            self.pub_save_pos.publish(msg_save_pos)
+            kill = True
+
+        if self.name == "Ruheraum":
+            msg_save_pos.data = self.name
+            self.pub_save_pos.publish(msg_save_pos)
+            kill = True
+
+        if self.name == "Schlafzimmer":
+            msg_save_pos.data = self.name
+            self.pub_save_pos.publish(msg_save_pos)
+            kill = True
+
+        if self.name == "Speisesaal":
+            msg_save_pos.data = self.name
+            self.pub_save_pos.publish(msg_save_pos)
+            kill = True
+
+        
+        return super().on_press()
+
+    def set_icon(self, instance_check):
+        instance_check.active =True
+
+        
+
+        """
+        check_list = instance_check.get_widgets(instance_check.group)
+        for check in check_list:
+            if check != instance_check:
+                print("test")
+                check.active = False"""
 
 
 #creating a class used to make/connect the .kv file in order to run/show the gui
@@ -26,10 +99,74 @@ class GUIApp(MDApp):
         self.gate= True
         self.reached=False
 
-    def set_goal(self, msg):
-        self.goal = msg
-        self.close_gate()
+        box = BoxLayout(orientation = 'vertical', padding = (70))
+        box.add_widget(Label(text="Bitte verfahren Sie den Roboter so lange manuell, \n         bis sich dieses Fenster wieder schließt!\n\n\n", font_size=32)
+        , index=0)
         
+
+        #innerbox =BoxLayout(orientation='vertical')
+        btn1 = Button(text='             Lokalisation trotz mehrminütigem Verfahren nicht möglich?\nZum Neustarten der vollständigen Lokalisation bitte diesen Button drücken!', 
+        size_hint=(1, 1), font_size=18)
+        
+        #innerbox.add_widget(btn1)
+        box.add_widget(btn1,)
+
+        
+        #box.add_widget(innerbox)
+        #box.bind(center=btn1.setter("center"))
+
+
+        self.popup = Popup(title="Roboter nicht lokalisiert!",
+        
+        content=box,
+         auto_dismiss=False, title_align="center", title_size=48, title_font="data/fonts/Roboto-Bold.ttf")
+         
+        
+    
+        btn1.bind(on_press = self.new_global_localization)
+
+    def new_global_localization(self):
+
+        rospy.wait_for_service("global_localization", timeout=2.0)
+        try:
+            global_loc_srv = rospy.ServiceProxy('global_localization', Empty)
+            call_global_loc = global_loc_srv()
+            
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
+
+        
+    def kill_dialog(self):
+        if kill == True:
+            self.closeDialog
+            kill == False
+
+    #
+    def show_confirmation_dialog(self):
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title="Wählen Sie eine Lokalität aus, welche Sie festlegen wollen:",
+                type="confirmation",
+                items=[
+                    ItemConfirm(text="Aufenthaltsraum", name="Aufenthaltsraum"),
+                    ItemConfirm(text="Café", name="Cafe"),
+                    ItemConfirm(text="Gruppenraum", name="Gruppenraum"),
+                    ItemConfirm(text="Ruheraum", name="Ruheraum"),
+                    ItemConfirm(text="Schlafzimmer", name="Schlafzimmer"),
+                    ItemConfirm(text="Speisesaal", name="Speisesaal"),
+                    
+                    
+                    
+                    
+                ],
+                #buttons=[MDRectangleFlatButton(text="FERTIG", text_color=self.theme_cls.primary_color, on_press=self.closeDialog),],
+            )
+            self.kill_dialog
+        self.dialog.set_normal_height()
+        self.dialog.open()
+        #self.kill_dialog
+
+        ##
 
     def open_gate(self):
         self.gate=True
@@ -77,8 +214,33 @@ class GUIApp(MDApp):
             )
         self.dialog.set_normal_height()
         self.dialog.open()
+
+
+    def pop_up_localization(self, pop):
+
+        if pop:
+            self.popup.open()
+        else:
+            print("test")
+            self.popup.dismiss(force=True, animation=False)
+
+            
+
     
     
+    
+        
+    def mic_color_change(self, activate):
+        if activate:
+            self.screen.ids.mic_status.md_bg_color=[0,0.9,0.25, 1]
+            self.screen.ids.mic_text.text_color = [0, 0, 0, 1]
+            self.screen.ids.mic_text.text= "  Mikrofon \n  aktiviert"
+
+        else:
+            self.screen.ids.mic_status.md_bg_color=[0.75, 0, 0, 1]
+            self.screen.ids.mic_text.text_color = [1, 1, 1, 1]
+            self.screen.ids.mic_text.text ="  Mikrofon \n  deaktiviert"
+
     def change_colour_on_sensor_labels(self, boolean_list):    #changing the colour of the labels showing in which direction the sensors sent a warning
         #self.screen gives access to the root of the .kv file (so basically to FloatLayout)
         #with the self.screen.ids.<id_name>.text="change text here"

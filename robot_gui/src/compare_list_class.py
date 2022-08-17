@@ -29,6 +29,9 @@ class Compare():
         self.stair_happend = True
         
 
+    #def mic_status(self, function_handler):
+        #function_handler.mic_color_change()
+
     def change_colour(self, function_handler):
         if(self.stair_happend and self.col_happend):
             bool_list = [True,True,True,True]                                 

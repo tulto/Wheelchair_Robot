@@ -85,7 +85,7 @@ FloatLayout:
         line_color: 1,1,0,1
         size_hint: 0.23, 0.18
         pos_hint: {"center_x": 0.4, "center_y": 0.3}
-        on_press: app.pub_nav_goal_speisesaal(*args) 
+        on_press: app.pub_nav_goal_speisesaal(*args), 
    
 
 
@@ -173,13 +173,13 @@ FloatLayout:
         id:welle_oben
         source: "Ultrasound_up.jpg"
         size_hint: 0.1, 0.1
-        pos_hint: {"center_x": .8, "center_y": 0.475}    
+        pos_hint: {"center_x": .65, "center_y": 0.475}    
 
     Image:
         id:box
         source: "wheelyrolly.jpg"
         size_hint: 0.14, 0.12
-        pos_hint: {"center_x": .8, "center_y": .355}
+        pos_hint: {"center_x": .65 ,"center_y": .355}
         
 
 
@@ -188,7 +188,7 @@ FloatLayout:
     MDCard:
         id:vorne_melder
         size_hint: 0.05, 0.06
-        pos_hint: {"center_x": .8, "center_y": .455}
+        pos_hint: {"center_x": .65, "center_y": .455}
         md_bg_color: 0,0.9,0.25, 1
         radius: [25, 25, 3, 3]
 
@@ -197,14 +197,14 @@ FloatLayout:
         size_hint: 0.036, 0.083
         text: "V"
         font_size: 25
-        pos_hint: {"center_x": .807, "center_y": .455}
+        pos_hint: {"center_x": .657, "center_y": .455}
 
     Image:
         id: wellen_unten
         source: "unten.jpg"
         rotate: 0.5
         size_hint: 0.1, 0.1
-        pos_hint: {"center_x": .8, "center_y": 0.235}
+        pos_hint: {"center_x": .65, "center_y": 0.235}
         canvas.before:
             PushMatrix
             Rotate:
@@ -217,7 +217,7 @@ FloatLayout:
     MDCard:
         id:hinten_melder
         size_hint: 0.05, 0.06
-        pos_hint: {"center_x": .8, "center_y": .255}
+        pos_hint: {"center_x": .65, "center_y": .255}
         md_bg_color: 0,0.9,0.25, 1
         radius: [3, 3, 25, 25]
 
@@ -227,7 +227,7 @@ FloatLayout:
         size_hint: 0.036, 0.083
         text: "H"
         font_size: 25
-        pos_hint: {"center_x": .807, "center_y": .258}
+        pos_hint: {"center_x": .657, "center_y": .258}
 
 
     
@@ -236,7 +236,7 @@ FloatLayout:
         source: "unten.jpg"
         rotate: 0.5
         size_hint: 0.1, 0.1
-        pos_hint: {"center_x": .875, "center_y": 0.355}
+        pos_hint: {"center_x": .725, "center_y": 0.355}
         canvas.before:
             PushMatrix
             Rotate:
@@ -249,7 +249,7 @@ FloatLayout:
     MDCard:
         id:rechts_melder
         size_hint: 0.036, 0.083
-        pos_hint: {"center_x": .86, "center_y": .355}
+        pos_hint: {"center_x": .71, "center_y": .355}
         md_bg_color: 0,0.9,0.25, 1
         radius: [3, 25, 25, 3]
     
@@ -258,7 +258,7 @@ FloatLayout:
         size_hint: 0.036, 0.083
         text: "R"
         font_size: 25
-        pos_hint: {"center_x": .865, "center_y": .355}
+        pos_hint: {"center_x": .715, "center_y": .355}
 
 
     
@@ -273,7 +273,7 @@ FloatLayout:
         source: "unten.jpg"
         rotate: 0.5
         size_hint: 0.1, 0.1
-        pos_hint: {"center_x": .725, "center_y": 0.355}
+        pos_hint: {"center_x": .575, "center_y": 0.355}
         canvas.before:
             PushMatrix
             Rotate:
@@ -286,7 +286,7 @@ FloatLayout:
     MDCard:
         id:links_melder
         size_hint: 0.036, 0.083
-        pos_hint: {"center_x": .74, "center_y": .355}
+        pos_hint: {"center_x": .59, "center_y": .355}
         md_bg_color: 0,0.9,0.25, 1
         radius: [25, 3, 3, 25]
 
@@ -296,10 +296,41 @@ FloatLayout:
         size_hint: 0.036, 0.083
         text: "L"
         font_size: 25
-        pos_hint: {"center_x": .75, "center_y": .355}
+        pos_hint: {"center_x": .6, "center_y": .355}
         
 
+    MDCard:
+        id:mic_status
+        size_hint: 0.11, 0.1
+        pos_hint: {"center_x": .93, "center_y": .22}
+        md_bg_color: 0.75, 0, 0, 1
+        radius: [3, 3, 3, 3]
+        
 
+        MDLabel:
+            id:mic_text
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            
+            text: "  Mikrofon \n  deaktiviert"
+            
+    
+    MDRaisedButton:
+        id: set_destination_button
+        text: "Lokalität \nfestlegen"
+        
+        font_size: 22
+        text_color: 0,0,0.01,1
+        
+        md_bg_color: 1,1,0,1
+        size_hint: 0.13, 0.15
+        pos_hint: {"center_x": 0.92, "center_y": 0.38}
+        on_press: app.show_confirmation_dialog() 
+            
+            
+
+    
+        
 
 
 
