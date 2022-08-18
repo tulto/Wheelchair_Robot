@@ -42,9 +42,10 @@ def callback_subscriber_active(msg_active):
         if msg_active.status_list[0].status == 1:
             button_was_pushed = False
             print("Recognition is not possible at this moment. Navigation is active!!!")
+
         else:
-            print("vor button was pushed")
-            
+            print("befindet sich vor button was pushed")
+
             if (button_was_pushed):
                 print("Starting recording..")
 
@@ -120,13 +121,13 @@ def callback_subscriber_active(msg_active):
             
             
                     
-            button_was_pushed = False
+                button_was_pushed = False
 
 
         mic_msg.data = False  
         rospy.sleep(1)
         mic_pub.publish(mic_msg)  
-        button_was_pushed = False
+        button_was_pushed = False # hier könnts liegen 
 
 def timer_callback(event):
     if GPIO.input(11) == GPIO.LOW:
