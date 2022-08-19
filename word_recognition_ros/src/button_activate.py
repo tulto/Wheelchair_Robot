@@ -111,9 +111,9 @@ def callback_subscriber_active(msg_active):
             recording()
         
 
-    elif msg_active.status_list[0].status == 1:
-        button_was_pushed = False
-        print("Recognition is not possible at this moment. Navigation is active!!!")
+    #elif msg_active.status_list[0].status == 1:
+        #button_was_pushed = False
+        #print("Recognition is not possible at this moment. Navigation is active!!!")
     
 
     else:
