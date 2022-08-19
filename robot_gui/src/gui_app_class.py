@@ -221,7 +221,7 @@ class GUIApp(MDApp):
         if pop:
             self.popup.open()
         else:
-            print("test")
+            #print("test")
             self.popup.dismiss(force=True, animation=False)
 
             
