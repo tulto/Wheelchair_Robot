@@ -31,7 +31,7 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
     print("Recording finished..")
 
     mic_msg.data = False  
-    rospy.sleep(1)
+    #rospy.sleep(1)
     mic_pub.publish(mic_msg)  
 
     from librosa.feature import mfcc
