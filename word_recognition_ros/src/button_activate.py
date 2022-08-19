@@ -109,6 +109,7 @@ def callback_subscriber_active(msg_active):
     if len(msg_active.status_list) == 0:
         if (button_was_pushed):
             recording()
+            button_was_pushed = False
         
 
     #elif msg_active.status_list[0].status == 1:
