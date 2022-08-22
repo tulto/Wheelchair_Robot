@@ -167,6 +167,9 @@ class GUIApp(MDApp):
         #self.kill_dialog
 
         ##
+    def set_goal(self, msg):
+        self.goal = msg
+        self.close_gate()
 
     def open_gate(self):
         self.gate=True
