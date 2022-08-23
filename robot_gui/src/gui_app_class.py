@@ -408,7 +408,7 @@ class GUIApp(MDApp):
                 #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
 
-        if active in range(2,9): 
+        if active== 3: 
             self.open_gate()
             """ 
             self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
