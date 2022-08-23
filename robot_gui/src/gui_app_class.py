@@ -25,7 +25,7 @@ from kivy.uix.behaviors import ButtonBehavior
 class ItemConfirm(OneLineAvatarIconListItem):
     divider = None
 
-    global kill 
+    global kill #does not work :)
     kill = False
 
     def __init__(self, name,  **kwargs):
@@ -408,7 +408,7 @@ class GUIApp(MDApp):
                 #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
 
-        if active== 3: 
+        if active == 3: 
             self.open_gate()
             """ 
             self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
