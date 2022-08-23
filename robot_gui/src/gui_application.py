@@ -27,6 +27,7 @@ def callback_subscriber_active(msg_active):
         pass
     #print("helo")
     #print("test" + str(msg_active.status_list[0].status ))
+    
     gui_function_handler.temporary_button_color(msg_active.status_list[0].status)
 
 def callback_subscriber_mic(msg_mic):

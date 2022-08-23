@@ -381,8 +381,8 @@ class GUIApp(MDApp):
                 #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
 
-        else: 
-            self.open_gate()
+        #else: 
+            #self.open_gate()
             """ 
             self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
             self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
