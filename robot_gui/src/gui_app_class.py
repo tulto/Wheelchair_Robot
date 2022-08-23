@@ -276,6 +276,7 @@ class GUIApp(MDApp):
         self.msg.data = "Aufenthaltsraum"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
             
 
@@ -283,31 +284,35 @@ class GUIApp(MDApp):
         self.msg.data = "Cafe"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
 
     def pub_nav_goal_gruppenraum(self, *args):
         self.msg.data = "Gruppenraum"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
 
     def pub_nav_goal_ruheraum(self, *args):
         self.msg.data = "Ruheraum"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
     
     def pub_nav_goal_schlafzimmer(self, *args):
         self.msg.data = "Schlafzimmer"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
     
     def pub_nav_goal_speisesaal(self, *args):
         self.msg.data = "Speisesaal"
         if self.gate==True:
             self.close_gate()
-            
+            self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
 
     def pub_nav_cancel(self, *args):
