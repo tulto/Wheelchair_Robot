@@ -1,0 +1,7 @@
+image: initial_hector_base_map.pgm
+resolution: 0.050000
+origin: [-73.04188537597656, -65.43461608886719, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+

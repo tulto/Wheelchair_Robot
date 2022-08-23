@@ -1,23 +1,29 @@
 <?xml version="1.0"?>
 <launch>
-  <rosparam name="use_sim_time" value="true"/>
-  <arg name="use_sim_time" default="true" />
-  <arg name="gui" default="true" />
-  <arg name="headless" default="false" />
+  <arg name="rviz" default="true" />
+  <arg name="two_maps" default="true"/>
   <arg name="map_for_planning" default="map_plan"/>
-  <arg name="map_for_amcl" default="map_amcl"/>
   <arg name="map_file_plan" default="$(find navigation)/maps/labor/plan_map/hector_labor.yaml"/>
   <arg name="map_file" default="$(find navigation)/maps/labor/hector_labor.yaml"/>
-
+  <arg name="topic_robot_localization_is_checked" default="robot_localization_is_checked"/>
+  
 
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
     <remap from="/map" to="/map"/>
   </node>
 
-  <node pkg="map_server" name="map_server_plan" type="map_server" args="$(arg map_file_plan)">
-    <remap from="/map" to="$(arg map_for_planning)"/>
-  </node>
+  <!--only use adiditonal map_file_plan if two maps = true-->
+  <group if="$(eval two_maps == true)">
+    <node pkg="map_server" name="map_server_plan" type="map_server" args="$(arg map_file_plan)">
+      <remap from="/map" to="$(arg map_for_planning)"/>
+    </node>
+  </group>
+  <group if="$(eval two_maps == false)">
+    <node pkg="map_server" name="map_server_plan" type="map_server" args="$(arg map_file)">
+      <remap from="/map" to="$(arg map_for_planning)"/>
+    </node>
+  </group>
    
   <include file="$(find amcl_localization)/launch/amcl_launch.launch"/>
 
@@ -46,7 +52,9 @@
     
     <remap from="cmd_vel" to="/cmd_vel"/>
     <remap from="odom" to="odom"/>
+
     <remap from="/map" to="$(arg map_for_planning)"/>
+
   </node>
 
   <!-- prevent backwards movement if not necessary -->
@@ -55,7 +63,34 @@
         <remap from="/map" to="$(arg map_for_planning)"/>
   </node>
 
-  <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
 
+  <!-- send cmd vel 0 values to make sure the robot stopped on the destination-->
+  <node pkg="navigation" type="reset_cmd_vel_on_destination.py" name="reset_cmd_vel_on_destination_node" />
+
+  <arg name="node_start_delay" default="5.0" /> 
+
+   <!-- dynamic Footprint-->
+  <node pkg="navigation" type="dynamic_footprint.py" name="dynamic_footprint_node" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " >
+    <param name="scaling_over" value="0.03"/>
+    <param name="scaling_below" value="-0.02" />
+    <param name="scaling_vel" value="0.15"/>
+    <param name="drive_right" value="false" />
+    <remap from="/odom" to="/odometry/filtered"/>
+  </node>
+
+  <!-- nav_layer for gui with nav_goal, nav_cancle, nav_save_position, ...-->
+  <node pkg="robot_gui" type="nav_layer.py" name="nav_layer" >
+    <param name="/topic_name_is_right_localized" value="$(arg topic_robot_localization_is_checked)"/>
+  </node>
+
+  <!-- seperat check if amcl is localized right -->
+  <node pkg="amcl_localization" type="check_right_localization.py" name="check_right_localization">
+    <param name="/topic_name_is_right_localized" value="$(arg topic_robot_localization_is_checked)"/>
+  </node>
+
+  <!-- open rviz if arg rviz = true -->
+  <group if="$(eval rviz == true)">
+    <node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find navigation)/rviz/rviz_config.rviz"/>
+  </group>
 
 </launch>

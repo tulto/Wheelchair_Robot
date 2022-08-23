@@ -9,8 +9,8 @@
           -configuration_basename wheelchair-robot-real.lua"
       output="screen">
     <remap from="imu" to="/imu/data" />
-    <remap from="odom" to="/odom/data" />
-    <remap from="scan" to="/front_scan" />
+    <remap from="odom" to="/odometry/filtered" />
+    <remap from="scan" to="/scan_wcr_ranged" />
   
   </node>
 

@@ -1,0 +1,30 @@
+recovery_behaviors:
+#  - name: twist_recovery
+#    type: twist_recovery/TwistRecovery
+  - name: go_backwards
+    type: twist_recovery/TwistRecovery
+  - name: conservative_reset
+    type: clear_costmap_recovery/ClearCostmapRecovery
+  - name: rotate_recovery
+    type: rotate_recovery/RotateRecovery
+  - name: aggressive_reset
+    type: clear_costmap_recovery/ClearCostmapRecovery
+  - name: rotate_recovery
+    type: rotate_recovery/RotateRecovery
+  
+
+recovery_enabled: true
+recovery_patience: 5.0
+
+twist_recovery:
+  linear_x: 0.0
+  linear_y: 0.0
+  angular_z: 0.5
+  duration: 1.0
+  
+go_backwards:
+  linear_x: -0.5
+  linear_y: 0
+  angular_z: 0
+  duration: 1.0
+

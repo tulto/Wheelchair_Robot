@@ -1,0 +1,7 @@
+image: karto_labor_05.pgm
+resolution: 0.050000
+origin: [-4.844594, -3.867046, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+

@@ -1,0 +1,7 @@
+image: fhws_first_floor_small_edit.pgm
+resolution: 0.050000
+origin: [-58.508459, -4.903315, 0.000000]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+

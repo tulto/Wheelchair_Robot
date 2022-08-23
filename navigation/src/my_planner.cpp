@@ -1,5 +1,4 @@
 #include <string>
-#include <ctime>
 #include <ros/ros.h>
 
 #include <services_and_messages/MovementCheck.h>
@@ -18,12 +17,15 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
     bool state_y = false; 
     double max_vel_x; // max_vel_x of parameter
     double max_vel_y;
+    bool initial_locate = 0;
     bool locate_state = 0;
-    long start;
+    ros::Time start;
+    ros::Time cmd_vel_time;
 
     ros::ServiceServer service_locate;
     ros::ServiceServer check_movement;
     ros::Publisher pub_vel;
+    ros::Subscriber sub_vel;
 
     geometry_msgs::Twist vel_msg;
     geometry_msgs::Twist vel;
@@ -46,6 +48,7 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
     WCRSeperatePlanner(ros::NodeHandle *nh) 
     {
         pub_vel = nh->advertise<geometry_msgs::Twist>("/cmd_vel", 10);
+        sub_vel = nh->subscribe("/cmd_vel", 5, &WCRSeperatePlanner::callback_vel, this);
         service_locate = nh->advertiseService("/locate_service",&WCRSeperatePlanner::locate_service, this);
         check_movement = nh->advertiseService("/check_movement",&WCRSeperatePlanner::check_movement_service, this);
     }
@@ -106,7 +109,8 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
      * 
      * @param duration 
      */
-    void locate(int duration = 10000){
+    void locate(int duration = 30){ 
+        //system("rosrun dynamic_reconfigure dynparam set /my_planner/local_costmap/static_layer enabled False");
         bool check_tra = 0;
 
         vel_msg.linear.x = 0.15;
@@ -130,11 +134,12 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
             }
         }
 
-        if (locate_state == 1 && (clock() - start) > duration){
+        if (locate_state == 1 && (ros::Time::now().sec - start.sec) > duration){
             vel_msg.linear.x = 0;
             vel_msg.linear.y = 0;
             vel_msg.angular.z = 0;
             pub_vel.publish(vel_msg);
+            //system("rosrun dynamic_reconfigure dynparam set /my_planner/local_costmap/static_layer enabled True");
             locate_state = 0;
         }
     }
@@ -175,6 +180,29 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
     }
 
     /**
+     * @brief calback funktion of cmd_vel
+     * 
+     * @param msg
+     */
+    void callback_vel(const geometry_msgs::Twist::ConstPtr& msg){
+        cmd_vel_time = ros::Time::now();
+    }
+
+    /**
+     * @brief get cmd_vel to 0 if nothing is sent for a predefinded time
+     * 
+     * @param time  time in Seconds
+     */
+    void check_cmd_vel(double time = 0.5){
+        if (ros::Time::now().toSec() - cmd_vel_time.toSec() > time){
+            vel_msg.linear.x = 0;
+            vel_msg.linear.y = 0;
+            vel_msg.angular.z = 0;
+            pub_vel.publish(vel_msg);
+        }
+    }
+
+    /**
      * @brief activate self localization
      * 
      * @param req 
@@ -183,9 +211,10 @@ class WCRSeperatePlanner : public base_local_planner::TrajectoryPlannerROS{
      * @return false 
      */
     bool locate_service(std_srvs::Empty::Request &req,
-                        std_srvs::Empty::Response &res){                    
+                        std_srvs::Empty::Response &res){ 
+        initial_locate = 1;
         locate_state = 1;
-        start = clock();
+        start = ros::Time::now();
         return true;
     }
 
@@ -216,7 +245,7 @@ int main(int argc, char **argv){
 
     ros::NodeHandle nh;
 
-    ros::Rate loop_rate(5);
+    ros::Rate loop_rate(10);
     
     // TF2 objects
     tf2_ros::Buffer tf_buff(ros::Duration(2));
@@ -242,7 +271,8 @@ int main(int argc, char **argv){
 
         tp.check_rotation();
         tp.allow_lateral_if_necessary();
-        tp.locate();
+        tp.check_cmd_vel(0.5);
+        tp.locate(30);
 
         loop_rate.sleep();
         ros::spinOnce();

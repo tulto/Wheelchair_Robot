@@ -40,6 +40,8 @@
   
   <?changes PoseWithCovarianceStamped msg to Odometry msg?>  
   <node pkg="odometry" type="amcl_to_odom.py" name="odometry_amcl_node" />
+
+  <include file="$(find odometry)/launch/back_up_odom.launch"/>
   
   <arg name="map_file" default="$(find odometry)/map/labor.yaml"/>
 </launch>

@@ -1,7 +1,0 @@
-image: fhws_two_lidar_loop_08_karto_kind_of_loop_with_bigger_buffer_perfekt_map.pgm
-resolution: 0.050000
-origin: [-57.751134, -4.880690, 0.000000]
-negate: 0
-occupied_thresh: 0.65
-free_thresh: 0.196
-

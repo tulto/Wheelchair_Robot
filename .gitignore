@@ -1,10 +1,11 @@
 **.vscode
-<<<<<<< HEAD
-=======
 
 **.idea
->>>>>>> word_recognition_ros
 
 .vscode/arduino.json
 
 .vscode/c_cpp_properties.json
+
+robot_gui/src/__pycache__/compare_list_class.cpython-38.pyc
+
+robot_gui/src/__pycache__/gui_app_class.cpython-38.pyc

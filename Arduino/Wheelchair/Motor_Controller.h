@@ -5,6 +5,7 @@
 #include <geometry_msgs/Twist.h>
 #include <services_and_messages/Encoder.h>
 #include "Filter_movement.h"
+#include "Arduino.h"
 
 
 class Motor_Controller {
@@ -12,6 +13,7 @@ class Motor_Controller {
   //Motor
   int max_speed = 800;
   float motion[3];
+  unsigned long timer = 0;
   float x_, y_, t_;
   ros::Subscriber<geometry_msgs::Twist, Motor_Controller> subscriber_motion_; 
   
