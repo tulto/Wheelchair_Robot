@@ -98,6 +98,7 @@ class GUIApp(MDApp):
         self.goal= ""
         self.gate= True
         self.reached=False
+        self.last_3=3
 
         box = BoxLayout(orientation = 'vertical', padding = (70))
         box.add_widget(Label(text="Bitte verfahren Sie den Roboter so lange manuell, \n         bis sich dieses Fenster wieder schließt!\n\n\n", font_size=32)
@@ -349,6 +350,7 @@ class GUIApp(MDApp):
 
     def temporary_button_color(self, active, *args):
         
+
         if active==1:
         
             if self.goal=="Aufenthaltsraum":
@@ -408,17 +410,11 @@ class GUIApp(MDApp):
                 #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
 
-        if active == 3: 
+        if active == 3 and not self.last_3 == 3: 
             self.open_gate()
-            """ 
-            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
+    
+        self.last_3= active 
             
-                """
 
 
         
