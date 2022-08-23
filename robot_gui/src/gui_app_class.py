@@ -413,9 +413,10 @@ class GUIApp(MDApp):
         if active == 3 and not self.last_status == 3: 
             self.open_gate()
     
-
-        if active == 2 and not self.last_status == 2:
-            self.open_gate()
+        # setzt unergründlicher Weise die Buttons ständig zurück deswegen wird es weggelassen
+        #if active == 2 and not self.last_status == 2:  
+      
+            #self.open_gate()                           
         
         if active == 4 and self.last_status== 4:
             self.open_gate()
