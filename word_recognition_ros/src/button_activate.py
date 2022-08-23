@@ -5,7 +5,9 @@ from actionlib_msgs.msg import GoalStatusArray
 from sounddevice import rec, wait
 from scipy.signal import butter, lfilter
 import numpy as np 
-
+import sys 
+sys.path.append("/home/ubuntu/wheelchar-robot_catkin/src/wheelchair_robot/robot_gui/src")
+from gui_application import GUIApp, gui_function_handler
 
 #initiate PIN setup
 GPIO.setwarnings(False) # Ignore warning for now
@@ -91,6 +93,7 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
         msg = String()
         msg.data = list[number_index]
         goal_pub.publish(msg)
+
         number_index = 10 
     else: 
         pass

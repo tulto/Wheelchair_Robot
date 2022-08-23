@@ -169,7 +169,34 @@ class GUIApp(MDApp):
         ##
     def set_goal(self, msg):
         self.goal = msg
-        self.close_gate()
+        
+        if self.goal=="Aufenthaltsraum":
+            self.close_gate()
+            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
+        
+        if self.goal=="Cafe":
+            self.close_gate()
+            self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
+        
+        if self.goal=="Gruppenraum":
+            self.close_gate()
+            self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
+
+        if self.goal=="Ruheraum":
+            self.close_gate()
+            self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
+
+        if self.goal=="Schlafzimmer":
+            self.close_gate()
+            self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
+
+        if self.goal=="Speisesaal":
+            self.close_gate()
+            self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
+
+            
+
+        
 
     def open_gate(self):
         self.gate=True
@@ -381,8 +408,8 @@ class GUIApp(MDApp):
                 #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
 
-        #else: 
-            #self.open_gate()
+        if active in range(2,9): 
+            self.open_gate()
             """ 
             self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
             self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
