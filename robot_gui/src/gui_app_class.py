@@ -98,7 +98,7 @@ class GUIApp(MDApp):
         self.goal= ""
         self.gate= True
         self.reached=False
-        self.last_3=3
+        self.last_status=3
 
         box = BoxLayout(orientation = 'vertical', padding = (70))
         box.add_widget(Label(text="Bitte verfahren Sie den Roboter so lange manuell, \n         bis sich dieses Fenster wieder schließt!\n\n\n", font_size=32)
@@ -410,10 +410,29 @@ class GUIApp(MDApp):
                 #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
 
-        if active == 3 and not self.last_3 == 3: 
+        if active == 3 and not self.last_status == 3: 
             self.open_gate()
     
-        self.last_3= active 
+
+        if active == 2 and self.last_status ==2:
+            self.open_gate()
+        
+        if active == 4 and self.last_status== 4:
+            self.open_gate()
+
+        if active == 5 and self.last_status == 5:
+            self.open_gate()
+
+        if active == 6 and self.last_status == 6:
+            self.open_gate()
+
+        if active == 7 and self.last_status == 7:
+            self.open_gate()
+
+        if active == 8 and self.last_status == 8:
+            self.open_gate()
+
+        self.last_status= active 
             
 
 
