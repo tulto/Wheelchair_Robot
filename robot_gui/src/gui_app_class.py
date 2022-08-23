@@ -414,7 +414,7 @@ class GUIApp(MDApp):
             self.open_gate()
     
 
-        if active == 2 and self.last_status ==2:
+        if active == 2 and not self.last_status == 2:
             self.open_gate()
         
         if active == 4 and self.last_status== 4:
@@ -432,7 +432,7 @@ class GUIApp(MDApp):
         if active == 8 and self.last_status == 8:
             self.open_gate()
 
-        self.last_status= active 
+        self.last_status = active 
             
 
 
