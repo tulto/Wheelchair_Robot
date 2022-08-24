@@ -107,7 +107,7 @@ def butter_lowpass_filter(data, cutoff, fs, order=5):
 
 def callback_subscriber_active(msg_active):
     global button_was_pushed
-
+    global previous_status
     
     
     if len(msg_active.status_list) == 0:
