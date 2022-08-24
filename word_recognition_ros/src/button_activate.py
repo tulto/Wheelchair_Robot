@@ -108,6 +108,7 @@ def butter_lowpass_filter(data, cutoff, fs, order=5):
 def callback_subscriber_active(msg_active):
     global button_was_pushed
     global previous_status
+    global mic_stopper
     
     
     if len(msg_active.status_list) == 0:
@@ -116,8 +117,9 @@ def callback_subscriber_active(msg_active):
             button_was_pushed = False
         
 
-    elif (msg_active.status_list[0].status == 1 and previous_status == 3) or msg_active.status_list[0].status == 2 or msg_active.status_list[0].status == 1:
+    elif (msg_active.status_list[0].status == 1 and previous_status == 3) or msg_active.status_list[0].status == 2 or msg_active.status_list[0].status == 1 or mic_stopper == True:
         button_was_pushed = False
+        mic_stopper = False
         #print("Recognition is not possible at this moment. Navigation is active!!!")
     
 
@@ -138,6 +140,13 @@ def timer_callback(event):
         global button_was_pushed
         button_was_pushed = True
 
+
+def callback_stop_mic(msg_stop_mic):
+    global mic_stopper
+
+    if msg_stop_mic.data == True:
+        mic_stopper = True
+
 if __name__ == '__main__':
 
     rospy.init_node('speech_recognition_on_button_press', anonymous=False)
@@ -150,8 +159,9 @@ if __name__ == '__main__':
 
     #microphone publisher for gui
     mic_pub = rospy.Publisher("/mic_status", Bool, queue_size=10)
+
      
-    
+    stop_mic = rospy.Subscriber("/stop_mic", Bool, callback_stop_mic)
     
 
     goal_pub = rospy.Publisher("/nav_goal", String, queue_size=25)

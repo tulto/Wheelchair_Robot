@@ -15,7 +15,7 @@ from kivymd.uix.button import MDFlatButton
 from std_srvs.srv import Empty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 ()
 from kivymd.uix.list import OneLineAvatarIconListItem
 from kivy.properties import StringProperty
@@ -33,6 +33,7 @@ class ItemConfirm(OneLineAvatarIconListItem):
         super().__init__(**kwargs)
         self.pub_save_pos = rospy.Publisher("/nav_save_position", String, queue_size=25)
         self.name = name
+        
 
 
     def on_press(self):
@@ -94,6 +95,7 @@ class GUIApp(MDApp):
         self.screen=Builder.load_file('ros_robot_gui.kv')
         self.pub = rospy.Publisher("/nav_goal", String, queue_size=25)
         self.cancel_pub =rospy.Publisher("/nav_cancel", String, queue_size=25)
+        self.pub_stop_mic = rospy.Publisher("/stop_mic", Bool, queue_size=10)
         self.msg = String()
         self.goal= ""
         self.gate= True
@@ -170,10 +172,16 @@ class GUIApp(MDApp):
         ##
     def set_goal(self, msg):
         self.goal = msg
+
+        stop_mic_msg= Bool()
+        
         
         if self.goal=="Aufenthaltsraum":
             self.close_gate()
             self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
+            stop_mic_msg.data=True
+            self.pub_stop_mic.publish(stop_mic_msg)
+        
         
         if self.goal=="Cafe":
             self.close_gate()
