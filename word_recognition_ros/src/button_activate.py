@@ -130,7 +130,8 @@ def callback_subscriber_active(msg_active):
     
     button_was_pushed = False
 
-    previous_status = msg_active.status_list[0].status
+    if not len(msg_active.status_list) == 0:
+        previous_status = msg_active.status_list[0].status
 
 def timer_callback(event):
     if GPIO.input(11) == GPIO.LOW:
