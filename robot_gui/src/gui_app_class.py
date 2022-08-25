@@ -101,6 +101,7 @@ class GUIApp(MDApp):
         self.gate= True
         self.reached=False
         self.last_status=3
+        self.stop_mic_msg= Bool()
 
         box = BoxLayout(orientation = 'vertical', padding = (70))
         box.add_widget(Label(text="Bitte verfahren Sie den Roboter so lange manuell, \n         bis sich dieses Fenster wieder schließt!\n\n\n", font_size=32)
@@ -173,46 +174,46 @@ class GUIApp(MDApp):
     def set_goal(self, msg):
         self.goal = msg
 
-        global stop_mic_msg #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde ansonsten dauert es zu lange wegen move base status 
-        stop_mic_msg= Bool()
+        #self.stop_mic_msg Zum ausschalten des mikrofons nach dem ein button gedrückt wurde ansonsten dauert es zu lange wegen move base status 
+        
         
         
         if self.goal=="Aufenthaltsraum":
             self.close_gate()
             self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
-            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
-            self.pub_stop_mic.publish(stop_mic_msg)
+            self.stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(self.stop_mic_msg)
         
         
         if self.goal=="Cafe":
             self.close_gate()
             self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
-            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
-            self.pub_stop_mic.publish(stop_mic_msg)
+            self.stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(self.stop_mic_msg)
         
         if self.goal=="Gruppenraum":
             self.close_gate()
             self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
-            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
-            self.pub_stop_mic.publish(stop_mic_msg)
+            self.stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(self.stop_mic_msg)
 
         if self.goal=="Ruheraum":
             self.close_gate()
             self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
-            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
-            self.pub_stop_mic.publish(stop_mic_msg)
+            self.stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(self.stop_mic_msg)
 
         if self.goal=="Schlafzimmer":
             self.close_gate()
             self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
-            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
-            self.pub_stop_mic.publish(stop_mic_msg)
+            self.stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(self.stop_mic_msg)
 
         if self.goal=="Speisesaal":
             self.close_gate()
             self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
-            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
-            self.pub_stop_mic.publish(stop_mic_msg)
+            self.stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(self.stop_mic_msg)
 
             
 
@@ -363,20 +364,18 @@ class GUIApp(MDApp):
             self.pub.publish(self.msg)
 
     def pub_nav_cancel(self, *args):
-        global stop_mic_msg
-        stop_mic_msg= Bool()
+        
         self.msg.data = "cancel_nav"
         self.open_gate()
         self.cancel_pub.publish(self.msg)
 
-        stop_mic_msg.data=False
-        self.pub_stop_mic.publish(stop_mic_msg)
+        self.stop_mic_msg.data=False
+        self.pub_stop_mic.publish(self.stop_mic_msg)
 
 
 
     def temporary_button_color(self, active, *args):
-        global stop_mic_msg
-        stop_mic_msg= Bool()
+        
         
         if active==1:
         
@@ -439,8 +438,8 @@ class GUIApp(MDApp):
 
         if active == 3 and not self.last_status == 3: #erst wenn flanke (von 1 auf 3 in move_base) erreich werden die Buttons wieder blau
             self.open_gate()
-            stop_mic_msg.data=False
-            self.pub_stop_mic.publish(stop_mic_msg)
+            self.stop_mic_msg.data=False
+            self.pub_stop_mic.publish(self.stop_mic_msg)
     
         # setzt unergründlicher Weise die Buttons ständig zurück deswegen wird es weggelassen
         #if active == 2 and not self.last_status == 2:  
