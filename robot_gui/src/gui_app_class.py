@@ -187,22 +187,32 @@ class GUIApp(MDApp):
         if self.goal=="Cafe":
             self.close_gate()
             self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
+            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(stop_mic_msg)
         
         if self.goal=="Gruppenraum":
             self.close_gate()
             self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
+            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(stop_mic_msg)
 
         if self.goal=="Ruheraum":
             self.close_gate()
             self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
+            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(stop_mic_msg)
 
         if self.goal=="Schlafzimmer":
             self.close_gate()
             self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
+            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(stop_mic_msg)
 
         if self.goal=="Speisesaal":
             self.close_gate()
             self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
+            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
+            self.pub_stop_mic.publish(stop_mic_msg)
 
             
 
@@ -353,9 +363,14 @@ class GUIApp(MDApp):
             self.pub.publish(self.msg)
 
     def pub_nav_cancel(self, *args):
+        global stop_mic_msg
         self.msg.data = "cancel_nav"
         self.open_gate()
         self.cancel_pub.publish(self.msg)
+        stop_mic_msg.data=False
+        self.pub_stop_mic.publish(stop_mic_msg)
+
+
 
     def temporary_button_color(self, active, *args):
         global stop_mic_msg
