@@ -1,0 +1,4 @@
+<launch>
+<!--Launch rviz for map_visualization on buttin press-->
+	<node pkg="rviz" type="rviz" name="rviz" required="true"  args="-d $(find slam_algorithms)/rviz_config/rviz_config.rviz"/>
+</launch>
