@@ -119,7 +119,7 @@ def callback_subscriber_active(msg_active):
 
     elif (msg_active.status_list[0].status == 1 and previous_status == 3) or msg_active.status_list[0].status == 2 or msg_active.status_list[0].status == 1 or mic_stopper == True:
         button_was_pushed = False
-        mic_stopper = False
+        
         #print("Recognition is not possible at this moment. Navigation is active!!!")
     
 
@@ -146,6 +146,9 @@ def callback_stop_mic(msg_stop_mic):
 
     if msg_stop_mic.data == True:
         mic_stopper = True
+
+    if msg_stop_mic.data == False:
+        mic_stopper = False
 
 if __name__ == '__main__':
 
