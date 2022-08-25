@@ -95,7 +95,7 @@ class GUIApp(MDApp):
         self.screen=Builder.load_file('ros_robot_gui.kv')
         self.pub = rospy.Publisher("/nav_goal", String, queue_size=25)
         self.cancel_pub =rospy.Publisher("/nav_cancel", String, queue_size=25)
-        self.pub_stop_mic = rospy.Publisher("/stop_mic", Bool, queue_size=10)
+        self.pub_stop_mic = rospy.Publisher("/stop_mic", Bool, queue_size=10) #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
         self.msg = String()
         self.goal= ""
         self.gate= True
@@ -173,13 +173,14 @@ class GUIApp(MDApp):
     def set_goal(self, msg):
         self.goal = msg
 
+        global stop_mic_msg #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde ansonsten dauert es zu lange wegen move base status 
         stop_mic_msg= Bool()
         
         
         if self.goal=="Aufenthaltsraum":
             self.close_gate()
             self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
-            stop_mic_msg.data=True
+            stop_mic_msg.data=True #Zum ausschalten des mikrofons nach dem ein button gedrückt wurde
             self.pub_stop_mic.publish(stop_mic_msg)
         
         
@@ -357,7 +358,7 @@ class GUIApp(MDApp):
         self.cancel_pub.publish(self.msg)
 
     def temporary_button_color(self, active, *args):
-        
+        global stop_mic_msg
 
         if active==1:
         
@@ -418,8 +419,10 @@ class GUIApp(MDApp):
                 #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
 
-        if active == 3 and not self.last_status == 3: 
+        if active == 3 and not self.last_status == 3: #erst wenn flanke (von 1 auf 3 in move_base) erreich werden die Buttons wieder blau
             self.open_gate()
+            stop_mic_msg.data=False
+            self.pub_stop_mic.publish(stop_mic_msg)
     
         # setzt unergründlicher Weise die Buttons ständig zurück deswegen wird es weggelassen
         #if active == 2 and not self.last_status == 2:  
