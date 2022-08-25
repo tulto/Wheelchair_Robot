@@ -364,9 +364,11 @@ class GUIApp(MDApp):
 
     def pub_nav_cancel(self, *args):
         global stop_mic_msg
+        stop_mic_msg= Bool()
         self.msg.data = "cancel_nav"
         self.open_gate()
         self.cancel_pub.publish(self.msg)
+
         stop_mic_msg.data=False
         self.pub_stop_mic.publish(stop_mic_msg)
 
@@ -374,7 +376,8 @@ class GUIApp(MDApp):
 
     def temporary_button_color(self, active, *args):
         global stop_mic_msg
-
+        stop_mic_msg= Bool()
+        
         if active==1:
         
             if self.goal=="Aufenthaltsraum":
