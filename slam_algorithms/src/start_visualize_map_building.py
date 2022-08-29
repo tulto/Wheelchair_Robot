@@ -11,7 +11,7 @@ import os
 
 def callback_vizualization_map_building(msg):
 
-	global proc_map_run, proc_viz_run, proc_map, proc_viz, last_viz_map_value
+	global proc_map_run, proc_viz_run, proc_map, proc_viz, last_viz_map_value, map_destination_path
 
 	#on rising edge
 	if(msg.data and not last_viz_map_value):
@@ -67,6 +67,22 @@ def callback_vizualization_map_building(msg):
 				rospy.loginfo("Process terminated without error")
 
 		if(proc_map_run):
+
+			#the following code saves the generated map
+			command_save = "rosrun  map_server map_saver -f {0} map:={1} __name:=map_saver_gui".format("initial_gui_generated_map", used_map_topic)
+			
+			proc_save = subprocess.Popen(command_save, shell=True, cwd=map_destination_path)
+
+			state = proc_save.poll()
+			if state is None:
+				rospy.loginfo("Process is running fine")
+			elif state < 0:
+				rospy.loginfo("Process terminated with error")
+			elif state > 0:
+				rospy.loginfo("Process terminated without error")
+			
+			rospy.sleep(1.5)	#time to save map
+
 			proc_map.terminate()
 			rospy.sleep(2.5)	#give time to close process
 			proc_map.kill()
@@ -80,29 +96,51 @@ def callback_vizualization_map_building(msg):
 				rospy.loginfo("Process terminated with error")
 			elif state > 0:
 				rospy.loginfo("Process terminated without error")
+
+			rospy.sleep(1.5)	#again time to process
+
 			
 
 	last_viz_map_value = msg.data
 
 def callback_stop_map_generation(msg):
 	
-	global proc_map, proc_map_run
+	global proc_map, proc_map_run, map_destination_path
 
 	if(proc_map_run):
-			proc_map.terminate()
-			rospy.sleep(2.5)	#give time to close process
-			proc_map.kill()
-			rospy.sleep(1.0)	#give time to close process
-			proc_map_run = False
+		
+		#the following code saves the generated map
+		command_save = "rosrun  map_server map_saver -f {0} map:={1} __name:=map_saver_gui".format("initial_gui_generated_map", used_map_topic)
+		
+		proc_save = subprocess.Popen(command_save, shell=True, cwd=map_destination_path)
 
-			state = proc_map.poll()
-			if state is None:
-				rospy.loginfo("process is running fine, but should been terminated!")
-				proc_map_run = True
-			elif state < 0:
-				rospy.loginfo("Process terminated with error")
-			elif state > 0:
-				rospy.loginfo("Process terminated without error")
+		state = proc_save.poll()
+		if state is None:
+			rospy.loginfo("Process is running fine")
+		elif state < 0:
+			rospy.loginfo("Process terminated with error")
+		elif state > 0:
+			rospy.loginfo("Process terminated without error")
+		
+		rospy.sleep(1.5)	#time to save map
+
+		#now we kill the running mapping process
+
+		proc_map.terminate()
+		rospy.sleep(2.5)	#give time to close process
+		proc_map.kill()
+		rospy.sleep(1.0)	#give time to close process
+		proc_map_run = False
+
+		state = proc_map.poll()
+		if state is None:
+			rospy.loginfo("process is running fine, but should been terminated!")
+			proc_map_run = True
+		elif state < 0:
+			rospy.loginfo("Process terminated with error")
+		elif state > 0:
+			rospy.loginfo("Process terminated without error")
+		
 
 	
 
@@ -127,11 +165,13 @@ if __name__ == '__main__':
 	map_destination_folder = rospy.get_param(node_name + "/map_destination_folder", "/maps/test")
 	slam_algorithm_launchfile_package = rospy.get_param(node_name + "/slam_algorithm_launchfile_package", "slam_algorithms")
 	slam_algorithm_launchfile_name = rospy.get_param(node_name + "/slam_algorithm_launchfile_name", "karto_slam_real_robot.launch")
+	used_map_topic = rospy.get_param(node_name + "/used_map_topic", "/map_karto")
 
 	#get full paths to directories with the help of RosPack
 	rospack = rospkg.RosPack()
+	global map_destination_path
 	map_destination_path = rospack.get_path(map_destination_package)
-	map_destination_path = (map_destination_path +map_destination_folder)
+	map_destination_path = (map_destination_path + map_destination_folder)
 
 	#checking if needed directory exists, otherwise we generate it
 	directory_check_and_generate(map_destination_path)
