@@ -36,7 +36,9 @@
 
   <include file="$(find lidar-filtering)/launch-files/back_lidar_angle_cutter.launch" />
 
-  <include file="$(find lidar-filtering)/launch-files/merging_lidar_laser.launch" />
+  <include file="$(find lidar-filtering)/launch-files/merging_lidar_laser.launch" >
+    <remap from="/scan_merged" to="/scan_wcr_ranged"/>
+  </include>
 
   <include file="$(find navigation)/launch/navigation.launch">
     <arg name="rviz" default="true" /> <!--switch on and off rviz-->
@@ -44,10 +46,9 @@
     <arg name="map_for_planning" default="map_plan"/> <!--name of planning map (can be the same is two_maps = false)-->
     <arg name="map_file" default="$(find navigation)/maps/simulation/gmapping_default_param_nursing_home.yaml"/>
     <arg name="map_file_plan" default="$(find navigation)/maps/test/gmapping_default_param_nursing_home.yaml"/>
+    <arg name="amcl_topic" default="scan_merged"/> <!--switch amcl scan topic-->
+    <arg name="colision_checker_topic" default="scan_merged"/> <!--switch topic of myplanner who does collision_checking-->
   </include>
 
-
-  
-  
 
 </launch>

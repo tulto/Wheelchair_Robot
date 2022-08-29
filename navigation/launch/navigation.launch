@@ -6,6 +6,8 @@
   <arg name="map_file_plan" default="$(find navigation)/maps/labor/plan_map/hector_labor.yaml"/>
   <arg name="map_file" default="$(find navigation)/maps/labor/hector_labor.yaml"/>
   <arg name="topic_robot_localization_is_checked" default="robot_localization_is_checked"/>
+  <arg name="amcl_topic" default="scan_wcr_ranged"/> <!--switch amcl scan topic-->
+  <arg name="colision_checker_topic" default="scan_wcr_no_inf"/> <!--switch topic of myplanner who does collision_checking-->
   
 
   <!-- Map server -->
@@ -25,7 +27,9 @@
     </node>
   </group>
    
-  <include file="$(find amcl_localization)/launch/amcl_launch.launch"/>
+  <include file="$(find amcl_localization)/launch/amcl_launch.launch">
+    <arg name="scan_topic" default="$(arg amcl_topic)" />
+  </include>
 
   <!-- move base Pathplaning -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
@@ -61,6 +65,7 @@
   <node pkg="navigation" type="my_planner" name="my_planner" >
         <rosparam file="$(find navigation)/param/my_planner.yaml" command="load"/>
         <remap from="/map" to="$(arg map_for_planning)"/>
+        <remap from="/scan_wcr_no_inf" to="$(arg colision_checker_topic)"/>
   </node>
 
 

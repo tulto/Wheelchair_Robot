@@ -7,6 +7,7 @@ from scipy.signal import butter, lfilter
 import numpy as np 
 
 
+
 #initiate PIN setup
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
@@ -20,33 +21,26 @@ def ZScore(data):
 
 def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_threshold=0.5,number_index= 10):
     
+    #message for mic in gui 
+    mic_msg= Bool()
+    mic_msg.data=True
+    mic_pub.publish(mic_msg)
+
     print("Starting recording..")
     record = rec(int(duration*sample_rate),samplerate=sample_rate, channels=1, blocking=False)
     wait()
     print("Recording finished..")
+
+    mic_msg.data = False  
+    #rospy.sleep(1)
+    mic_pub.publish(mic_msg)  
 
     from librosa.feature import mfcc
     from tflite_runtime.interpreter import Interpreter
 
     record = np.squeeze(record)
 
-    if msg_active.status_list[0].status == 1:
-        button_was_pushed = False
-        print("Recognition is not possible at this moment. Navigation is active!!!")
-    else:
-        if (button_was_pushed):
-            print("Starting recording..")
-
-            #For gui: microphone activ 
-            mic_msg= Bool()
-            mic_msg.data=True
-
-            mic_pub.publish(mic_msg)
-
-
-            record = rec(int(duration*sample_rate),samplerate=sample_rate, channels=1, blocking=False)
-            wait()
-            print("Recording finished..")
+    record = butter_lowpass_filter(data=record,cutoff=10000, fs=sample_rate)
 
     model_path = '4_layer_globalpool.tflite'
 
@@ -98,6 +92,7 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
         msg = String()
         msg.data = list[number_index]
         goal_pub.publish(msg)
+
         number_index = 10 
     else: 
         pass
@@ -105,19 +100,10 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
 def butter_lowpass(cutoff, fs, order=5):
     return butter(order, cutoff, fs=fs, btype='low', analog=False)
 
-            if number_index < 10: 
-                list =["Aufenthaltsraum", "Cafe", "Gruppenraum", "Ruheraum", "Schlafzimmer", "Speisesaal"]
-                #print(list[number_index])
-                msg = String()
-                msg.data = list[number_index]
-                goal_pub.publish(msg)
-                number_index = 10 
-            else: 
-                pass
-        
-        
-                
-        button_was_pushed = False
+def butter_lowpass_filter(data, cutoff, fs, order=5):
+    b, a = butter_lowpass(cutoff, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
 
 def callback_subscriber_active(msg_active):
     global button_was_pushed
@@ -125,11 +111,21 @@ def callback_subscriber_active(msg_active):
     if len(msg_active.status_list) == 0:
         if (button_was_pushed):
             recording()
+            button_was_pushed = False
         
 
-    mic_msg.data = False  
-    rospy.sleep(1)
-    mic_pub.publish(mic_msg)  
+    elif msg_active.status_list[0].status == 1 or msg_active.status_list[0].status == 2:
+        button_was_pushed = False
+        #print("Recognition is not possible at this moment. Navigation is active!!!")
+    
+
+    else:
+        if (button_was_pushed):
+            recording()
+
+
+        button_was_pushed = False
+    
     button_was_pushed = False
 
 def timer_callback(event):
@@ -138,11 +134,16 @@ def timer_callback(event):
         button_was_pushed = True
 
 if __name__ == '__main__':
-    rospy.init_node('speech_recognition_on_button_press', anonymous=False)
-    mic_pub = rospy.Publisher("/mic_status", Bool, queue_size=10)
 
+    rospy.init_node('speech_recognition_on_button_press', anonymous=False)
+    
     global button_was_pushed
     button_was_pushed = False
+
+
+
+    #microphone publisher for gui
+    mic_pub = rospy.Publisher("/mic_status", Bool, queue_size=10)
      
     
     

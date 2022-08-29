@@ -27,6 +27,7 @@ def callback_subscriber_active(msg_active):
         pass
     #print("helo")
     #print("test" + str(msg_active.status_list[0].status ))
+    
     gui_function_handler.temporary_button_color(msg_active.status_list[0].status)
 
 def callback_subscriber_mic(msg_mic):
@@ -38,7 +39,8 @@ def callback_localization(msg_local):
     else:
         gui_function_handler.pop_up_localization(pop=False)
 
-
+def callback_goal(msg):
+    gui_function_handler.set_goal(msg.data)
     
 
 if __name__ == '__main__':
@@ -53,7 +55,8 @@ if __name__ == '__main__':
     sub_stair = rospy.Subscriber("/stair_warning_dir", TOF_sensor, callback_subscriber_stair_warning)
     sub_mb= rospy.Subscriber("/move_base/status", GoalStatusArray, callback_subscriber_active)
     sub_mic = rospy.Subscriber("/mic_status", Bool, callback_subscriber_mic)
-    sub_loc= rospy.Subscriber("/robot_localization_is_checked", Bool, callback_localization) 
+    sub_loc= rospy.Subscriber("/robot_localization_is_checked", Bool, callback_localization)
+    sub_nav= rospy.Subscriber("/nav_goal", String, callback_goal)
 
     gui_function_handler.run()
 

@@ -25,7 +25,7 @@ from kivy.uix.behaviors import ButtonBehavior
 class ItemConfirm(OneLineAvatarIconListItem):
     divider = None
 
-    global kill 
+    global kill #does not work :)
     kill = False
 
     def __init__(self, name,  **kwargs):
@@ -98,6 +98,7 @@ class GUIApp(MDApp):
         self.goal= ""
         self.gate= True
         self.reached=False
+        self.last_status=3
 
         box = BoxLayout(orientation = 'vertical', padding = (70))
         box.add_widget(Label(text="Bitte verfahren Sie den Roboter so lange manuell, \n         bis sich dieses Fenster wieder schließt!\n\n\n", font_size=32)
@@ -167,6 +168,36 @@ class GUIApp(MDApp):
         #self.kill_dialog
 
         ##
+    def set_goal(self, msg):
+        self.goal = msg
+        
+        if self.goal=="Aufenthaltsraum":
+            self.close_gate()
+            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
+        
+        if self.goal=="Cafe":
+            self.close_gate()
+            self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
+        
+        if self.goal=="Gruppenraum":
+            self.close_gate()
+            self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
+
+        if self.goal=="Ruheraum":
+            self.close_gate()
+            self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
+
+        if self.goal=="Schlafzimmer":
+            self.close_gate()
+            self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
+
+        if self.goal=="Speisesaal":
+            self.close_gate()
+            self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
+
+            
+
+        
 
     def open_gate(self):
         self.gate=True
@@ -221,7 +252,7 @@ class GUIApp(MDApp):
         if pop:
             self.popup.open()
         else:
-            print("test")
+            #print("test")
             self.popup.dismiss(force=True, animation=False)
 
             
@@ -273,6 +304,7 @@ class GUIApp(MDApp):
         self.msg.data = "Aufenthaltsraum"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
             
 
@@ -280,31 +312,35 @@ class GUIApp(MDApp):
         self.msg.data = "Cafe"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Cafe_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
 
     def pub_nav_goal_gruppenraum(self, *args):
         self.msg.data = "Gruppenraum"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Gruppenraum_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
 
     def pub_nav_goal_ruheraum(self, *args):
         self.msg.data = "Ruheraum"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Ruheraum_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
     
     def pub_nav_goal_schlafzimmer(self, *args):
         self.msg.data = "Schlafzimmer"
         if self.gate==True:
             self.close_gate()
+            self.screen.ids.Schlafzimmer_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
     
     def pub_nav_goal_speisesaal(self, *args):
         self.msg.data = "Speisesaal"
         if self.gate==True:
             self.close_gate()
-            
+            self.screen.ids.Speisesaal_button.md_bg_color=[0.75,0,0,1]
             self.pub.publish(self.msg)
 
     def pub_nav_cancel(self, *args):
@@ -314,6 +350,7 @@ class GUIApp(MDApp):
 
     def temporary_button_color(self, active, *args):
         
+
         if active==1:
         
             if self.goal=="Aufenthaltsraum":
@@ -373,17 +410,31 @@ class GUIApp(MDApp):
                 #self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
 
 
-        else: 
+        if active == 3 and not self.last_status == 3: 
             self.open_gate()
-            """ 
-            self.screen.ids.Aufenthaltsraum_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Cafe_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Gruppenraum_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Ruheraum_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Schlafzimmer_button.md_bg_color=[0,0,1,1]
-            self.screen.ids.Speisesaal_button.md_bg_color=[0,0,1,1]
+    
+        # setzt unergründlicher Weise die Buttons ständig zurück deswegen wird es weggelassen
+        #if active == 2 and not self.last_status == 2:  
+      
+            #self.open_gate()                           
+        
+        if active == 4 and self.last_status== 4:
+            self.open_gate()
+
+        if active == 5 and self.last_status == 5:
+            self.open_gate()
+
+        if active == 6 and self.last_status == 6:
+            self.open_gate()
+
+        if active == 7 and self.last_status == 7:
+            self.open_gate()
+
+        if active == 8 and self.last_status == 8:
+            self.open_gate()
+
+        self.last_status = active 
             
-                """
 
 
         
