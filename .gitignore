@@ -9,3 +9,5 @@
 robot_gui/src/__pycache__/compare_list_class.cpython-38.pyc
 
 robot_gui/src/__pycache__/gui_app_class.cpython-38.pyc
+
+*.pyc 
