@@ -19,7 +19,15 @@ def ZScore(data):
     data_ZScore = np.array((data - Mean) / Std)
     return data_ZScore
 
-def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_threshold=0.5,number_index= 10):
+def normalize(audio, target_level=-25):
+    '''Normalize the signal to the target level'''
+    EPS = np.finfo(float).eps
+    rms = (audio ** 2).mean() ** 0.5
+    scalar = 10 ** (target_level / 20) / (rms+EPS)
+    audio = audio * scalar
+    return audio
+
+def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.25,word_threshold=0.5,number_index= 10):
     
     #message for mic in gui 
     mic_msg= Bool()
@@ -35,14 +43,17 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
     #rospy.sleep(1)
     mic_pub.publish(mic_msg)  
 
-    from librosa.feature import mfcc
+    from librosa.feature import melspectrogram
+    from librosa import power_to_db
     from tflite_runtime.interpreter import Interpreter
 
     record = np.squeeze(record)
 
     record = butter_lowpass_filter(data=record,cutoff=10000, fs=sample_rate)
 
-    model_path = '4_layer_globalpool.tflite'
+    record = normalize(record)
+
+    model_path = 'res8_CE_mel_Z.tflite'
 
 
     # Load model (interpreter)
@@ -56,19 +67,21 @@ def recording(sample_rate=22050,duration= 6,rec_duration=1.5,sec_slide=0.1,word_
 
 
 
-    for i in range(1, steps_to_make+1):
+    for i in range( steps_to_make+1):
         
-        if i==1:
+        if i==0:
             window = record[:int(sample_rate * rec_duration)]
 
         else:
             window=record[int(i*sec_slide*sample_rate):int((sample_rate*(rec_duration+i*sec_slide)))]
 
-        window_mfcc=mfcc(y=window, sr=sample_rate, n_mfcc=20, n_fft=512)
+        window_mfcc=melspectrogram(y=window, sr=sample_rate, n_mels=80, n_fft=551, hop_length=221)
 
         window_mfcc_z=ZScore(window_mfcc)
 
-        window_mfcc_z = np.pad(window_mfcc_z, pad_width=((0, 0), (0, 1)), mode='constant')
+        window_mfcc_z = power_to_db(window_mfcc_z)
+
+        #window_mfcc_z = np.pad(window_mfcc_z, pad_width=((0, 0), (0, 1)), mode='constant')
 
 
         in_tensor = np.float32(window_mfcc_z.reshape(1, (window_mfcc_z.shape[0]), window_mfcc_z.shape[1], 1))
